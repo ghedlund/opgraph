@@ -76,6 +76,14 @@ public class InputFields extends ArrayList<InputField> {
 	{
 		add(key, description, isOptional, isFixed, (TypeValidator)null);
 	}
+	
+	public void add(
+			String key,
+			String description,
+			Class<?> acceptedType) 
+	{
+		add(key, description, new Class[]{acceptedType});
+	}
 
 	/**
 	 * Adds a non-optional, fixed input field with a key and description

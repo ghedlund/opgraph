@@ -115,10 +115,12 @@ public class NodeLibrary implements Iterable<NodeData> {
 	 * Registers a specified {@link OpNode} class to this library.
 	 * 
 	 * @param clz  the class
+	 * @return the new node info
 	 * 
 	 * @throws URISyntaxException  if a URI could not be created for the given class
 	 */
-	public void register(Class<? extends OpNode> clz) throws URISyntaxException {
+	public NodeData register(Class<? extends OpNode> clz) throws URISyntaxException {
+		NodeData retVal = null;
 		if(clz != null) {
 			final OpNodeInfo nodeInfo = clz.getAnnotation(OpNodeInfo.class);
 			if(nodeInfo != null) {
@@ -127,9 +129,12 @@ public class NodeLibrary implements Iterable<NodeData> {
 				final String desc = (nodeInfo == null ? "" : nodeInfo.description());
 				final String cat = (nodeInfo == null ? "" : nodeInfo.category());
 				final URI uri = new URI("class", type, null);
-				put(new NodeData(uri, name, desc, cat, new ClassInstantiator<OpNode>(clz)));
+				
+				retVal = new NodeData(uri, name, desc, cat, new ClassInstantiator<OpNode>(clz));
+				put(retVal);
 			}
 		}
+		return retVal;
 	}
 
 	/**

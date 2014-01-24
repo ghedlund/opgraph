@@ -96,6 +96,8 @@ public class NodeLibraryMenuProvider implements MenuProvider {
 
 	@Override
 	public void installPopupItems(Object context, MouseEvent event, GraphEditorModel model, PathAddressableMenu menu) {
+		// add a new menu item for adding a new 'object'
+		
 		if(model.getNodeLibrary().getLibrary().getNodeInfo().size() > 0) {
 			final JMenu addNodeMenu = menu.addMenu("add_node", "Add");
 			addMenuItems(addNodeMenu, model.getDocument(), model.getNodeLibrary().getLibrary(), event.getPoint());

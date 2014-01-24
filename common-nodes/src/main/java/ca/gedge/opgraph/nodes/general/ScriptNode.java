@@ -46,6 +46,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
+
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OpNodeInfo;

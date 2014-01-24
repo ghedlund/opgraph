@@ -24,6 +24,8 @@ package ca.gedge.opgraph.app.commands.graph;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 import javax.swing.JMenu;
@@ -77,6 +79,6 @@ public class GraphMenuProvider implements MenuProvider {
 
 	@Override
 	public void installPopupItems(Object context, MouseEvent event, GraphEditorModel model, PathAddressableMenu menu) {
-		//
+		
 	}
 }

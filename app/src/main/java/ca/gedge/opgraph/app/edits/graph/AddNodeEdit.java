@@ -95,6 +95,20 @@ public class AddNodeEdit extends AbstractUndoableEdit {
 	}
 
 	/**
+	 * Constructs an edit that adds a node to the given canvas at the given
+	 * initial location.
+	 * 
+	 * @param graph  the graph to which this edit will be applied
+	 * @param node  the node to add to the graph
+	 */
+	public AddNodeEdit(OpGraph graph, OpNode node, int x, int y) {
+		this.graph = graph;
+		this.node = node;
+		this.node.putExtension(NodeMetadata.class, new NodeMetadata(x, y));
+		perform();
+	}
+	
+	/**
 	 * Performs this edit.
 	 */
 	private void perform() {

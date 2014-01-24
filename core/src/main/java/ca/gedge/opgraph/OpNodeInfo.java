@@ -37,4 +37,8 @@ public @interface OpNodeInfo {
 
 	/** A category for the node */ 
 	public String category() default "";
+	
+	/** Control displaying node in library */
+	public boolean showInLibrary() default true;
+	
 }

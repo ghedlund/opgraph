@@ -55,7 +55,7 @@ public class ForEachNode extends MacroNode {
 
 	/** {@link OpContext} key for the max number of iterations */
 	public static final String MAX_ITERATIONS_KEY = "maxIterations";
-
+	
 	/**
 	 * Constructs a new macro with no source file and a default graph.
 	 */

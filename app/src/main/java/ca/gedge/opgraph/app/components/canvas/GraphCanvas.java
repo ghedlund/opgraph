@@ -45,6 +45,9 @@ import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,6 +57,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -63,6 +67,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
+
 import ca.gedge.opgraph.ContextualItem;
 import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpLink;
@@ -100,8 +105,10 @@ import ca.gedge.opgraph.extensions.Publishable;
 import ca.gedge.opgraph.extensions.Publishable.PublishedInput;
 import ca.gedge.opgraph.extensions.Publishable.PublishedOutput;
 import ca.gedge.opgraph.library.NodeData;
+import ca.gedge.opgraph.library.NodeLibrary;
 import ca.gedge.opgraph.util.BreadcrumbListener;
 import ca.gedge.opgraph.util.Pair;
+import ca.gedge.opgraph.util.ServiceDiscovery;
 
 /**
  * A canvas for creating/modifying an {@link OpGraph}.
@@ -615,11 +622,11 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 		if(!isEnabled()) return; 
 
 		updateLinkDrag(p);
-
+		
+		final OpGraph graph = document.getGraph();
 		// If the drag link is valid, check to see which field this link
 		// was fed into and try to add a new link
 		if(currentlyDraggedLinkInputField != null) {
-			final OpGraph graph = document.getGraph();
 			if(dragLinkIsValid) {
 				final CanvasNode sourceNode = (CanvasNode)SwingUtilities.getAncestorOfClass(CanvasNode.class, currentlyDraggedLinkInputField);
 				if(sourceNode == null)
@@ -667,15 +674,32 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 				// No destination found, so this means we were dragging over
 				// the canvas area. If we were editing an existing link,
 				// remove it
-				if(!destinationFound && currentlyDraggedLink != null) {
-					if(!graph.contains(currentlyDraggedLink)) {
-						try {
-							graph.add(currentlyDraggedLink);
-						} catch (VertexNotFoundException e) {
-						} catch (CycleDetectedException e) {
+				if(!destinationFound) {
+					if(currentlyDraggedLink != null) {
+						if(!graph.contains(currentlyDraggedLink)) {
+							try {
+								graph.add(currentlyDraggedLink);
+							} catch (VertexNotFoundException e) {
+							} catch (CycleDetectedException e) {
+							}
+						}
+						document.getUndoSupport().postEdit(new RemoveLinkEdit(graph, currentlyDraggedLink));
+					} else {
+						// call abaondoned link handlers
+						final List<Class<? extends AbandonedLinkHandler>> handlers = ServiceDiscovery.getInstance().findProviders(AbandonedLinkHandler.class);
+						for(Class<? extends AbandonedLinkHandler> handler:handlers) {
+							try {
+								final AbandonedLinkHandler linkHandler = handler.newInstance();
+								linkHandler.dragLinkAbandoned(this, sourceNode, currentlyDraggedLinkInputField, p);
+							} catch (InstantiationException e) {
+								LOGGER.log(Level.SEVERE,
+										e.getLocalizedMessage(), e);
+							} catch (IllegalAccessException e) {
+								LOGGER.log(Level.SEVERE,
+										e.getLocalizedMessage(), e);
+							}
 						}
 					}
-					document.getUndoSupport().postEdit(new RemoveLinkEdit(graph, currentlyDraggedLink));
 				}
 
 			} else if(currentlyDraggedLink != null) {

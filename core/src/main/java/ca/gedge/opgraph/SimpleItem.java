@@ -95,7 +95,7 @@ public class SimpleItem implements ContextualItem, Extendable {
 	public void setDescription(String description) {
 		this.description = (description == null ? "" : description);
 	}
-
+	
 	//
 	// Extendable
 	//

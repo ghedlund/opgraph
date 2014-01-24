@@ -1,1 +1,3 @@
 ca.gedge.opgraph.nodes.menu.CommonNodesMenuProvider
+
+ca.gedge.opgraph.nodes.menu.ReflectNodeMenuProvider

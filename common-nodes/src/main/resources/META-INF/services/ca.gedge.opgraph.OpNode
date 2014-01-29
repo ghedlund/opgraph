@@ -14,12 +14,6 @@ ca.gedge.opgraph.nodes.logic.LogicalOrNode
 ca.gedge.opgraph.nodes.logic.LogicalXorNode
 
 ca.gedge.opgraph.nodes.math.MathExpressionNode
-
-ca.gedge.opgraph.nodes.objects.BooleanNode
-ca.gedge.opgraph.nodes.objects.IntegerNode
-ca.gedge.opgraph.nodes.objects.DoubleNode
-ca.gedge.opgraph.nodes.objects.StringNode
-
 ca.gedge.opgraph.nodes.random.RandomBooleanNode
 ca.gedge.opgraph.nodes.random.RandomDecimalNode
 ca.gedge.opgraph.nodes.random.RandomIntegerNode

@@ -2,6 +2,7 @@ package ca.gedge.opgraph.nodes.menu;
 
 import java.awt.Component;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -29,6 +30,13 @@ public class AddStaticMethodCommand extends AbstractAction {
 
 	private static final long serialVersionUID = 4549741302418406320L;
 
+	private final Point point;
+	
+	public AddStaticMethodCommand(Point p) {
+		super();
+		this.point = p;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(GraphicsEnvironment.isHeadless())
@@ -62,7 +70,7 @@ public class AddStaticMethodCommand extends AbstractAction {
 						final Method selectedMethod = (Method)comboBox.getSelectedItem();
 						
 						final StaticMethodNode node = new StaticMethodNode(selectedMethod);
-						final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), node);
+						final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), node, point.x, point.y);
 						document.getUndoSupport().postEdit(edit);
 					}
 					

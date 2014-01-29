@@ -2,6 +2,7 @@ package ca.gedge.opgraph.nodes.reflect;
 
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpGraph;
+import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.Processor;
 import ca.gedge.opgraph.app.GraphDocument;
@@ -27,7 +29,7 @@ import ca.gedge.opgraph.util.ReflectUtil;
 /**
  * 
  */
-public class IterableClassNode extends MacroNode implements ClassNodeProtocol, NodeSettings {
+public class IterableClassNode extends MacroNode implements NodeSettings, ReflectNode {
 	
 	private static final Logger LOGGER = Logger
 			.getLogger(IterableClassNode.class.getName());
@@ -44,10 +46,10 @@ public class IterableClassNode extends MacroNode implements ClassNodeProtocol, N
 	private OutputField outputValueField;
 	
 	/** List of scanned input fields from class */
-	private List<ClassInputField> classInputs;
+	private List<ObjectNodePropertyInputField> classInputs;
 	
 	/** List of scanned output fields from class */
-	private List<ClassOutputField> classOutputs;
+	private List<ObjectNodePropertyOutputField> classOutputs;
 	
 	private Class<?> type;
 	
@@ -63,23 +65,23 @@ public class IterableClassNode extends MacroNode implements ClassNodeProtocol, N
 	
 	public IterableClassNode(Class<?> clazz) {
 		super();
-		setClass(clazz);
+		setDeclaredClass(clazz);
 		putExtension(NodeSettings.class, this);
 	}
 	
 	public IterableClassNode(OpGraph graph, Class<?> clazz) {
 		super(graph);
-		setClass(clazz);
+		setDeclaredClass(clazz);
 		putExtension(NodeSettings.class, this);
 	}
 	
-	public void setClass(Class<?> clazz) {
+	public void setDeclaredClass(Class<?> clazz) {
 		if(!Iterable.class.isAssignableFrom(clazz))
 			throw new IllegalArgumentException("Class must implement the Iterable interface.");
 
 		this.type = clazz;
 		super.setName(clazz.getSimpleName());
-		
+	
 		final List<ParameterizedType> parameterizedTypes = ReflectUtil.getParameterizedTypesForClass(type);
 		final Set<Class<?>> paramTypes = new HashSet<Class<?>>();
 		for(ParameterizedType parameterizedType:parameterizedTypes) {
@@ -98,23 +100,22 @@ public class IterableClassNode extends MacroNode implements ClassNodeProtocol, N
 		
 		// we only handle one type of iterable object, if there are more default to Object.class
 		final Class<?> genericType = (paramTypes.size() == 1 ? paramTypes.iterator().next() : Object.class);
-		
 		// create a new node inside the graph that show depicts the current value
 		final ContextualItemClassNode node = new ContextualItemClassNode(CURRENT_VALUE_KEY, genericType);
-		final String nodeName = node.getName();
-		
-		if(getGraph().getNodeById(nodeName, false) == null) {
+				
+		if(graph.getVertices().size() == 0) {
 			graph.add(node);
 		}
-		inputValueField = new InputField("value", "input value", clazz);
-		inputValueField.setOptional(true);
+		
+		inputValueField = new InputField("obj", "input value", clazz);
+		inputValueField.setOptional(false);
 		inputValueField.setFixed(true);
 		putField(inputValueField);
 		
-		outputValueField = new OutputField("value", "output value", true, clazz);
+		outputValueField = new OutputField("obj", "output value", true, clazz);
 		putField(outputValueField);
 		
-		final ClassNodeFieldGenerator fieldGenerator = new ClassNodeFieldGenerator();
+		final ObjectNodeFieldGenerator fieldGenerator = new ObjectNodeFieldGenerator();
 		fieldGenerator.scanClass(clazz);
 		classInputs = fieldGenerator.getInputFields();
 		for(InputField inputField:classInputs) putField(inputField);
@@ -122,7 +123,7 @@ public class IterableClassNode extends MacroNode implements ClassNodeProtocol, N
 		classOutputs = fieldGenerator.getOutputFields();
 		for(OutputField outputField:classOutputs) putField(outputField);
 	}
-
+	
 	@Override
 	public void operate(OpContext context) throws ProcessingException {
 		Object obj = context.get(inputValueField);
@@ -137,7 +138,7 @@ public class IterableClassNode extends MacroNode implements ClassNodeProtocol, N
 			}
 		}
 		
-		for(ClassInputField classInput:classInputs) {
+		for(ObjectNodePropertyInputField classInput:classInputs) {
 			final Object val = context.get(classInput);
 			if(val != null) {
 				final Method setMethod = classInput.setMethod;
@@ -171,7 +172,7 @@ public class IterableClassNode extends MacroNode implements ClassNodeProtocol, N
 			}
 		}
 		
-		for(ClassOutputField classOutput:classOutputs) {
+		for(ObjectNodePropertyOutputField classOutput:classOutputs) {
 			try {
 				final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
 				context.put(classOutput, val);
@@ -191,12 +192,17 @@ public class IterableClassNode extends MacroNode implements ClassNodeProtocol, N
 	public Class<?> getDeclaredClass() {
 		return type;
 	}
+	
+	@Override
+	public Member getClassMember() {
+		return null;
+	}
 
 	/*
 	 * NodeSettings
 	 */
 	private final static String CLASSNAME_SETTINGS_KEY = 
-			ClassNode.class.getName() + ".className";
+			ObjectNode.class.getName() + ".className";
 	
 	@Override
 	public Component getComponent(GraphDocument document) {
@@ -218,7 +224,7 @@ public class IterableClassNode extends MacroNode implements ClassNodeProtocol, N
 			final String className = properties.getProperty(CLASSNAME_SETTINGS_KEY, "java.lang.Object");
 			try {
 				final Class<?> clazz = Class.forName(className);
-				setClass(clazz);
+				setDeclaredClass(clazz);
 			} catch (ClassNotFoundException e) {
 				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}

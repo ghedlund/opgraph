@@ -17,7 +17,7 @@ import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.dag.CycleDetectedException;
 import ca.gedge.opgraph.dag.VertexNotFoundException;
 import ca.gedge.opgraph.exceptions.ItemMissingException;
-import ca.gedge.opgraph.nodes.reflect.ClassNode;
+import ca.gedge.opgraph.nodes.reflect.ObjectNode;
 import ca.gedge.opgraph.nodes.reflect.IterableClassNode;
 
 public class ReflectAbandonedLinkHandler implements AbandonedLinkHandler {
@@ -43,14 +43,14 @@ public class ReflectAbandonedLinkHandler implements AbandonedLinkHandler {
 			if(Iterable.class.isAssignableFrom(type)) {
 				newNode = new IterableClassNode(type);
 			} else {
-				newNode = new ClassNode(type);
+				newNode = new ObjectNode(type);
 			}
 
 			final AddNodeEdit addNodeEdit = new AddNodeEdit(document.getGraph(), newNode, p.x, p.y);
 			document.getUndoSupport().postEdit(addNodeEdit);
 			
 			// setup link to new node
-			final InputField inputField = newNode.getInputFieldWithKey("value");
+			final InputField inputField = newNode.getInputFieldWithKey("obj");
 			try {
 				final OpLink link = new OpLink(sourceNode.getNode(), outputField, newNode, inputField);
 				final AddLinkEdit addLinkEdit = new AddLinkEdit(document.getGraph(), link);

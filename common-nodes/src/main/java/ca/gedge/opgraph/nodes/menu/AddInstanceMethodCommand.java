@@ -2,6 +2,7 @@ package ca.gedge.opgraph.nodes.menu;
 
 import java.awt.Component;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -28,8 +29,11 @@ public class AddInstanceMethodCommand extends AbstractAction {
 	private static final Logger LOGGER = Logger
 			.getLogger(AddInstanceMethodCommand.class.getName());
 	
-	public AddInstanceMethodCommand() {
+	private final Point point;
+	
+	public AddInstanceMethodCommand(Point p) {
 		super();
+		this.point = p;
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class AddInstanceMethodCommand extends AbstractAction {
 						final Method selectedMethod = (Method)comboBox.getSelectedItem();
 						
 						final MethodNode node = new MethodNode(selectedMethod);
-						final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), node);
+						final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), node, point.x, point.y);
 						document.getUndoSupport().postEdit(edit);
 					}
 					

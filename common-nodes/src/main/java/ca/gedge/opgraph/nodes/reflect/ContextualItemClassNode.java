@@ -10,7 +10,7 @@ import ca.gedge.opgraph.exceptions.ProcessingException;
  * Node that grabs an instance of the specified class
  * from the current context.
  */
-public class ContextualItemClassNode extends ClassNode {
+public class ContextualItemClassNode extends ObjectNode {
 	
 	private String key;
 
@@ -28,8 +28,8 @@ public class ContextualItemClassNode extends ClassNode {
 	}
 
 	@Override
-	public void setClass(Class<?> clazz) {
-		super.setClass(clazz);
+	public void setDeclaredClass(Class<?> clazz) {
+		super.setDeclaredClass(clazz);
 		removeField(inputValueField);
 	}
 
@@ -42,7 +42,7 @@ public class ContextualItemClassNode extends ClassNode {
 		if(!getDeclaredClass().isInstance(obj)) 
 			throw new ProcessingException("Context value not of correct type.");
 		
-		for(ClassInputField classInput:classInputs) {
+		for(ObjectNodePropertyInputField classInput:classInputs) {
 			final Object val = context.get(classInput);
 			if(val != null) {
 				final Method setMethod = classInput.setMethod;
@@ -58,7 +58,7 @@ public class ContextualItemClassNode extends ClassNode {
 			}
 		}
 		
-		for(ClassOutputField classOutput:classOutputs) {
+		for(ObjectNodePropertyOutputField classOutput:classOutputs) {
 			try {
 				final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
 				context.put(classOutput, val);

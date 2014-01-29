@@ -18,13 +18,13 @@ import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 
 /**
- * Create a new based on the given class definition. Input/output nodes
- * are create for the properties of the class.
+ * Creates a node which provides access to the get/set property methods
+ * of an instance of the declared class.
  */
 @OpNodeInfo(name="ClassNode", category="general", description="", showInLibrary=false)
-public class ClassNode extends OpNode implements ClassNodeProtocol, NodeSettings {
+public class ObjectNode extends AbstractReflectNode {
 
-	private static final Logger LOGGER = Logger.getLogger(ClassNode.class
+	private static final Logger LOGGER = Logger.getLogger(ObjectNode.class
 			.getName());
 	
 	/** Input field for the value */
@@ -34,38 +34,39 @@ public class ClassNode extends OpNode implements ClassNodeProtocol, NodeSettings
 	protected OutputField outputValueField;
 	
 	/** List of scanned input fields from class */
-	protected List<ClassInputField> classInputs;
+	protected List<ObjectNodePropertyInputField> classInputs;
 	
 	/** List of scanned output fields from class */
-	protected List<ClassOutputField> classOutputs;
+	protected List<ObjectNodePropertyOutputField> classOutputs;
 	
 	private Class<?> type;
 	
-	public ClassNode() {
+	public ObjectNode() {
 		super();
 		putExtension(NodeSettings.class, this);
 	}
 	
-	public ClassNode(Class<?> clazz) {
+	public ObjectNode(Class<?> clazz) {
 		super();
-		setClass(clazz);
+		setDeclaredClass(clazz);
 		putExtension(NodeSettings.class, this);
 	}
 	
-	public void setClass(Class<?> clazz) {
+	public void setDeclaredClass(Class<?> clazz) {
+		super.setDeclaredClass(clazz);
 		super.setName(clazz.getSimpleName());
 		
 		this.type = clazz;
 		
-		inputValueField = new InputField("value", "input value", clazz);
-		inputValueField.setOptional(true);
+		inputValueField = new InputField("obj", "object instance", clazz);
+		inputValueField.setOptional(false);
 		inputValueField.setFixed(true);
 		putField(inputValueField);
 		
-		outputValueField = new OutputField("value", "output value", true, clazz);
+		outputValueField = new OutputField("obj", "object instance", true, clazz);
 		putField(outputValueField);
 		
-		final ClassNodeFieldGenerator fieldGenerator = new ClassNodeFieldGenerator();
+		final ObjectNodeFieldGenerator fieldGenerator = new ObjectNodeFieldGenerator();
 		fieldGenerator.scanClass(clazz);
 		classInputs = fieldGenerator.getInputFields();
 		for(InputField inputField:classInputs) putField(inputField);
@@ -82,18 +83,11 @@ public class ClassNode extends OpNode implements ClassNodeProtocol, NodeSettings
 	@Override
 	public void operate(OpContext context) throws ProcessingException {
 		Object obj = context.get(inputValueField);
-		if(obj == null) {
-			// attempt to instantiate a new object
-			try {
-				obj = type.newInstance();
-			} catch (InstantiationException e) {
-				throw new ProcessingException(e);
-			} catch (IllegalAccessException e) {
-				throw new ProcessingException(e);
-			}
-		}
 		
-		for(ClassInputField classInput:classInputs) {
+		if(obj == null)
+			throw new ProcessingException(new NullPointerException(inputValueField.getKey()));
+		
+		for(ObjectNodePropertyInputField classInput:classInputs) {
 			final Object val = context.get(classInput);
 			if(val != null) {
 				final Method setMethod = classInput.setMethod;
@@ -109,7 +103,7 @@ public class ClassNode extends OpNode implements ClassNodeProtocol, NodeSettings
 			}
 		}
 		
-		for(ClassOutputField classOutput:classOutputs) {
+		for(ObjectNodePropertyOutputField classOutput:classOutputs) {
 			try {
 				final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
 				context.put(classOutput, val);
@@ -125,38 +119,4 @@ public class ClassNode extends OpNode implements ClassNodeProtocol, NodeSettings
 		context.put(outputValueField, obj);
 	}
 
-	/*
-	 * NodeSettings
-	 */
-	
-	private final static String CLASSNAME_SETTINGS_KEY = 
-			ClassNode.class.getName() + ".className";
-	
-	@Override
-	public Component getComponent(GraphDocument document) {
-		return null;
-	}
-
-	@Override
-	public Properties getSettings() {
-		final Properties retVal = new Properties();
-		if(type != null) {
-			retVal.put(CLASSNAME_SETTINGS_KEY, type.getName());
-		}
-		return retVal;
-	}
-
-	@Override
-	public void loadSettings(Properties properties) {
-		if(properties.containsKey(CLASSNAME_SETTINGS_KEY)) {
-			final String className = properties.getProperty(CLASSNAME_SETTINGS_KEY, "java.lang.Object");
-			try {
-				final Class<?> clazz = Class.forName(className);
-				setClass(clazz);
-			} catch (ClassNotFoundException e) {
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-		}
-	}
-	
 }

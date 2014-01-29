@@ -1,6 +1,7 @@
 package ca.gedge.opgraph.nodes.menu;
 
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Method;
 import java.util.logging.Logger;
@@ -19,9 +20,12 @@ public class AddMethodCommand extends AbstractAction {
 	
 	private final Method method;
 	
-	public AddMethodCommand(Method method) {
+	private final Point point;
+	
+	public AddMethodCommand(Method method, Point p) {
 		super();
 		this.method = method;
+		this.point = p;
 		putValue(NAME, ReflectUtil.getSignature(method));
 	}
 
@@ -33,7 +37,7 @@ public class AddMethodCommand extends AbstractAction {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			final MethodNode methodNode = new MethodNode(method);
-			final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), methodNode);
+			final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), methodNode, point.x, point.y);
 			document.getUndoSupport().postEdit(edit);
 		}
 	}

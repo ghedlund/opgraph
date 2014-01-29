@@ -104,7 +104,6 @@ public class MethodNode extends OpNode implements NodeSettings {
 	
 	@Override
 	public Component getComponent(GraphDocument document) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

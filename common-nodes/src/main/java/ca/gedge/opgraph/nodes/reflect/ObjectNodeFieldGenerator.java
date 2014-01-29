@@ -9,21 +9,21 @@ import java.util.List;
  * Class used to add input/output fields based on 
  * class definitions.
  */
-public class ClassNodeFieldGenerator {
+public class ObjectNodeFieldGenerator {
 	
-	private final List<ClassInputField> inputFields = new ArrayList<ClassInputField>();
+	private final List<ObjectNodePropertyInputField> inputFields = new ArrayList<ObjectNodePropertyInputField>();
 	
-	private final List<ClassOutputField> outputFields = new ArrayList<ClassOutputField>();
+	private final List<ObjectNodePropertyOutputField> outputFields = new ArrayList<ObjectNodePropertyOutputField>();
 	
-	public ClassNodeFieldGenerator() {
+	public ObjectNodeFieldGenerator() {
 		super();
 	}
 
-	public List<ClassInputField> getInputFields() {
+	public List<ObjectNodePropertyInputField> getInputFields() {
 		return inputFields;
 	}
 
-	public List<ClassOutputField> getOutputFields() {
+	public List<ObjectNodePropertyOutputField> getOutputFields() {
 		return outputFields;
 	}
 	
@@ -43,8 +43,8 @@ public class ClassNodeFieldGenerator {
 	 * 
 	 * @return outputs
 	 */
-	private List<ClassOutputField> scanClassGetters(Class<?> clazz) {
-		final List<ClassOutputField> retVal = new ArrayList<ClassOutputField>();
+	private List<ObjectNodePropertyOutputField> scanClassGetters(Class<?> clazz) {
+		final List<ObjectNodePropertyOutputField> retVal = new ArrayList<ObjectNodePropertyOutputField>();
 		final Method[] methods = clazz.getMethods();
 		
 		for(Method method:methods) {
@@ -71,7 +71,7 @@ public class ClassNodeFieldGenerator {
 				outputType = wrapperClassForPrimitive(outputType);
 			}
 			
-			final ClassOutputField outputField = new ClassOutputField(propName, "", outputType, method);
+			final ObjectNodePropertyOutputField outputField = new ObjectNodePropertyOutputField(propName, "", outputType, method);
 			outputField.setFixed(true);
 //			putField(outputField);
 			retVal.add(outputField);
@@ -79,8 +79,8 @@ public class ClassNodeFieldGenerator {
 		return retVal;
 	}
 	
-	private List<ClassInputField> scanClassSetters(Class<?> clazz) {
-		final List<ClassInputField> retVal = new ArrayList<ClassInputField>();
+	private List<ObjectNodePropertyInputField> scanClassSetters(Class<?> clazz) {
+		final List<ObjectNodePropertyInputField> retVal = new ArrayList<ObjectNodePropertyInputField>();
 		final Method[] methods = clazz.getMethods();
 		for(Method method:methods) {
 			if(method.getName().startsWith("set")
@@ -93,7 +93,7 @@ public class ClassNodeFieldGenerator {
 					inputType = wrapperClassForPrimitive(inputType);
 				}
 				
-				final ClassInputField propField = new ClassInputField(propName, "", inputType, method);
+				final ObjectNodePropertyInputField propField = new ObjectNodePropertyInputField(propName, "", inputType, method);
 				propField.setOptional(true);
 //				putField(propField);
 				retVal.add(propField);

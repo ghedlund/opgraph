@@ -2,6 +2,7 @@ package ca.gedge.opgraph.nodes.menu;
 
 import java.awt.Component;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -23,7 +24,7 @@ import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
-import ca.gedge.opgraph.nodes.reflect.ClassNode;
+import ca.gedge.opgraph.nodes.reflect.ObjectNode;
 import ca.gedge.opgraph.nodes.reflect.ConstructorNode;
 import ca.gedge.opgraph.nodes.reflect.IterableClassNode;
 import ca.gedge.opgraph.util.ReflectUtil;
@@ -35,8 +36,11 @@ public class AddObjectCommand extends AbstractAction {
 
 	private static final long serialVersionUID = -2443166989357102209L;
 
-	public AddObjectCommand() {
+	private final Point point;
+	
+	public AddObjectCommand(Point p) {
 		super();
+		this.point = p;
 		putValue(ACCELERATOR_KEY, 
 				KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | KeyEvent.VK_ALT));
 	}
@@ -92,7 +96,7 @@ public class AddObjectCommand extends AbstractAction {
 //						}
 						
 						final ConstructorNode node = new ConstructorNode(selectedConstructor);
-						final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), node);
+						final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), node, point.x, point.y);
 						document.getUndoSupport().postEdit(edit);
 					} catch (ClassNotFoundException e) {
 						LOGGER.log(Level.SEVERE, e.getLocalizedMessage(),

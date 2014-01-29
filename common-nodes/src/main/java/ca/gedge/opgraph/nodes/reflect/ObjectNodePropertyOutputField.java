@@ -4,11 +4,11 @@ import java.lang.reflect.Method;
 
 import ca.gedge.opgraph.OutputField;
 
-class ClassOutputField extends OutputField {
+class ObjectNodePropertyOutputField extends OutputField {
 	
 	final Method getMethod;
 	
-	public ClassOutputField(String key, String description, Class<?> type, Method method) {
+	public ObjectNodePropertyOutputField(String key, String description, Class<?> type, Method method) {
 		super(key, description, false, type);
 		this.getMethod = method;
 	}

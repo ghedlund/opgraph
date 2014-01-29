@@ -18,6 +18,10 @@
  */
 package ca.gedge.opgraph.app.components;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+
 import javax.swing.JEditorPane;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
@@ -27,6 +31,7 @@ import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.Processor;
+import ca.gedge.opgraph.exceptions.ProcessingException;
 
 /**
  * A component to show inputs and output values from a node's {@link OpContext}.
@@ -113,6 +118,20 @@ public class ContextViewerPanel extends JEditorPane {
 			if(context != null) {
 				final StringBuilder sb = new StringBuilder();
 				sb.append("<html><body>");
+				
+				// check for error
+				final ProcessingException processException = processor.getError();
+				if(processException != null) {
+					final ByteArrayOutputStream out = new ByteArrayOutputStream();
+					final PrintStream ps = new PrintStream(out);
+					processException.printStackTrace(ps);
+					sb.append("<h1 style='color:red;'>Error</h1>");
+					try {
+						sb.append("<p>Stack Trace:<pre>" + new String(out.toByteArray(), "UTF-8") + "</pre></p>");
+					} catch (UnsupportedEncodingException e) {
+					}
+				}
+				
 				sb.append("Inputs:<ul>");
 				for(InputField field : node.getInputFields()) {
 					sb.append("<li><b>");

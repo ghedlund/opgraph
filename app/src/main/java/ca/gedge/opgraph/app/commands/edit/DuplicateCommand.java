@@ -39,6 +39,7 @@ import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.edits.graph.AddLinkEdit;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.app.extensions.NodeMetadata;
@@ -50,7 +51,7 @@ import ca.gedge.opgraph.exceptions.ItemMissingException;
 /**
  * Duplicate selected nodes within a graph.
  */
-public class DuplicateCommand extends AbstractAction {
+public class DuplicateCommand extends HookableCommand {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(DuplicateCommand.class.getName());
 
@@ -67,7 +68,7 @@ public class DuplicateCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent ae) {
+	public void hookableActionPerformed(ActionEvent ae) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			// Check to make sure the clipboard has something we can paste

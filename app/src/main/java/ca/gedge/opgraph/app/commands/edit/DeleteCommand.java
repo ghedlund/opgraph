@@ -27,13 +27,14 @@ import javax.swing.KeyStroke;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 import ca.gedge.opgraph.app.edits.graph.DeleteNodesEdit;
 
 /**
  * Deletes selected nodes in a {@link GraphCanvas}.
  */
-public class DeleteCommand extends AbstractAction {
+public class DeleteCommand extends HookableCommand {
 	/**
 	 * Default constructor.
 	 */
@@ -47,7 +48,7 @@ public class DeleteCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			final Collection<OpNode> nodes = document.getSelectionModel().getSelectedNodes();

@@ -30,12 +30,13 @@ import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.IconLibrary;
 import ca.gedge.opgraph.app.IconLibrary.IconType;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 
 /**
  * A command that steps the processing context of the active editor. If the
  * active editor has no context, one is created.
  */
-public class StepIntoCommand extends AbstractAction {
+public class StepIntoCommand extends HookableCommand {
 	/**
 	 * Constructs a step command.
 	 */
@@ -43,7 +44,7 @@ public class StepIntoCommand extends AbstractAction {
 		super("Step Into");
 
 		final int CTRL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, CTRL));
+		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.ALT_MASK));
 		putValue(SMALL_ICON, IconLibrary.getIcon(IconType.DEBUG_STEP, 16, 16));
 	}
 
@@ -52,7 +53,7 @@ public class StepIntoCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			Processor context = document.getProcessingContext();

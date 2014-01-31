@@ -26,6 +26,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -37,15 +40,17 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.components.ErrorDialog;
 import ca.gedge.opgraph.io.OpGraphSerializer;
 import ca.gedge.opgraph.io.OpGraphSerializerFactory;
 import ca.gedge.opgraph.io.OpGraphSerializerInfo;
+import ca.gedge.opgraph.util.DefaultServiceDiscovery;
 
 /**
  * A command that saves the active graph and saves it to disk.
  */
-public class SaveCommand extends AbstractAction {
+public class SaveCommand extends HookableCommand {
 	private static final Logger LOGGER = Logger.getLogger(SaveCommand.class.getName());
 
 	/** Whether or not to force the save dialog */
@@ -78,7 +83,7 @@ public class SaveCommand extends AbstractAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			File saveFile = document.getSource();

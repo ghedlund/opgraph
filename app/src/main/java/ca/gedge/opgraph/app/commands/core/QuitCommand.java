@@ -31,10 +31,12 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.KeyStroke;
 
+import ca.gedge.opgraph.app.commands.HookableCommand;
+
 /**
  * A command to quit the application.
  */
-public class QuitCommand extends AbstractAction {
+public class QuitCommand extends HookableCommand {
 	/**
 	 * Constructs a quit command.
 	 */
@@ -46,7 +48,7 @@ public class QuitCommand extends AbstractAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		// Post closing event for frames, so frames can respond
 		for(Frame frame : Frame.getFrames()) {
 			final WindowEvent wev = new WindowEvent(frame, WindowEvent.WINDOW_CLOSING);

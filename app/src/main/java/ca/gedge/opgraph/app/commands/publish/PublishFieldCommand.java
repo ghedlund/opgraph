@@ -35,6 +35,7 @@ import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.edits.graph.RemoveLinkEdit;
 import ca.gedge.opgraph.app.edits.node.PublishFieldEdit;
 import ca.gedge.opgraph.extensions.Publishable;
@@ -42,7 +43,7 @@ import ca.gedge.opgraph.extensions.Publishable;
 /**
  * A command to publish a field in a node.
  */
-class PublishFieldCommand extends AbstractAction {
+class PublishFieldCommand extends HookableCommand {
 	/** The publishable object */
 	private Publishable publishable;
 
@@ -134,7 +135,7 @@ class PublishFieldCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		boolean isPublishing = true;
 		if((field instanceof InputField) && publishable.getPublishedInput(node, (InputField)field) != null)
 			isPublishing = false;

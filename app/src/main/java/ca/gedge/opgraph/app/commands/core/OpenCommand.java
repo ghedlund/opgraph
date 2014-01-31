@@ -34,6 +34,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.components.ErrorDialog;
 import ca.gedge.opgraph.io.OpGraphSerializer;
 import ca.gedge.opgraph.io.OpGraphSerializerFactory;
@@ -42,7 +43,7 @@ import ca.gedge.opgraph.io.OpGraphSerializerInfo;
 /**
  * A command which loads a graph from file.
  */
-public class OpenCommand extends AbstractAction {
+public class OpenCommand extends HookableCommand {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(OpenCommand.class.getName());
 
@@ -60,7 +61,7 @@ public class OpenCommand extends AbstractAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		// Get the serializer
 		final OpGraphSerializer serializer = OpGraphSerializerFactory.getDefaultSerializer();
 		if(serializer == null) {

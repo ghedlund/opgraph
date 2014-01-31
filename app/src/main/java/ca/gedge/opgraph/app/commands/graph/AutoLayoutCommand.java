@@ -27,13 +27,14 @@ import javax.swing.KeyStroke;
 
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 import ca.gedge.opgraph.app.edits.graph.AutoLayoutEdit;
 
 /**
  * A command for performing automatic layout of the active canvas' nodes.
  */
-public class AutoLayoutCommand extends AbstractAction {
+public class AutoLayoutCommand extends HookableCommand {
 	/**
 	 * Constructs a move command that moves the current node selection in the
 	 * given graph canvas, with this edit posted in the given undo manager.
@@ -50,7 +51,7 @@ public class AutoLayoutCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null)
 			document.getUndoSupport().postEdit(new AutoLayoutEdit(document.getGraph()));

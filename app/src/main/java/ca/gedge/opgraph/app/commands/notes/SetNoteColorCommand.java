@@ -26,15 +26,17 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
+
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.edits.notes.SetNoteColorEdit;
 import ca.gedge.opgraph.app.extensions.Note;
 
 /**
  * Sets the color of a note.
  */
-public class SetNoteColorCommand extends AbstractAction {
+public class SetNoteColorCommand extends HookableCommand {
 	/** The initial x-coordinate for the note */
 	private Note note;
 
@@ -76,7 +78,7 @@ public class SetNoteColorCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null)
 			document.getUndoSupport().postEdit(new SetNoteColorEdit(note, color));

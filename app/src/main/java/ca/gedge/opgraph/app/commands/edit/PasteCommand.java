@@ -42,6 +42,7 @@ import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.edits.graph.AddLinkEdit;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.app.extensions.NodeMetadata;
@@ -53,7 +54,7 @@ import ca.gedge.opgraph.exceptions.ItemMissingException;
 /**
  * Paste copied nodes (if any) from the system clipboard into the current graph.
  */
-public class PasteCommand extends AbstractAction {
+public class PasteCommand extends HookableCommand {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(PasteCommand.class.getName());
 
@@ -70,7 +71,7 @@ public class PasteCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		if(GraphicsEnvironment.isHeadless())
 			return;
 

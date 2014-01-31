@@ -27,12 +27,13 @@ import javax.swing.KeyStroke;
 
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 
 /**
  * Selects all nodes in the active document's {@link GraphCanvas}.
  */
-public class SelectAllCommand extends AbstractAction {
+public class SelectAllCommand extends HookableCommand {
 	/**
 	 * Default constructor.
 	 */
@@ -46,7 +47,7 @@ public class SelectAllCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null)
 			document.getSelectionModel().setSelectedNodes(document.getGraph().getVertices());

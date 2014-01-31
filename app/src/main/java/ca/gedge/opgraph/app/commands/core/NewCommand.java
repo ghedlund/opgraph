@@ -21,17 +21,19 @@ package ca.gedge.opgraph.app.commands.core;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.KeyStroke;
 
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 
 /**
  * A command which resets the editor state to an empty graph.
  */
-public class NewCommand extends AbstractAction {
+public class NewCommand extends HookableCommand {
 	/**
 	 * Constructs a new command.
 	 */
@@ -43,7 +45,7 @@ public class NewCommand extends AbstractAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null)
 			document.reset(null, null);

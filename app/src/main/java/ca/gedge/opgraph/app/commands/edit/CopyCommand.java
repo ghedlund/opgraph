@@ -33,13 +33,14 @@ import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.dag.CycleDetectedException;
 import ca.gedge.opgraph.dag.VertexNotFoundException;
 
 /**
  * Copy selected nodes to system clipboard.
  */
-public class CopyCommand extends AbstractAction {
+public class CopyCommand extends HookableCommand {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(CopyCommand.class.getName());
 
@@ -52,7 +53,7 @@ public class CopyCommand extends AbstractAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		if(GraphicsEnvironment.isHeadless())
 			return;
 

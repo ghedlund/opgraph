@@ -27,10 +27,12 @@ import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import javax.swing.undo.UndoManager;
 
+import ca.gedge.opgraph.app.commands.HookableCommand;
+
 /**
  * Sends a redo command to a given {@link UndoManager}.
  */
-public class RedoCommand extends AbstractAction {
+public class RedoCommand extends HookableCommand {
 	/** The undo manager to send undo commands to */
 	private UndoManager manager;
 
@@ -61,7 +63,7 @@ public class RedoCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		if(manager.canRedo())
 			manager.redo();
 	}

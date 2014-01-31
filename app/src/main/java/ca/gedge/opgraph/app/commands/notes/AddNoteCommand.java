@@ -19,16 +19,19 @@
 package ca.gedge.opgraph.app.commands.notes;
 
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
+
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.edits.notes.AddNoteEdit;
 import ca.gedge.opgraph.app.extensions.Notes;
 
 /**
  * A command for adding a note to the active model.
  */
-public class AddNoteCommand extends AbstractAction {
+public class AddNoteCommand extends HookableCommand {
 	/** The initial x-coordinate for the note */
 	private int x;
 
@@ -59,7 +62,7 @@ public class AddNoteCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null && document.getGraph() != null) {
 			final Notes notes = document.getGraph().getExtension(Notes.class);

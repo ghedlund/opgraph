@@ -30,11 +30,12 @@ import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.IconLibrary;
 import ca.gedge.opgraph.app.IconLibrary.IconType;
+import ca.gedge.opgraph.app.commands.HookableCommand;
 
 /**
  * A command that runs the operation of the graph in the active editor.
  */
-public class RunCommand extends AbstractAction {
+public class RunCommand extends HookableCommand {
 	/**
 	 * Constructs a run command.
 	 */
@@ -51,7 +52,7 @@ public class RunCommand extends AbstractAction {
 	//
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			Processor context = document.getProcessingContext();

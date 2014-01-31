@@ -86,7 +86,7 @@ public class PublishedFieldXMLSerializer implements XMLSerializer {
 			final PublishedOutput field = (PublishedOutput)obj;
 
 			// Only write if field is non-fixed, or fixed but with extensions
-			final Element fieldElem = doc.createElementNS(NAMESPACE, PREFIX + ":" + INPUT_QNAME.getLocalPart());
+			final Element fieldElem = doc.createElementNS(NAMESPACE, PREFIX + ":" + OUTPUT_QNAME.getLocalPart());
 			fieldElem.setAttribute("name", field.getKey());
 			fieldElem.setAttribute("ref", field.sourceNode.getId());
 			fieldElem.setAttribute("field", field.nodeOutputField.getKey());

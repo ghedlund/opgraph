@@ -16,8 +16,6 @@ public class ReflectNodeMenuProvider implements MenuProvider {
 
 	@Override
 	public void installItems(GraphEditorModel model, PathAddressableMenu menu) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

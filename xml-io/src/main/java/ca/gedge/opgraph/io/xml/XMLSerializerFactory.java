@@ -115,7 +115,8 @@ public final class XMLSerializerFactory implements OpGraphSerializer {
 				final BufferedReader br = new BufferedReader(new InputStreamReader(schemaListURL.openStream()));
 				String line = null;
 				while((line = br.readLine()) != null)
-					schemas.addAll( ServiceDiscovery.getInstance().findResources("META-INF/schemas/" + line) );
+					if(line.trim().length() > 0)
+						schemas.addAll( ServiceDiscovery.getInstance().findResources("META-INF/schemas/" + line) );
 			}
 
 			// Load up extension schemas

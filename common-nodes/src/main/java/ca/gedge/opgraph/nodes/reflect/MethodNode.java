@@ -47,7 +47,7 @@ public class MethodNode extends AbstractReflectNode {
 		if(classMember instanceof Method) {
 			super.setDeclaredClass(classMember.getDeclaringClass());
 			super.setClassMember(classMember);
-			setMethod(method);
+			setMethod((Method)classMember);
 		}
 	}
 

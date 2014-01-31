@@ -271,7 +271,7 @@ public class Processor {
 			setupInputs(currentNode, localContext);
 
 			Boolean enabled = (Boolean)localContext.get(OpNode.ENABLED_FIELD);
-			if(enabled == null || enabled == Boolean.TRUE)
+			if(enabled == null || enabled)
 				currentNode.operate(localContext);
 
 			if(!hasNext() && customProcessor != null)

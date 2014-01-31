@@ -291,7 +291,11 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 			incomingEdgesCache.put(vertex, new SoftReference<Set<E>>(cachedValue));
 		}
 
-		return new TreeSet<E>(incomingEdgesCache.get(vertex).get());
+		final SoftReference<Set<E>> setRef = incomingEdgesCache.get(vertex);
+		if(setRef != null && setRef.get() != null)
+			return new TreeSet<E>(setRef.get());
+		else
+			return new TreeSet<E>();
 	}
 
 	/**
@@ -317,7 +321,11 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 			outgoingEdgesCache.put(vertex, new SoftReference<Set<E>>(cachedValue));
 		}
 
-		return new TreeSet<E>(outgoingEdgesCache.get(vertex).get());
+		final SoftReference<Set<E>> setRef = outgoingEdgesCache.get(vertex);
+		if(setRef != null && setRef.get() != null) 
+			return new TreeSet<E>(setRef.get());
+		else
+			return new TreeSet<E>();
 	}
 
 	@Override

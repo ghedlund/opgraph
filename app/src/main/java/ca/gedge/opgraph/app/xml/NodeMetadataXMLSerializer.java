@@ -118,16 +118,17 @@ public class NodeMetadataXMLSerializer implements XMLSerializer {
 					try {
 						boolean parsed = false;
 						final Class<?> valueClass = Class.forName(valueTypeClassName);
-						for(Method method : valueClass.getMethods()) {
-							if(/*valueClass.isAssignableFrom(method.getReturnType())
-							   &&*/ Modifier.isStatic(method.getModifiers())
-							   && method.getParameterTypes().length == 1
-							   && method.getParameterTypes()[0] == String.class
-							   && method.getName().startsWith("parse"))
-							{
-								meta.setDefault(field, method.invoke(null, valueString));
+						
+						if(valueClass == String.class) {
+							meta.setDefault(field, valueString);
+							parsed = true;
+						} else {
+							final String parseMethodName = "parse" + valueClass.getSimpleName();
+							final Method parseMethod = valueClass.getMethod(parseMethodName, String.class);
+							
+							if(parseMethod != null && Modifier.isStatic(parseMethod.getModifiers())) {
+								meta.setDefault(field, parseMethod.invoke(null, valueString));
 								parsed = true;
-								break;
 							}
 						}
 
@@ -140,6 +141,10 @@ public class NodeMetadataXMLSerializer implements XMLSerializer {
 					} catch(IllegalAccessException exc) {
 						throw new Error("Couldn't parse default value", exc);
 					} catch(InvocationTargetException exc) {
+						throw new Error("Couldn't parse default value", exc);
+					} catch (SecurityException exc) {
+						throw new Error("Couldn't parse default value", exc);
+					} catch (NoSuchMethodException exc) {
 						throw new Error("Couldn't parse default value", exc);
 					}
 				}

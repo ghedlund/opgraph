@@ -252,4 +252,35 @@ public class ReflectUtil {
 		return retVal;
 	}
 	
+	/**
+	 * Return the wrapper type for the given primitive type.
+	 * 
+	 * @param type
+	 * @return wrapper type or the given type if it is not
+	 *  a primitive type
+	 */
+	public static Class<?> wrapperClassForPrimitive(Class<?> primitive) {
+		Class<?> retVal = primitive;
+		
+		if(primitive == boolean.class) {
+			retVal = Boolean.class;
+		} else if(primitive == char.class) {
+			retVal = Character.class;
+		} else if(primitive == byte.class) {
+			retVal = Byte.class;
+		} else if(primitive  == short.class) {
+			retVal = Short.class;
+		} else if(primitive == int.class) {
+			retVal = Integer.class;
+		} else if(primitive == long.class) {
+			retVal = Long.class;
+		} else if(primitive == float.class) {
+			retVal = Float.class;
+		} else if(primitive == double.class) {
+			retVal = Double.class;
+		}
+		
+		return retVal;
+	}
+	
 }

@@ -2,6 +2,7 @@ package ca.gedge.opgraph.nodes.reflect;
 
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 import ca.gedge.opgraph.util.ReflectUtil;
 
-public class MethodNode extends OpNode implements NodeSettings {
+public class MethodNode extends AbstractReflectNode {
 	
 	private static final Logger LOGGER = Logger
 			.getLogger(MethodNode.class.getName());
@@ -34,21 +35,29 @@ public class MethodNode extends OpNode implements NodeSettings {
 	
 	public MethodNode() {
 		super();
-		putExtension(NodeSettings.class, this);
 	}
 	
 	public MethodNode(Method method) {
-		setMethod(method);
-		putExtension(NodeSettings.class, this);
+		super();
+		setClassMember(method);
 	}
 	
+	@Override
+	public void setClassMember(Member classMember) {
+		if(classMember instanceof Method) {
+			super.setDeclaredClass(classMember.getDeclaringClass());
+			super.setClassMember(classMember);
+			setMethod(method);
+		}
+	}
+
 	public void setMethod(Method method) {
 		this.method = method;
 		super.setName(method.getDeclaringClass().getSimpleName() + "#" + ReflectUtil.getSignature(method));
 		// optional object instance
 		final Class<?> inputObjType = method.getDeclaringClass();
 		objField = new InputField("obj", "The object instance", inputObjType);
-		objField.setOptional(true);
+		objField.setOptional(false);
 		putField(objField);
 		
 		// setup parameters as inputs
@@ -62,7 +71,11 @@ public class MethodNode extends OpNode implements NodeSettings {
 		}
 		
 		if(method.getReturnType() != null && method.getReturnType() != void.class) {
-			outputField = new OutputField("value", "return value of method", false, method.getReturnType());
+			Class<?> returnType = method.getReturnType();
+			if(returnType.isPrimitive()) {
+				returnType = ReflectUtil.wrapperClassForPrimitive(returnType);
+			}
+			outputField = new OutputField("value", "return value of method", true, returnType);
 			putField(outputField);
 		}
 	}
@@ -94,49 +107,5 @@ public class MethodNode extends OpNode implements NodeSettings {
 			return retVal;
 	}
 
-	/*
-	 * NodeSettings
-     */
-	private final static String CLASSNAME_SETTINGS_KEY =
-			ConstructorNode.class.getName() + ".className";
-	private final static String METHOD_SIGNATURE_KEY  =
-			ConstructorNode.class.getName() + ".methodSig";
-	
-	@Override
-	public Component getComponent(GraphDocument document) {
-		return null;
-	}
-
-	@Override
-	public Properties getSettings() {
-		final Properties retVal = new Properties();
-		if(method != null) {
-			final String className = method.getDeclaringClass().getName();
-			final String methodSig = ReflectUtil.getSignature(method, true);
-			
-			retVal.put(CLASSNAME_SETTINGS_KEY, className);
-			retVal.put(METHOD_SIGNATURE_KEY, methodSig);
-		}
-		return retVal;
-	}
-
-	@Override
-	public void loadSettings(Properties properties) {
-		if(properties.containsKey(CLASSNAME_SETTINGS_KEY) &&
-				properties.containsKey(METHOD_SIGNATURE_KEY)) {
-			final String className = properties.getProperty(CLASSNAME_SETTINGS_KEY, "java.lang.Object");
-			final String methodSig = properties.getProperty(METHOD_SIGNATURE_KEY, "toString()");
-			
-			try {
-				setMethod(ReflectUtil.getMethodFromSignature(Class.forName(className), methodSig));
-			} catch (SecurityException e) {
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			} catch (ClassNotFoundException e) {
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			} catch (NoSuchMethodException e) {
-				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
-		}
-	}
-
 }
+

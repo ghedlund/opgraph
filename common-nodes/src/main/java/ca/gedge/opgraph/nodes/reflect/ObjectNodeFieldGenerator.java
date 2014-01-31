@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ca.gedge.opgraph.util.ReflectUtil;
+
 /**
  * Class used to add input/output fields based on 
  * class definitions.
@@ -68,7 +70,7 @@ public class ObjectNodeFieldGenerator {
 			if(propName == null || propName.length() == 0 || propName.equals("class")) continue;
 			
 			if(outputType.isPrimitive()) {
-				outputType = wrapperClassForPrimitive(outputType);
+				outputType = ReflectUtil.wrapperClassForPrimitive(outputType);
 			}
 			
 			final ObjectNodePropertyOutputField outputField = new ObjectNodePropertyOutputField(propName, "", outputType, method);
@@ -90,7 +92,7 @@ public class ObjectNodeFieldGenerator {
 				
 				Class<?> inputType = method.getParameterTypes()[0];
 				if(inputType.isPrimitive()) {
-					inputType = wrapperClassForPrimitive(inputType);
+					inputType = ReflectUtil.wrapperClassForPrimitive(inputType);
 				}
 				
 				final ObjectNodePropertyInputField propField = new ObjectNodePropertyInputField(propName, "", inputType, method);
@@ -99,30 +101,6 @@ public class ObjectNodeFieldGenerator {
 				retVal.add(propField);
 			}
 		}
-		return retVal;
-	}
-	
-	private Class<?> wrapperClassForPrimitive(Class<?> primitive) {
-		Class<?> retVal = null;
-		
-		if(primitive == boolean.class) {
-			retVal = Boolean.class;
-		} else if(primitive == char.class) {
-			retVal = Character.class;
-		} else if(primitive == byte.class) {
-			retVal = Byte.class;
-		} else if(primitive  == short.class) {
-			retVal = Short.class;
-		} else if(primitive == int.class) {
-			retVal = Integer.class;
-		} else if(primitive == long.class) {
-			retVal = Long.class;
-		} else if(primitive == float.class) {
-			retVal = Float.class;
-		} else if(primitive == double.class) {
-			retVal = Double.class;
-		}
-		
 		return retVal;
 	}
 	

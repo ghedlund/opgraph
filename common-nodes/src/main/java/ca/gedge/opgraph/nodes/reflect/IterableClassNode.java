@@ -202,7 +202,7 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 	 * NodeSettings
 	 */
 	private final static String CLASSNAME_SETTINGS_KEY = 
-			ObjectNode.class.getName() + ".className";
+			IterableClassNode.class.getName() + ".className";
 	
 	@Override
 	public Component getComponent(GraphDocument document) {

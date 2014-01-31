@@ -24,18 +24,17 @@ public class FieldNode extends AbstractReflectNode {
 	
 	public FieldNode() {
 		super();
-		putExtension(NodeSettings.class, this);
 	}
 	
 	public FieldNode(Field field) {
 		super();
-		setField(field);
-		putExtension(NodeSettings.class, this);
+		setClassMember(field);
 	}
 	
 	@Override
 	public void setClassMember(Member member) {
 		if(member instanceof Field) {
+			super.setDeclaredClass(member.getDeclaringClass());
 			super.setClassMember(member);
 			setField((Field)member);
 		}

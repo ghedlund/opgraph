@@ -2,6 +2,7 @@ package ca.gedge.opgraph.nodes.reflect;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Properties;
 
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.exceptions.ProcessingException;
@@ -72,6 +73,24 @@ public class ContextualItemClassNode extends ObjectNode {
 		}
 		
 		context.put(outputValueField, obj);
+	}
+	
+	private final static String CONTEXT_KEY_PROP = 
+			ContextualItemClassNode.class.getName() + ".key";
+
+	@Override
+	public Properties getSettings() {
+		final Properties retVal = super.getSettings();
+		retVal.put(CONTEXT_KEY_PROP, key);
+		return retVal;
+	}
+
+	@Override
+	public void loadSettings(Properties properties) {
+		super.loadSettings(properties);
+		if(properties.containsKey(CONTEXT_KEY_PROP)) {
+			setKey(properties.getProperty(CONTEXT_KEY_PROP));
+		}
 	}
 	
 }

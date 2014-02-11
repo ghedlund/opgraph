@@ -54,10 +54,10 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	private WeakHashMap<V, Integer> vertexLevels;
 
 	/** A cache of incoming edges */
-	private WeakHashMap<V, SoftReference<Set<E>>> incomingEdgesCache;
+	private WeakHashMap<V, Set<E>> incomingEdgesCache;
 
 	/** A cache of outgoing edges */
-	private WeakHashMap<V, SoftReference<Set<E>>> outgoingEdgesCache;
+	private WeakHashMap<V, Set<E>> outgoingEdgesCache;
 
 	/** Whether or not the topological sorting needs to be performed */
 	private boolean shouldSort;
@@ -69,8 +69,8 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		this.vertices = new ArrayList<V>();
 		this.edges = new TreeSet<E>();
 		this.vertexLevels = new WeakHashMap<V, Integer>();
-		this.incomingEdgesCache = new WeakHashMap<V, SoftReference<Set<E>>>();
-		this.outgoingEdgesCache = new WeakHashMap<V, SoftReference<Set<E>>>();
+		this.incomingEdgesCache = new WeakHashMap<V, Set<E>>();
+		this.outgoingEdgesCache = new WeakHashMap<V, Set<E>>();
 		this.shouldSort = false;
 	}
 
@@ -288,12 +288,12 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 					cachedValue.add(edge);
 			}
 
-			incomingEdgesCache.put(vertex, new SoftReference<Set<E>>(cachedValue));
+			incomingEdgesCache.put(vertex, cachedValue);
 		}
 
-		final SoftReference<Set<E>> setRef = incomingEdgesCache.get(vertex);
-		if(setRef != null && setRef.get() != null)
-			return new TreeSet<E>(setRef.get());
+		final Set<E> set = incomingEdgesCache.get(vertex);
+		if(set != null)
+			return Collections.unmodifiableSet(set);
 		else
 			return new TreeSet<E>();
 	}
@@ -318,14 +318,15 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 					cachedValue.add(edge);
 			}
 
-			outgoingEdgesCache.put(vertex, new SoftReference<Set<E>>(cachedValue));
+			outgoingEdgesCache.put(vertex, cachedValue);
 		}
 
-		final SoftReference<Set<E>> setRef = outgoingEdgesCache.get(vertex);
-		if(setRef != null && setRef.get() != null) 
-			return new TreeSet<E>(setRef.get());
-		else
+		final Set<E> set = outgoingEdgesCache.get(vertex);
+		if(set != null) {
+			return Collections.unmodifiableSet(set);
+		} else {
 			return new TreeSet<E>();
+		}
 	}
 
 	@Override

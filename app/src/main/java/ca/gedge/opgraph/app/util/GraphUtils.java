@@ -18,21 +18,25 @@
  */
 package ca.gedge.opgraph.app.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 
 import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpLink;
 import ca.gedge.opgraph.OpGraph;
+import ca.gedge.opgraph.OpLink;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.app.extensions.NodeMetadata;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.app.extensions.Note;
-import ca.gedge.opgraph.app.extensions.NoteComponent;
 import ca.gedge.opgraph.app.extensions.Notes;
 import ca.gedge.opgraph.dag.CycleDetectedException;
 import ca.gedge.opgraph.dag.VertexNotFoundException;
@@ -41,6 +45,8 @@ import ca.gedge.opgraph.extensions.CompositeNode;
 import ca.gedge.opgraph.extensions.Publishable;
 import ca.gedge.opgraph.extensions.Publishable.PublishedInput;
 import ca.gedge.opgraph.extensions.Publishable.PublishedOutput;
+import ca.gedge.opgraph.io.OpGraphSerializer;
+import ca.gedge.opgraph.io.OpGraphSerializerFactory;
 
 /**
  * Helper methods for graphs.
@@ -66,66 +72,91 @@ public class GraphUtils {
 	public static OpNode cloneNode(OpNode node) {
 		if(node == null)
 			throw new NullPointerException();
-
+		
 		final Class<? extends OpNode> nodeClass = node.getClass();
-		try {
-			final OpNode newNode = nodeClass.newInstance();
-			newNode.setName(node.getName());
-
-			// copy node settings (if available)
-			final NodeSettings nodeSettings = node.getExtension(NodeSettings.class);
-			final NodeSettings newNodeSettings = newNode.getExtension(NodeSettings.class);
-			if(nodeSettings != null && newNodeSettings != null) {
-				newNodeSettings.loadSettings(nodeSettings.getSettings());
+		
+		final OpGraphSerializer serializer = 
+				OpGraphSerializerFactory.getDefaultSerializer();
+		
+		// using the serializer ensure we clone all data necessary
+		// to rebuild the object
+		if(serializer !=  null) {
+			try {
+				final OpGraph tempGraph = new OpGraph();
+				tempGraph.setId("root");
+				tempGraph.add(node);
+				
+				final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+				serializer.write(tempGraph, bout);
+				
+				final ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
+				final OpGraph inGraph = serializer.read(bin);
+				
+				final OpNode clonedNode = inGraph.getVertices().get(0);
+				clonedNode.setId(Long.toHexString(UUID.randomUUID().getMostSignificantBits()));
+				return clonedNode;
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
-
-			// copy meta data (if available)
-			final NodeMetadata metaData = node.getExtension(NodeMetadata.class);
-			if(metaData != null) {
-				final NodeMetadata newMetaData = new NodeMetadata(metaData.getX(), metaData.getY());
-				newNode.putExtension(NodeMetadata.class, newMetaData);
-			}
-
-			// if a composite node, clone graph
-			final CompositeNode compositeNode = node.getExtension(CompositeNode.class);
-			final CompositeNode newCompositeNode = newNode.getExtension(CompositeNode.class);
-			if(compositeNode != null && newCompositeNode != null) {
-				final Map<String, String> nodeMap = new HashMap<String, String>();
-				final OpGraph graph = compositeNode.getGraph();
-				final OpGraph newGraph = cloneGraph(graph, null, nodeMap);
-				newCompositeNode.setGraph(newGraph);
-
-				// setup published fields (if available)
-				final Publishable publishable = node.getExtension(Publishable.class);
-				final Publishable newPublishable = newNode.getExtension(Publishable.class);
-				if(publishable != null && newPublishable != null) {
-					for(PublishedInput pubInput:publishable.getPublishedInputs()) {
-						final OpNode destNode = newGraph.getNodeById(nodeMap.get(pubInput.destinationNode.getId()), false);
-						if(destNode != null) {
-							final InputField destField = destNode.getInputFieldWithKey(pubInput.nodeInputField.getKey());
-							newPublishable.publish(pubInput.getKey(), destNode, destField);
+		} else {
+			try {
+				final OpNode newNode = nodeClass.newInstance();
+				newNode.setName(node.getName());
+	
+				// copy node settings (if available)
+				final NodeSettings nodeSettings = node.getExtension(NodeSettings.class);
+				final NodeSettings newNodeSettings = newNode.getExtension(NodeSettings.class);
+				if(nodeSettings != null && newNodeSettings != null) {
+					newNodeSettings.loadSettings(nodeSettings.getSettings());
+				}
+	
+				// copy meta data (if available)
+				final NodeMetadata metaData = node.getExtension(NodeMetadata.class);
+				if(metaData != null) {
+					final NodeMetadata newMetaData = new NodeMetadata(metaData.getX(), metaData.getY());
+					newNode.putExtension(NodeMetadata.class, newMetaData);
+				}
+	
+				// if a composite node, clone graph
+				final CompositeNode compositeNode = node.getExtension(CompositeNode.class);
+				final CompositeNode newCompositeNode = newNode.getExtension(CompositeNode.class);
+				if(compositeNode != null && newCompositeNode != null) {
+					final Map<String, String> nodeMap = new HashMap<String, String>();
+					final OpGraph graph = compositeNode.getGraph();
+					final OpGraph newGraph = cloneGraph(graph, null, nodeMap);
+					newCompositeNode.setGraph(newGraph);
+	
+					// setup published fields (if available)
+					final Publishable publishable = node.getExtension(Publishable.class);
+					final Publishable newPublishable = newNode.getExtension(Publishable.class);
+					if(publishable != null && newPublishable != null) {
+						for(PublishedInput pubInput:publishable.getPublishedInputs()) {
+							final OpNode destNode = newGraph.getNodeById(nodeMap.get(pubInput.destinationNode.getId()), false);
+							if(destNode != null) {
+								final InputField destField = destNode.getInputFieldWithKey(pubInput.nodeInputField.getKey());
+								newPublishable.publish(pubInput.getKey(), destNode, destField);
+							}
 						}
-					}
-
-					for(PublishedOutput pubOutput:publishable.getPublishedOutputs()) {
-						final OpNode srcNode = newGraph.getNodeById(nodeMap.get(pubOutput.sourceNode.getId()), false);
-						if(srcNode != null) {
-							final OutputField srcField = srcNode.getOutputFieldWithKey(pubOutput.nodeOutputField.getKey());
-							newPublishable.publish(pubOutput.getKey(), srcNode, srcField);
+	
+						for(PublishedOutput pubOutput:publishable.getPublishedOutputs()) {
+							final OpNode srcNode = newGraph.getNodeById(nodeMap.get(pubOutput.sourceNode.getId()), false);
+							if(srcNode != null) {
+								final OutputField srcField = srcNode.getOutputFieldWithKey(pubOutput.nodeOutputField.getKey());
+								newPublishable.publish(pubOutput.getKey(), srcNode, srcField);
+							}
 						}
 					}
 				}
+	
+				// XXX Other extensions. See note attached to class javadoc.
+	
+				return newNode;
+			} catch (InstantiationException e) {
+				LOGGER.severe(e.getMessage());
+			} catch (IllegalAccessException e) {
+				LOGGER.severe(e.getMessage());
 			}
-
-			// XXX Other extensions. See note attached to class javadoc.
-
-			return newNode;
-		} catch (InstantiationException e) {
-			LOGGER.severe(e.getMessage());
-		} catch (IllegalAccessException e) {
-			LOGGER.severe(e.getMessage());
 		}
-
 		return null;
 	}
 

@@ -1,19 +1,14 @@
 package ca.gedge.opgraph.nodes.reflect;
 
-import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpContext;
-import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OpNodeInfo;
 import ca.gedge.opgraph.OutputField;
-import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 
@@ -39,6 +34,8 @@ public class ObjectNode extends AbstractReflectNode {
 	/** List of scanned output fields from class */
 	protected List<ObjectNodePropertyOutputField> classOutputs;
 	
+	private Object value = null;
+	
 	private Class<?> type;
 	
 	public ObjectNode() {
@@ -59,7 +56,7 @@ public class ObjectNode extends AbstractReflectNode {
 		this.type = clazz;
 		
 		inputValueField = new InputField("obj", "object instance", clazz);
-		inputValueField.setOptional(false);
+		inputValueField.setOptional(true);
 		inputValueField.setFixed(true);
 		putField(inputValueField);
 		
@@ -75,6 +72,14 @@ public class ObjectNode extends AbstractReflectNode {
 		for(OutputField outputField:classOutputs) putField(outputField);
 	}
 	
+	public Object getValue() {
+		return this.value;
+	}
+	
+	public void setValue(Object value) {
+		this.value = value;
+	}
+	
 	@Override
 	public Class<?> getDeclaredClass() {
 		return this.type;
@@ -82,7 +87,8 @@ public class ObjectNode extends AbstractReflectNode {
 	
 	@Override
 	public void operate(OpContext context) throws ProcessingException {
-		Object obj = context.get(inputValueField);
+		Object obj = 
+				(this.value == null ? context.get(inputValueField) : value);
 		
 		if(obj == null)
 			throw new ProcessingException(new NullPointerException(inputValueField.getKey()));

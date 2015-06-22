@@ -1,14 +1,22 @@
 package ca.gedge.opgraph.nodes.reflect;
 
+import java.awt.Component;
+import java.awt.FlowLayout;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpNodeInfo;
 import ca.gedge.opgraph.OutputField;
+import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 
@@ -33,6 +41,12 @@ public class ObjectNode extends AbstractReflectNode {
 	
 	/** List of scanned output fields from class */
 	protected List<ObjectNodePropertyOutputField> classOutputs;
+	
+	private final static String PROP_NAME = "contextKey";
+	
+	private JTextField contextKeyField;
+	
+	private String contextKey = null;
 	
 	private Object value = null;
 	
@@ -72,6 +86,17 @@ public class ObjectNode extends AbstractReflectNode {
 		for(OutputField outputField:classOutputs) putField(outputField);
 	}
 	
+	public String getContextKey() {
+		return (contextKeyField != null ? contextKeyField.getText() : contextKey);
+	}
+	
+	public void setContextKey(String key) {
+		this.contextKey = key;
+		if(contextKeyField != null) {
+			contextKeyField.setText(key);
+		}
+	}
+	
 	public Object getValue() {
 		return this.value;
 	}
@@ -89,6 +114,10 @@ public class ObjectNode extends AbstractReflectNode {
 	public void operate(OpContext context) throws ProcessingException {
 		Object obj = 
 				(this.value == null ? context.get(inputValueField) : value);
+		if(obj == null) {
+			// look for value in context
+			obj = context.get(getContextKey());
+		}
 		
 		if(obj == null)
 			throw new ProcessingException(new NullPointerException(inputValueField.getKey()));
@@ -123,6 +152,46 @@ public class ObjectNode extends AbstractReflectNode {
 		}
 		
 		context.put(outputValueField, obj);
+	}
+
+	private JPanel createSettingsPanel() {
+		final JPanel panel = new JPanel(new FlowLayout());
+
+		final String oldContextKey = getContextKey();
+		contextKeyField = new JTextField();
+		contextKeyField.setColumns(20);
+		if(oldContextKey != null)
+			contextKeyField.setText(oldContextKey);
+		
+		panel.add(new JLabel("Context Key"));
+		panel.add(contextKeyField);
+		
+		return panel;
+	}
+	
+	@Override
+	public Component getComponent(GraphDocument document) {
+		return createSettingsPanel();
+	}
+
+	@Override
+	public Properties getSettings() {
+		final Properties props = super.getSettings();
+		
+		if(getContextKey() != null) {
+			props.put(PROP_NAME, getContextKey());
+		}
+		
+		return props;
+	}
+
+	@Override
+	public void loadSettings(Properties properties) {
+		super.loadSettings(properties);
+		
+		if(properties.containsKey(PROP_NAME)) {
+			this.contextKey = properties.getProperty(PROP_NAME);
+		}
 	}
 
 }

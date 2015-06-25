@@ -50,7 +50,6 @@ import javax.swing.text.BadLocationException;
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OpNodeInfo;
-import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.Processor;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
@@ -125,7 +124,8 @@ public class ScriptNode
 		if(!language.equals(this.language)) {
 			this.language = language;
 			this.engine = manager.getEngineByName(language);
-
+			if(this.engine == null) engine = manager.getEngineByExtension(language);
+			
 			// Only work with invocable script engines
 			if(this.engine == null || !(this.engine instanceof Invocable)) {
 				this.engine = null;
@@ -204,11 +204,11 @@ public class ScriptNode
 				engine.put("logger", logger);
 
 				// Execute run() method in script
-				((Invocable)engine).invokeFunction("run");
+				((Invocable)engine).invokeFunction("run", context);
 
-				// Put output values in context
-				for(OutputField field : getOutputFields())
-					context.put(field, engine.get(field.getKey()));
+//				// Put output values in context
+//				for(OutputField field : getOutputFields())
+//					context.put(field, engine.get(field.getKey()));
 
 				// Erase values
 				for(String key : context.keySet())

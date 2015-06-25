@@ -18,9 +18,11 @@
  */
 package ca.gedge.opgraph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -226,7 +228,7 @@ public final class OpContext extends HashMap<String, Object> {
 
 	@Override
 	public Collection<Object> values() {
-		final Collection<Object> values = super.values(); 
+		final Collection<Object> values = new ArrayList<Object>(super.values()); 
 		if(parent != null)
 			values.addAll(parent.values());
 		return values;
@@ -234,7 +236,7 @@ public final class OpContext extends HashMap<String, Object> {
 
 	@Override
 	public Set<String> keySet() {
-		final Set<String> keys = super.keySet(); 
+		final Set<String> keys = new LinkedHashSet<String>(super.keySet()); 
 		if(parent != null)
 			keys.addAll(parent.keySet());
 		return keys;

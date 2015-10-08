@@ -21,6 +21,8 @@ package ca.gedge.opgraph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import ca.gedge.opgraph.dag.CycleDetectedException;
@@ -52,7 +54,7 @@ public final class OpGraph
 	 * Default constructor.
 	 */
 	public OpGraph() {
-		this.nodeMap = new HashMap<String, OpNode>();
+		this.nodeMap = new LinkedHashMap<String, OpNode>();
 		setId(null);
 	}
 
@@ -95,6 +97,24 @@ public final class OpGraph
 		} else {
 			return nodeMap.get(id);
 		}
+	}
+	
+	/**
+	 * Find all nodes with given name.
+	 * 
+	 * @param name the title of the node
+	 * @return the nodes with given name, does not go 'deep'
+	 */
+	public List<OpNode> getNodesByName(String name) {
+		final List<OpNode> retVal = new ArrayList<OpNode>();
+		
+		for(OpNode node:nodeMap.values()) {
+			if(node.getName().equals(name)) {
+				retVal.add(node);
+			}
+		}
+		
+		return retVal;
 	}
 
 	/**

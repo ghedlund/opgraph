@@ -53,8 +53,8 @@ public class NodeStyle {
 		COMPOSITE.NodeBorderColor = new Color(100, 155, 100);
 		COMPOSITE.NodeBackgroundColor = new Color(200, 255, 200, 200);
 		COMPOSITE.NodeFocusColor = new Color(255, 200, 0, 255);
-		COMPOSITE.NodeNameTextColor = Color.WHITE;
-		COMPOSITE.NodeNameTextShadowColor = Color.DARK_GRAY;
+		COMPOSITE.NodeNameTextColor = Color.BLACK;
+		COMPOSITE.NodeNameTextShadowColor = Color.LIGHT_GRAY;
 		COMPOSITE.NodeNameTopColor = new Color(150, 200, 100, 255);
 		COMPOSITE.NodeNameBottomColor = new Color(100, 150, 50, 255);
 		COMPOSITE.FieldsTextColor = Color.BLACK;

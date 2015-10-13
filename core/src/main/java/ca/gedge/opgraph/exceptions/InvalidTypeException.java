@@ -20,12 +20,16 @@ package ca.gedge.opgraph.exceptions;
 
 import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpGraph;
+import ca.gedge.opgraph.Processor;
 
 /**
  * An exception that is thrown during the processing of an {@link OpGraph}
  * when a given input value isn't accepted by an {@link InputField}. 
  */
 public final class InvalidTypeException extends ProcessingException {
+	
+	private static final long serialVersionUID = -8536724095510372155L;
+
 	/** The field given bad input*/
 	private InputField field;
 
@@ -39,8 +43,8 @@ public final class InvalidTypeException extends ProcessingException {
 	 * @param field  the input field descriptor
 	 * @param value  the value that was not accepted by the given field
 	 */
-	public InvalidTypeException(InputField field, Object value) {
-		super("Field '" + field.getKey() + "' doesn't accepte value '" + value + "'");
+	public InvalidTypeException(Processor context, InputField field, Object value) {
+		super(context, "Field '" + field.getKey() + "' doesn't accepte value '" + value + "'");
 		this.field = field;
 		this.value = value;
 	}

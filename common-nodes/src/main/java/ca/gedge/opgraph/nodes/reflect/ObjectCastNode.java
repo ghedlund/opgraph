@@ -40,9 +40,9 @@ public class ObjectCastNode extends AbstractReflectNode {
 	public void operate(OpContext context) throws ProcessingException {
 		final Object obj = context.get(inputField);
 		if(obj == null)
-			throw new ProcessingException(new NullPointerException());
+			throw new ProcessingException(null, new NullPointerException());
 		if(!getDeclaredClass().isInstance(obj)) 
-			throw new InvalidTypeException(inputField, obj);
+			throw new InvalidTypeException(null, inputField, obj);
 		
 		context.put(outputField, getDeclaredClass().cast(obj));
 	}

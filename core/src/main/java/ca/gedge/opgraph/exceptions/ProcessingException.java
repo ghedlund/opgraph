@@ -20,20 +20,27 @@ package ca.gedge.opgraph.exceptions;
 
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpGraph;
+import ca.gedge.opgraph.Processor;
 
 /**
  * A general exception that can be thrown during the processing of an
  * {@link OpGraph}. The specifics that generated this exception
  * can be found in {@link #getCause()}.
  */
-public class ProcessingException extends Exception {
+public class ProcessingException extends RuntimeException {
+	
+	private static final long serialVersionUID = -7700644850403543549L;
+
+	private Processor context;
+	
 	/**
 	 * Constructs a processing exception with a given detail message.
 	 * 
 	 * @param message  the detail message
 	 */
-	public ProcessingException(String message) {
+	public ProcessingException(Processor context, String message) {
 		super(message);
+		this.context = context;
 	}
 
 	/**
@@ -41,8 +48,9 @@ public class ProcessingException extends Exception {
 	 * 
 	 * @param cause  the cause
 	 */
-	public ProcessingException(Throwable cause) {
+	public ProcessingException(Processor context, Throwable cause) {
 		super("An error occured during the processing of a graph", cause);
+		this.context = context;
 	}
 
 	/**
@@ -51,7 +59,13 @@ public class ProcessingException extends Exception {
 	 * @param message  the detail message
 	 * @param cause  the cause
 	 */
-	public ProcessingException(String message, Throwable cause) {
+	public ProcessingException(Processor context, String message, Throwable cause) {
 		super(message, cause);
+		this.context = context;
 	}
+	
+	public Processor getContext() {
+		return this.context;
+	}
+	
 }

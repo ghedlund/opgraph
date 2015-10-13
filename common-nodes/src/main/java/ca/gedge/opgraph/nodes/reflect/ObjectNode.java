@@ -120,7 +120,7 @@ public class ObjectNode extends AbstractReflectNode {
 		}
 		
 		if(obj == null)
-			throw new ProcessingException(new NullPointerException(inputValueField.getKey()));
+			throw new ProcessingException(null, new NullPointerException(inputValueField.getKey()));
 		
 		for(ObjectNodePropertyInputField classInput:classInputs) {
 			final Object val = context.get(classInput);
@@ -129,11 +129,11 @@ public class ObjectNode extends AbstractReflectNode {
 				try {
 					setMethod.invoke(obj, val);
 				} catch (IllegalArgumentException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				} catch (IllegalAccessException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				} catch (InvocationTargetException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				}
 			}
 		}
@@ -143,11 +143,11 @@ public class ObjectNode extends AbstractReflectNode {
 				final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
 				context.put(classOutput, val);
 			} catch (IllegalArgumentException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			} catch (IllegalAccessException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			} catch (InvocationTargetException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			}
 		}
 		

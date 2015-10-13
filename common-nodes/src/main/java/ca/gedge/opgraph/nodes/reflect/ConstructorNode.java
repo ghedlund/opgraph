@@ -83,13 +83,13 @@ public class ConstructorNode extends AbstractReflectNode {
 			else
 				val = constructor.newInstance();
 		} catch (IllegalArgumentException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		} catch (InstantiationException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		} catch (IllegalAccessException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		} catch (InvocationTargetException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		}
 		context.put(outputField.getKey(), val);
 	}

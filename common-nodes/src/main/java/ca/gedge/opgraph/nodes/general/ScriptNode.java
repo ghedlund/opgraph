@@ -214,9 +214,9 @@ public class ScriptNode
 				for(String key : context.keySet())
 					engine.put(key, null);
 			} catch(ScriptException exc) {
-				throw new ProcessingException("Could not execute script script", exc);
+				throw new ProcessingException(null, "Could not execute script script", exc);
 			} catch(NoSuchMethodException exc) {
-				throw new ProcessingException("No run() method in script", exc);
+				throw new ProcessingException(null, "No run() method in script", exc);
 			}
 		}
 	}

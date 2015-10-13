@@ -132,9 +132,9 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 			try {
 				obj = type.newInstance();
 			} catch (InstantiationException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			} catch (IllegalAccessException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			}
 		}
 		
@@ -145,11 +145,11 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 				try {
 					setMethod.invoke(obj, val);
 				} catch (IllegalArgumentException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				} catch (IllegalAccessException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				} catch (InvocationTargetException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				}
 			}
 		}
@@ -177,11 +177,11 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 				final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
 				context.put(classOutput, val);
 			} catch (IllegalArgumentException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			} catch (IllegalAccessException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			} catch (InvocationTargetException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			}
 		}
 		

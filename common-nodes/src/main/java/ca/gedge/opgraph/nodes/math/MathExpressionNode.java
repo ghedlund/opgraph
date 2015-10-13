@@ -244,7 +244,7 @@ public class MathExpressionNode
 			final Number result = roundToSignificantDigits(expressionEval.getResult(), significantDigits);
 			context.put(RESULT_OUTPUT_FIELD, result);
 		} catch(RecognitionException exc) {
-			throw new ProcessingException("Could not evaluate math expression", exc);
+			throw new ProcessingException(null, "Could not evaluate math expression", exc);
 		}
 	}
 

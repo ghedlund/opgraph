@@ -93,11 +93,11 @@ public class MethodNode extends AbstractReflectNode {
 			final Object retVal = invokeMethod(context.get(objField), args);
 			context.put(outputField, retVal);
 		} catch (IllegalArgumentException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		} catch (IllegalAccessException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		} catch (InvocationTargetException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		}
 	}
 	

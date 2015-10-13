@@ -39,9 +39,9 @@ public class ContextualItemClassNode extends ObjectNode {
 		final Object obj = context.get(key);
 		
 		if(obj == null)
-			throw new ProcessingException(new NullPointerException(key));
+			throw new ProcessingException(null, new NullPointerException(key));
 		if(!getDeclaredClass().isInstance(obj)) 
-			throw new ProcessingException("Context value not of correct type.");
+			throw new ProcessingException(null, "Context value not of correct type.");
 		
 		for(ObjectNodePropertyInputField classInput:classInputs) {
 			final Object val = context.get(classInput);
@@ -50,11 +50,11 @@ public class ContextualItemClassNode extends ObjectNode {
 				try {
 					setMethod.invoke(obj, val);
 				} catch (IllegalArgumentException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				} catch (IllegalAccessException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				} catch (InvocationTargetException e) {
-					throw new ProcessingException(e);
+					throw new ProcessingException(null, e);
 				}
 			}
 		}
@@ -64,11 +64,11 @@ public class ContextualItemClassNode extends ObjectNode {
 				final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
 				context.put(classOutput, val);
 			} catch (IllegalArgumentException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			} catch (IllegalAccessException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			} catch (InvocationTargetException e) {
-				throw new ProcessingException(e);
+				throw new ProcessingException(null, e);
 			}
 		}
 		

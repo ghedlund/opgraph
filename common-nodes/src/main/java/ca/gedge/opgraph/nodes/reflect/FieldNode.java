@@ -59,9 +59,9 @@ public class FieldNode extends AbstractReflectNode {
 			final Object outputVal = field.get(instance);
 			context.put(outputField, outputVal);
 		} catch (IllegalArgumentException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		} catch (IllegalAccessException e) {
-			throw new ProcessingException(e);
+			throw new ProcessingException(null, e);
 		}
 	}
 

@@ -22,12 +22,16 @@ import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpNode;
+import ca.gedge.opgraph.Processor;
 
 /**
  * An exception that is thrown during the processing of an {@link OpGraph}
  * when a required input field is given no input.
  */
 public final class RequiredInputException extends ProcessingException {
+
+	private static final long serialVersionUID = -7354818113151303950L;
+
 	/** The node from which the field comes from */
 	private OpNode node;
 
@@ -40,8 +44,8 @@ public final class RequiredInputException extends ProcessingException {
 	 * @param node  the node containing the input field
 	 * @param field  the input field descriptor
 	 */
-	public RequiredInputException(OpNode node, InputField field) {
-		super("Required field '" + field.getKey() + "' in node '" + node.getId() + "' has no input");
+	public RequiredInputException(Processor context, OpNode node, InputField field) {
+		super(context, "Required field '" + field.getKey() + "' in node '" + node.getId() + "' has no input");
 		this.node = node;
 		this.field = field;
 	}

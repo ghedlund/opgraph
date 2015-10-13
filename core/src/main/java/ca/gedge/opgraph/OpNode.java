@@ -54,6 +54,9 @@ public abstract class OpNode implements Extendable, Vertex {
 
 	/** A unique id for this node */
 	private String id;
+	
+	/** Is this node a breakpoint? */
+	private boolean breakpoint;
 
 	/** The name of this node */
 	private String name;
@@ -116,6 +119,26 @@ public abstract class OpNode implements Extendable, Vertex {
 		this.outputFields = new ArrayList<OutputField>();
 		this.inputFields = new ArrayList<InputField>();
 		this.inputFields.add(ENABLED_FIELD);
+		this.breakpoint = false;
+	}
+	
+	/**
+	 * Sets this node as a breakpoint
+	 * 
+	 * @param breakpoint
+	 */
+	public void setBreakpoint(boolean breakpoint) {
+		this.breakpoint = breakpoint;
+	}
+	
+	/**
+	 * Is this node a breakpoint
+	 * 
+	 * @return <code>true</code> if the debugger should
+	 * stop before processing this node
+	 */
+	public boolean isBreakpoint() {
+		return this.breakpoint;
 	}
 
 	/**

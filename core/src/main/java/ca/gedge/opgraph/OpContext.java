@@ -37,6 +37,8 @@ public final class OpContext extends HashMap<String, Object> {
 
 	/** The child contexts */
 	private WeakHashMap<OpNode, OpContext> childContexts;
+	
+	private boolean debug = false;
 
 	/**
 	 * Constructs a global context (i.e., no parent context).
@@ -53,7 +55,7 @@ public final class OpContext extends HashMap<String, Object> {
 	public OpContext(OpContext parent) {
 		this.parent = parent;
 	}
-
+	
 	/**
 	 * Gets the parent context for this context.
 	 * 
@@ -61,6 +63,18 @@ public final class OpContext extends HashMap<String, Object> {
 	 */
 	public OpContext getParent() {
 		return parent;
+	}
+	
+	public boolean isDebug() {
+		boolean retVal = this.debug;
+		if(getParent() != null) {
+			retVal |= getParent().isDebug();
+		}
+		return retVal;
+	}
+	
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	/**

@@ -20,7 +20,6 @@ package ca.gedge.opgraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -260,7 +259,19 @@ public final class OpGraph
 			fireLinkRemoved(link);
 		return removed;
 	}
-
+	
+	public List<OpNode> getBreakpoints() {
+		final List<OpNode> retVal = new ArrayList<OpNode>();
+		
+		for(OpNode node:this) {
+			if(node.isBreakpoint()) {
+				retVal.add(node);
+			}
+		}
+		
+		return retVal;
+	}
+	
 	//
 	// Extendable
 	//

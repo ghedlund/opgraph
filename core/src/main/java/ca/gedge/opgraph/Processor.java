@@ -20,6 +20,8 @@ package ca.gedge.opgraph;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import ca.gedge.opgraph.exceptions.BreakpointEncountered;
 import ca.gedge.opgraph.exceptions.InvalidTypeException;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 import ca.gedge.opgraph.exceptions.RequiredInputException;
@@ -56,6 +58,12 @@ public class Processor {
 
 	/** If we stepped into a macro, the processing context for that macro */
 	private Processor currentMacro;
+	
+	/** 
+	 * If stopped at a breakpoint during the {{@link #step()} method this will
+	 * point to the breakpoint node.
+	 */
+	private OpNode breakpointNode = null;
 
 	/**
 	 * Constructs a processing context for a given graph.
@@ -241,14 +249,24 @@ public class Processor {
 	 * Moves the processing forward. If in a macro and the last node in that
 	 * macro was already processed, the step will step out of the macro and
 	 * back to its parent node, but processing will not move forward in the
-	 * parent until this function is called again.
+	 * parent until this function is called again. If the next node to process
+	 * is flagged as a breakpoint and <code>shouldBreak</code> is <code>true</code>
+	 * this method will <em>not</em> process the next node and will throw a
+	 * {@link BreakpointEncountered} exception.
+	 * 
+	 * @param shouldBreak
 	 * 
 	 * @throws NoSuchElementException  if there are no more nodes to process
+	 * @throws BreakpointEncountered if the next node is a breakpoint and shouldBreak is true
 	 */
-	public void step() {
+	public void step(boolean shouldBreak) throws BreakpointEncountered {
+		if(breakpointNode != null && currentNode == breakpointNode) {
+			processCurrentNode();
+			return;
+		}
 		if(currentMacro != null) {
 			if(currentMacro.hasNext())
-				currentMacro.step();
+				currentMacro.step(shouldBreak);
 			else
 				stepOutOf();
 		} else if(nodeIter == null) {
@@ -256,8 +274,25 @@ public class Processor {
 		} else {
 			// Step to the next node and process
 			currentNode = nodeIter.next();
+			
+			if(currentNode != null && currentNode.isBreakpoint() && shouldBreak) {
+				throw new BreakpointEncountered(this, currentNode);
+			}
+			
 			processCurrentNode();
 		}
+	}
+	
+	/**
+	 * Moves the processing forward. If in a macro and the last node in that
+	 * macro was already processed, the step will step out of the macro and
+	 * back to its parent node, but processing will not move forward in the
+	 * parent until this function is called again.
+	 * 
+	 * @throws NoSuchElementException  if there are no more nodes to process
+	 */
+	public void step() {
+		step(false);
 	}
 
 	/**
@@ -280,10 +315,12 @@ public class Processor {
 			//LOGGER.log(Level.SEVERE, exc.getLocalizedMessage(), exc);
 			currentError = exc;
 			nodeIter = null; // prevent further processing
+			throw currentError;
 		} catch(Throwable exc) {
 			//LOGGER.log(Level.SEVERE, exc.getLocalizedMessage(), exc);
-			currentError = new ProcessingException(exc);
+			currentError = new ProcessingException(this, exc);
 			nodeIter = null; // prevent further processing
+			throw currentError;
 		}
 	}
 
@@ -303,6 +340,26 @@ public class Processor {
 		}
 	}
 
+	public boolean stepToNode(OpNode node, boolean shouldBreak) throws BreakpointEncountered {
+		boolean found = false;
+		if(currentMacro != null) {
+			if(currentMacro.hasNext())
+				found = currentMacro.stepToNode(node);
+			
+			if(!found && !currentMacro.hasNext())
+				stepOutOf();
+		}
+		
+		if(!found) {
+			while(hasNext() && currentNode != node)
+				step(shouldBreak);
+			
+			found = (currentNode == node);
+		}
+		
+		return found;
+	}
+	
 	/**
 	 * Processes the graph until we hit the specified node. This method
 	 * will step through the current macro (if one was stepped into), but
@@ -314,23 +371,7 @@ public class Processor {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean stepToNode(OpNode node) {
-		boolean found = false;
-		if(currentMacro != null) {
-			if(currentMacro.hasNext())
-				found = currentMacro.stepToNode(node);
-
-			if(!found && !currentMacro.hasNext())
-				stepOutOf();
-		}
-
-		if(!found) {
-			while(hasNext() && currentNode != node)
-				step();
-
-			found = (currentNode == node);
-		}
-
-		return found;
+		return stepToNode(node, getContext().isDebug());
 	}
 
 	/**
@@ -384,13 +425,28 @@ public class Processor {
 			}
 		}
 	}
+	
+	/**
+	 * Processes the graph to completion or
+	 * breakpoint if <code>shouldBreak</code> is <code>true</code>
+	 * 
+	 * @param shouldBreak
+	 */
+	public void stepAll(boolean shouldBreak) throws BreakpointEncountered {
+		while(hasNext()) {
+			step(shouldBreak);
+		}
+	}
 
 	/**
-	 * Processes the graph to completion.
+	 * Processes the graph to completion. Ignore
+	 * breakpoints.
+	 * 
+	 * @throws BreakpointEncountered
+	 * @throws ProcessingException
 	 */
 	public void stepAll() {
-		while(hasNext())
-			step();
+		stepAll(getContext().isDebug());
 	}
 
 	/**
@@ -452,7 +508,7 @@ public class Processor {
 							// Make sure value type is accepted at the destination field
 							final TypeValidator validator = field.getValidator();
 							if(validator != null && !validator.isAcceptable(val))
-								throw new InvalidTypeException(link.getDestinationField(), val);
+								throw new InvalidTypeException(this, link.getDestinationField(), val);
 
 							break;
 						}
@@ -461,7 +517,7 @@ public class Processor {
 
 				// No link for required input; throw exception!
 				if(!linkFound)
-					throw new RequiredInputException(node, field);
+					throw new RequiredInputException(this, node, field);
 			}
 		}
 	}

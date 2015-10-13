@@ -18,21 +18,31 @@
  */
 package ca.gedge.opgraph.app.components.canvas;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.UndoableEditListener;
@@ -70,7 +80,9 @@ public class CanvasNode extends JPanel {
 
 	/** A mapping from field to the field component */
 	private Map<ContextualItem, CanvasNodeField> fields;
-
+	
+	private JToggleButton breakpointButton;
+	
 	/**
 	 * Constructs a component that displays the specified node using a default style.
 	 * 
@@ -80,6 +92,23 @@ public class CanvasNode extends JPanel {
 	 */
 	public CanvasNode(OpNode node) {
 		this(node, new NodeStyle());
+	}
+	
+	private ImageIcon createBreakpointIcon() {
+		final BufferedImage img = 
+				new BufferedImage(16, 16, BufferedImage.TYPE_4BYTE_ABGR);
+		
+		final Graphics2D g2d = img.createGraphics();
+		
+		final Ellipse2D circle = new Ellipse2D.Double(1, 1, 14, 14);
+		
+		g2d.setColor(Color.red);
+		g2d.fill(circle);
+		
+		g2d.setColor(Color.darkGray);
+		g2d.draw(circle);
+		
+		return new ImageIcon(img);
 	}
 
 	/**
@@ -99,6 +128,16 @@ public class CanvasNode extends JPanel {
 		this.inputs = new JPanel();
 		this.outputs = new JPanel();
 		this.fields = new HashMap<ContextualItem, CanvasNodeField>();
+		
+		this.breakpointButton = new JToggleButton();
+		this.breakpointButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				CanvasNode.this.node.setBreakpoint(breakpointButton.isSelected());
+			}
+			
+		});
 
 		// Initialize components
 		setOpaque(false);
@@ -114,10 +153,17 @@ public class CanvasNode extends JPanel {
 
 		// Add components to layout
 		GridBagConstraints gbc = new GridBagConstraints();
-
+		
 		gbc.insets = new Insets(PADDING, PADDING, PADDING / 2, PADDING);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 1;
+		gbc.gridheight = 1;
+		add(breakpointButton, gbc);
+
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
 		gbc.gridheight = 1;
@@ -126,12 +172,13 @@ public class CanvasNode extends JPanel {
 		gbc.insets = new Insets(PADDING, PADDING, PADDING, PADDING);
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridwidth = 1;
+		gbc.gridwidth = 2;
 		add(inputs, gbc);
 
 		gbc.anchor = GridBagConstraints.NORTHEAST;
-		gbc.gridx = 1;
+		gbc.gridx = 2;
 		add(outputs, gbc);
 	}
 

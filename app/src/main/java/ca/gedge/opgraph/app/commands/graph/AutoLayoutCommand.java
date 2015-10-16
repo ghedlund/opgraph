@@ -25,11 +25,11 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
+import ca.gedge.opgraph.app.AutoLayoutManager;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
-import ca.gedge.opgraph.app.edits.graph.AutoLayoutEdit;
 
 /**
  * A command for performing automatic layout of the active canvas' nodes.
@@ -53,7 +53,10 @@ public class AutoLayoutCommand extends HookableCommand {
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
 		final GraphDocument document = GraphEditorModel.getActiveDocument();
-		if(document != null)
-			document.getUndoSupport().postEdit(new AutoLayoutEdit(document.getGraph()));
+		if(document != null) {
+			final AutoLayoutManager layoutManager = new AutoLayoutManager();
+			layoutManager.layoutGraph(document.getGraph());
+			document.getUndoSupport().postEdit(layoutManager.getUndoableEdit());
+		}
 	}
 }

@@ -21,6 +21,7 @@
  */
 package ca.gedge.opgraph.app.components.canvas;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Insets;
@@ -53,7 +54,12 @@ public class DefaultNodeBorder implements Border {
 				g.fillRect(w - MAX_SIZE, y + MAX_SIZE, MAX_SIZE, h - MAX_SIZE);
 				g.fillRect(x + MAX_SIZE, h - MAX_SIZE, w - 2*MAX_SIZE, MAX_SIZE);
 			}
-
+			
+			if(canvasNode.getNode().isBreakpoint()) {
+				g.setColor(Color.red);
+				g.fillOval(x, y, MAX_SIZE, MAX_SIZE);
+			}
+			
 			x += MAX_SIZE - 1;
 			y += MAX_SIZE - 1;
 			w -= 2*MAX_SIZE - 1;

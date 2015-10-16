@@ -81,8 +81,6 @@ public class CanvasNode extends JPanel {
 	/** A mapping from field to the field component */
 	private Map<ContextualItem, CanvasNodeField> fields;
 	
-	private JToggleButton breakpointButton;
-	
 	/**
 	 * Constructs a component that displays the specified node using a default style.
 	 * 
@@ -129,16 +127,6 @@ public class CanvasNode extends JPanel {
 		this.outputs = new JPanel();
 		this.fields = new HashMap<ContextualItem, CanvasNodeField>();
 		
-		this.breakpointButton = new JToggleButton();
-		this.breakpointButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				CanvasNode.this.node.setBreakpoint(breakpointButton.isSelected());
-			}
-			
-		});
-
 		// Initialize components
 		setOpaque(false);
 		setBorder(null);
@@ -154,16 +142,8 @@ public class CanvasNode extends JPanel {
 		// Add components to layout
 		GridBagConstraints gbc = new GridBagConstraints();
 		
-		gbc.insets = new Insets(PADDING, PADDING, PADDING / 2, PADDING);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		add(breakpointButton, gbc);
-
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
 		gbc.gridheight = 1;
@@ -174,11 +154,11 @@ public class CanvasNode extends JPanel {
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridwidth = 2;
+		gbc.gridwidth = 1;
 		add(inputs, gbc);
 
 		gbc.anchor = GridBagConstraints.NORTHEAST;
-		gbc.gridx = 2;
+		gbc.gridx = 1;
 		add(outputs, gbc);
 	}
 

@@ -18,15 +18,14 @@
  */
 package ca.gedge.opgraph.dag;
 
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.WeakHashMap;
 
 /**
@@ -41,10 +40,10 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	implements Iterable<V>
 {
 	/** The vertices in this DAG */
-	private ArrayList<V> vertices;
+	private List<V> vertices;
 
 	/** The edges in this DAG */
-	private TreeSet<E> edges;
+	private Set<E> edges;
 
 	/**
 	 * A mapping from vertex to its level.
@@ -67,7 +66,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 */
 	public DirectedAcyclicGraph() {
 		this.vertices = new ArrayList<V>();
-		this.edges = new TreeSet<E>();
+		this.edges = new LinkedHashSet<E>();
 		this.vertexLevels = new WeakHashMap<V, Integer>();
 		this.incomingEdgesCache = new WeakHashMap<V, Set<E>>();
 		this.outgoingEdgesCache = new WeakHashMap<V, Set<E>>();
@@ -278,11 +277,11 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 */
 	public Set<E> getIncomingEdges(V vertex) {
 		if(!vertices.contains(vertex))
-			return new TreeSet<E>();
+			return new LinkedHashSet<E>();
 
 		// If not in cache, compute
 		if(!incomingEdgesCache.containsKey(vertex)) {
-			final TreeSet<E> cachedValue = new TreeSet<E>();
+			final LinkedHashSet<E> cachedValue = new LinkedHashSet<E>();
 			for(E edge : edges) {
 				if(edge.getDestination() == vertex)
 					cachedValue.add(edge);
@@ -295,7 +294,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		if(set != null)
 			return Collections.unmodifiableSet(set);
 		else
-			return new TreeSet<E>();
+			return new LinkedHashSet<E>();
 	}
 
 	/**
@@ -308,11 +307,11 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 */
 	public Set<E> getOutgoingEdges(V vertex) {
 		if(!vertices.contains(vertex))
-			return new TreeSet<E>();
+			return new LinkedHashSet<E>();
 
 		// See if exists in cache
 		if(!outgoingEdgesCache.containsKey(vertex)) {
-			final TreeSet<E> cachedValue = new TreeSet<E>();
+			final LinkedHashSet<E> cachedValue = new LinkedHashSet<E>();
 			for(E edge : edges) {
 				if(edge.getSource() == vertex)
 					cachedValue.add(edge);
@@ -325,7 +324,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		if(set != null) {
 			return Collections.unmodifiableSet(set);
 		} else {
-			return new TreeSet<E>();
+			return new LinkedHashSet<E>();
 		}
 	}
 

@@ -88,9 +88,9 @@
 	</issueManagement>
 
 	<scm>
-		<url>https://github.com/thegedge/opgraph</url>
-		<connection>scm:git:git://github.com/thegedge/opgraph.git</connection>
-		<developerConnection>scm:git:git@github.com:thegedge/opgraph.git</developerConnection>
+		<url>https://github.com/ghedlund/opgraph</url>
+		<connection>scm:git:git://github.com/ghedlund/opgraph.git</connection>
+		<developerConnection>scm:git:git@github.com:ghedlund/opgraph.git</developerConnection>
 	</scm>
 
 	<distributionManagement>
@@ -262,8 +262,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.1</version>
 					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>1.8</source>
+						<target>1.8</target>
 					</configuration>
 				</plugin>
 				

@@ -28,7 +28,8 @@
 		<xs:documentation>Specification of opgraph-common-nodes extensions.</xs:documentation>
 	</xs:annotation>
 
-	<xs:import namespace="http://gedge.ca/ns/opgraph"/>
+	<xs:import namespace="http://gedge.ca/ns/opgraph"
+		schemaLocation="../../../../../../xml-io/src/main/resources/META-INF/schemas/opgraph.xsd"/>
 
 	<!-- Definition of a macro -->
 

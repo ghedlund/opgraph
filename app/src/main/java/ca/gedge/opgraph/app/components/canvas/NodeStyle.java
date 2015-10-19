@@ -33,11 +33,15 @@ import ca.gedge.opgraph.extensions.CompositeNode;
  * TODO perhaps move this over to javax.swing.UIManager
  */
 public class NodeStyle {
-	private static final NodeStyle DEFAULT = new NodeStyle();
-	private static final NodeStyle COMPOSITE = new NodeStyle();
+	private static final NodeStyle DEFAULT;
+	private static final NodeStyle COMPOSITE;
+	private static final NodeStyle OBJECT;
+	private static final NodeStyle ITERATION;
+	
 	private static final Map<Class<? extends OpNode>, NodeStyle> installedStyles;
 
 	static {
+		DEFAULT = new NodeStyle();
 		DEFAULT.NodeBorderColor = Color.GRAY;
 		DEFAULT.NodeBackgroundColor = new Color(255, 255, 255, 200);
 		DEFAULT.NodeFocusColor = new Color(255, 200, 0, 255);
@@ -50,17 +54,20 @@ public class NodeStyle {
 		DEFAULT.AnchorDefaultFillColor = new Color(100, 150, 255, 100);
 		DEFAULT.AnchorPublishedFillColor = new Color(50, 255, 50, 150);
 
+		COMPOSITE = new NodeStyle(DEFAULT);
 		COMPOSITE.NodeBorderColor = new Color(100, 155, 100);
 		COMPOSITE.NodeBackgroundColor = new Color(200, 255, 200, 200);
-		COMPOSITE.NodeFocusColor = new Color(255, 200, 0, 255);
-		COMPOSITE.NodeNameTextColor = Color.BLACK;
-		COMPOSITE.NodeNameTextShadowColor = Color.LIGHT_GRAY;
 		COMPOSITE.NodeNameTopColor = new Color(150, 200, 100, 255);
 		COMPOSITE.NodeNameBottomColor = new Color(100, 150, 50, 255);
-		COMPOSITE.FieldsTextColor = Color.BLACK;
-		COMPOSITE.AnchorLinkFillColor = Color.ORANGE;
-		COMPOSITE.AnchorDefaultFillColor = new Color(100, 150, 255, 100);
-		COMPOSITE.AnchorPublishedFillColor = new Color(50, 255, 50, 150);
+		
+		OBJECT = new NodeStyle(DEFAULT);
+		
+		
+		ITERATION = new NodeStyle(DEFAULT);
+		ITERATION.NodeBorderColor = Color.yellow;
+		ITERATION.NodeBackgroundColor = new Color(100, 255, 200, 200);
+		ITERATION.NodeNameTopColor = new Color(30, 220, 180, 255);
+		ITERATION.NodeNameBottomColor = new Color(0,  180, 150, 255);
 
 		installedStyles = new HashMap<Class<? extends OpNode>, NodeStyle>();
 		installedStyles.put(OpNode.class, DEFAULT);
@@ -140,4 +147,29 @@ public class NodeStyle {
 
 	/** Whether or not to show the enabled field of a node. */
 	public boolean ShowEnabledField = true;
+	
+	public NodeStyle() {
+		super();
+	}
+	
+	public NodeStyle(NodeStyle style) {
+		super();
+		
+		this.AnchorDefaultFillColor = style.AnchorDefaultFillColor;
+		this.AnchorLinkFillColor = style.AnchorLinkFillColor;
+		this.AnchorPublishedFillColor = style.AnchorPublishedFillColor;
+		
+		this.FieldsTextColor = style.FieldsTextColor;
+		
+		this.NodeBackgroundColor = style.NodeBackgroundColor;
+		this.NodeBorder = style.NodeBorder;
+		this.NodeBorderColor = style.NodeBorderColor;
+		this.NodeFocusColor = style.NodeFocusColor;
+		this.NodeNameBottomColor = style.NodeNameBottomColor;
+		this.NodeNameTextColor = style.NodeNameTextColor;
+		this.NodeNameTextShadowColor = style.NodeNameTextShadowColor;
+		this.NodeNameTopColor = style.NodeNameTopColor;
+		
+		this.ShowEnabledField = style.ShowEnabledField;
+	}
 }

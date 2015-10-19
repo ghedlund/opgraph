@@ -39,6 +39,7 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -67,6 +68,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
+import javax.swing.undo.CompoundEdit;
 
 import ca.gedge.opgraph.ContextualItem;
 import ca.gedge.opgraph.InputField;
@@ -80,6 +82,7 @@ import ca.gedge.opgraph.OpGraphListener;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.MenuProvider;
+import ca.gedge.opgraph.app.commands.edit.DeleteCommand;
 import ca.gedge.opgraph.app.components.ErrorDialog;
 import ca.gedge.opgraph.app.components.NullLayout;
 import ca.gedge.opgraph.app.components.PathAddressableMenuImpl;
@@ -87,6 +90,7 @@ import ca.gedge.opgraph.app.components.ResizeGrip;
 import ca.gedge.opgraph.app.components.canvas.CanvasNodeField.AnchorFillState;
 import ca.gedge.opgraph.app.edits.graph.AddLinkEdit;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
+import ca.gedge.opgraph.app.edits.graph.DeleteNodesEdit;
 import ca.gedge.opgraph.app.edits.graph.MoveNodesEdit;
 import ca.gedge.opgraph.app.edits.graph.RemoveLinkEdit;
 import ca.gedge.opgraph.app.edits.notes.MoveNoteEdit;
@@ -97,6 +101,7 @@ import ca.gedge.opgraph.app.extensions.NoteComponent;
 import ca.gedge.opgraph.app.extensions.Notes;
 import ca.gedge.opgraph.app.util.CollectionListener;
 import ca.gedge.opgraph.app.util.GUIHelper;
+import ca.gedge.opgraph.app.util.GraphUtils;
 import ca.gedge.opgraph.dag.CycleDetectedException;
 import ca.gedge.opgraph.dag.VertexNotFoundException;
 import ca.gedge.opgraph.exceptions.ItemMissingException;
@@ -279,6 +284,42 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 				currentDragLinkLocation = null;
 
 				repaint();
+			}
+		});
+		
+		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
+			KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "select_all");
+		getActionMap().put("select_all", new AbstractAction("Select All") {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				selectAll();
+			}
+		});
+		
+		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
+			KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "copy");
+		getActionMap().put("copy", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				copy();
+			}
+		});
+		
+		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "paste");
+		getActionMap().put("paste", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				paste();
+			}
+		});
+		
+		getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
+				KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()), "cut");
+		getActionMap().put("cut", new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cut();
 			}
 		});
 
@@ -827,6 +868,125 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 		repaint();
 	}
 
+	public void selectAll() {
+		getSelectionModel().setSelectedNodes(getDocument().getGraph().getVertices());
+	}
+	
+	public void clearSelection() {
+		getSelectionModel().setSelectedNodes(new ArrayList<>());
+	}
+	
+	public void copy() {
+		final Collection<OpNode> selectedNodes = getSelectionModel().getSelectedNodes();
+		if(selectedNodes.size() > 0) {
+			final OpGraph graph = document.getGraph();
+
+			// Copy selected nodes
+			final OpGraph selectedGraph = new OpGraph();
+			for(OpNode node : selectedNodes)
+				selectedGraph.add(node);
+
+			// For each selected node, copy outgoing links if they are fully contained in the selection
+			for(OpNode selectedNode : selectedNodes) {
+				final Collection<OpLink> outgoingLinks = graph.getOutgoingEdges(selectedNode);
+				for(OpLink link : outgoingLinks) {
+					if(selectedNodes.contains(link.getDestination())) {
+						try {
+							selectedGraph.add(link);
+						} catch(VertexNotFoundException exc) {
+							LOGGER.severe(exc.getMessage());
+						} catch(CycleDetectedException exc) {
+							LOGGER.severe(exc.getMessage());
+						}
+					}
+				}
+			}
+
+			// Add to system clipboard
+			final SubgraphClipboardContents clipboardContents = new SubgraphClipboardContents(document, selectedGraph);
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboardContents, document.getCanvas());
+		}
+	}
+	
+	public void paste() {
+		// Check to make sure the clipboard has something we can paste
+		final Transferable clipboardContents = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(this);
+		if(clipboardContents != null && clipboardContents.isDataFlavorSupported(SubgraphClipboardContents.copyFlavor)) {
+			try {
+				final SubgraphClipboardContents nodeClipboardContents = 
+						SubgraphClipboardContents.class.cast(clipboardContents.getTransferData(SubgraphClipboardContents.copyFlavor));
+
+				final CompoundEdit cmpEdit = new CompoundEdit();
+				final OpGraph graph = document.getGraph();
+				final Map<String, String> nodeMap = new HashMap<String, String>();
+
+				// Keep track of the number of times this graph has been pasted
+				Integer timesDuplicated = nodeClipboardContents.graphDuplicates.get(graph);
+				if(timesDuplicated == null) {
+					timesDuplicated = 0;
+				} else {
+					timesDuplicated = timesDuplicated + 1;
+				}
+
+				nodeClipboardContents.graphDuplicates.put(graph, timesDuplicated);
+
+				// Create a new node edit for each node in the contents
+				final Collection<OpNode> newNodes = new ArrayList<OpNode>();
+				for(OpNode node : nodeClipboardContents.subGraph.getVertices()) {
+					// Clone the node
+					final OpNode newNode = GraphUtils.cloneNode(node);
+					newNodes.add(newNode);
+					nodeMap.put(node.getId(), newNode.getId());
+
+					// Offset to avoid pasting on top of current nodes
+					final NodeMetadata metadata = newNode.getExtension(NodeMetadata.class);
+					if(metadata != null) {
+						metadata.setX(metadata.getX() + (50 * timesDuplicated));
+						metadata.setY(metadata.getY() + (30 * timesDuplicated));
+					}
+
+					// Add an undoable edit for this node
+					cmpEdit.addEdit(new AddNodeEdit(graph, newNode));
+				}
+
+				// Pasted node become the selection
+				document.getSelectionModel().setSelectedNodes(newNodes);
+
+				// Add copied node to graph
+				for(OpLink link : nodeClipboardContents.subGraph.getEdges()) {
+					final OpNode srcNode = graph.getNodeById(nodeMap.get(link.getSource().getId()), false);
+					final OutputField srcField = srcNode.getOutputFieldWithKey(link.getSourceField().getKey());
+					final OpNode dstNode = graph.getNodeById(nodeMap.get(link.getDestination().getId()), false);
+					final InputField dstField = dstNode.getInputFieldWithKey(link.getDestinationField().getKey());
+
+					try {
+						final OpLink newLink = new OpLink(srcNode, srcField, dstNode, dstField);
+						cmpEdit.addEdit(new AddLinkEdit(graph, newLink));
+					} catch(ItemMissingException exc) {
+						LOGGER.severe(exc.getMessage());
+					} catch(VertexNotFoundException exc) {
+						LOGGER.severe(exc.getMessage());
+					} catch(CycleDetectedException exc) {
+						LOGGER.severe(exc.getMessage());
+					}
+				}
+
+				// Add the compound edit to the undo manager
+				cmpEdit.end();
+				document.getUndoSupport().postEdit(cmpEdit);
+			} catch(UnsupportedFlavorException exc) {
+				LOGGER.severe(exc.getMessage());
+			} catch(IOException exc) {
+				LOGGER.severe(exc.getMessage());
+			}
+		}
+	}
+	
+	public void cut() {
+		copy();
+		getDocument().getUndoSupport().postEdit(new DeleteNodesEdit(document.getGraph(), getSelectionModel().getSelectedNodes()));
+	}
+	
 	//
 	// MouseAdapter
 	//
@@ -842,13 +1002,19 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 			// Find selected nodes, if necessary
 			if(selectionRect != null) {
 				final Rectangle rect = getSelectionRect(); 
-				final Set<OpNode> selected = new HashSet<OpNode>();
+				Set<OpNode> selected = new HashSet<OpNode>();
 				for(Component comp : getComponentsInLayer(NODES_LAYER)) {
 					final Rectangle compRect = comp.getBounds();
 					if((comp instanceof CanvasNode) && rect.intersects(compRect))
 						selected.add( ((CanvasNode)comp).getNode() );
 				}
-
+				
+				if(e.isControlDown() || e.isShiftDown()) {
+					final HashSet<OpNode> currentSelection = new HashSet<>(getSelectionModel().getSelectedNodes());
+					currentSelection.addAll(selected);
+					selected = currentSelection;
+				}
+				
 				getSelectionModel().setSelectedNodes(selected);
 			}
 
@@ -1063,7 +1229,7 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 
 			if(!SwingUtilities.isDescendingFrom(source, GraphCanvas.this))
 				return;
-
+			
 			if(e.getID() == MouseEvent.MOUSE_PRESSED) {
 				// If the mouse is pressed, update the selection. If pressed
 				// on the canvas area, clear the selection. If on a node, and
@@ -1088,7 +1254,8 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 					public void run() {
 						final CanvasNode canvasNode = GUIHelper.getAncestorOrSelfOfClass(CanvasNode.class, source);
 						if(canvasNode == null) {
-							getSelectionModel().setSelectedNode(null);
+							if(!me.isControlDown())
+								getSelectionModel().setSelectedNode(null);
 
 							final NoteComponent note = GUIHelper.getAncestorOrSelfOfClass(NoteComponent.class, source);
 							if(note != null) {
@@ -1100,8 +1267,16 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 							}
 						} else {
 							// If it's not already selected, then select it
-							if(!getSelectionModel().getSelectedNodes().contains(canvasNode.getNode()))
-								getSelectionModel().setSelectedNode(canvasNode.getNode());
+							if(!getSelectionModel().getSelectedNodes().contains(canvasNode.getNode())) {
+								if(me.isControlDown())
+									getSelectionModel().addNodeToSelection(canvasNode.getNode());
+								else
+									getSelectionModel().setSelectedNode(canvasNode.getNode());
+							} else {
+								// remove from selection if control is down
+								if(me.isControlDown())
+									getSelectionModel().removeNodeFromSelection(canvasNode.getNode());
+							}
 
 							// Bring it to the top of the nodes layer
 							moveToFront(canvasNode);

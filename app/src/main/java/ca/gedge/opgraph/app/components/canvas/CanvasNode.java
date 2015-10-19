@@ -142,6 +142,7 @@ public class CanvasNode extends JPanel {
 		// Add components to layout
 		GridBagConstraints gbc = new GridBagConstraints();
 		
+		gbc.insets = new Insets(PADDING, PADDING, PADDING, PADDING);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -149,7 +150,6 @@ public class CanvasNode extends JPanel {
 		gbc.gridheight = 1;
 		add(name, gbc);
 
-		gbc.insets = new Insets(PADDING, PADDING, PADDING, PADDING);
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.gridx = 0;

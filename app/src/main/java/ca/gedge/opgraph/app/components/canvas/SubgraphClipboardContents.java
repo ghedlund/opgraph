@@ -19,7 +19,7 @@
 /**
  * 
  */
-package ca.gedge.opgraph.app.commands.edit;
+package ca.gedge.opgraph.app.components.canvas;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -54,7 +54,7 @@ import ca.gedge.opgraph.util.Pair;
 /**
  * Inner class for handling OpGraph clipboard content.
  */
-class SubgraphClipboardContents implements Transferable {
+public class SubgraphClipboardContents implements Transferable {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(SubgraphClipboardContents.class.getName());
 

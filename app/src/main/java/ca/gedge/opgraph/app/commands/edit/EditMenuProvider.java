@@ -43,6 +43,7 @@ import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.MenuProvider;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionListener;
+import ca.gedge.opgraph.app.components.canvas.SubgraphClipboardContents;
 
 /**
  * Menu provider for core functions.

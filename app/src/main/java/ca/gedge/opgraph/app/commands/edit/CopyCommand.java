@@ -34,6 +34,7 @@ import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.components.canvas.SubgraphClipboardContents;
 import ca.gedge.opgraph.dag.CycleDetectedException;
 import ca.gedge.opgraph.dag.VertexNotFoundException;
 

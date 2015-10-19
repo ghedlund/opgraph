@@ -43,6 +43,7 @@ import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.components.canvas.SubgraphClipboardContents;
 import ca.gedge.opgraph.app.edits.graph.AddLinkEdit;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.app.extensions.NodeMetadata;

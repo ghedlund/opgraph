@@ -30,5 +30,5 @@ Eventually there will be more specifics in this section, but for now just follow
 
 License
 -------
-Copyright (C) 2012 Jason Gedge. Distributed under the GPLv3 license.
+Copyright (C) 2012-2015 Jason Gedge and Greg Hedlund. Distributed under the GPLv3 license.
 

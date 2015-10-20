@@ -47,6 +47,7 @@ import javax.swing.JComponent;
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
+import ca.gedge.opgraph.app.util.GraphUtils;
 import ca.gedge.opgraph.io.OpGraphSerializer;
 import ca.gedge.opgraph.io.OpGraphSerializerFactory;
 import ca.gedge.opgraph.util.Pair;
@@ -85,31 +86,6 @@ public class SubgraphClipboardContents implements Transferable {
 		this.graphDuplicates.put(document.getGraph(), new Integer(0));
 	}
 
-	/**
-	 * Gets the bounding rectangle of a given set of nodes.
-	 * 
-	 * @return the bounding rectangle of the given collection of nodes
-	 */
-	private Rectangle getBoundingRect(Collection<OpNode> nodes) {
-		int xmin = Integer.MAX_VALUE;
-		int xmax = Integer.MIN_VALUE;
-		int ymin = Integer.MAX_VALUE;
-		int ymax = Integer.MIN_VALUE;
-
-		for(OpNode node : nodes) {
-			final JComponent comp = node.getExtension(JComponent.class);
-			if(comp != null) {
-				final Dimension pref = comp.getPreferredSize();
-				xmin = Math.min(xmin, comp.getX());
-				xmax = Math.max(xmax, comp.getX() + pref.width);
-				ymin = Math.min(ymin, comp.getY());
-				ymax = Math.max(ymax, comp.getY() + pref.height);
-			}
-		}
-
-		return new Rectangle(xmin, ymin, xmax-xmin, ymax-ymin);
-	}
-
 	//
 	// Transferable overrides
 	//
@@ -124,7 +100,7 @@ public class SubgraphClipboardContents implements Transferable {
 				retVal = this;
 			} else if(flavor == DataFlavor.imageFlavor) {
 				// XXX create a temp graph of the selected nodes and links?
-				final Rectangle boundRect = getBoundingRect(subGraph.getVertices());
+				final Rectangle boundRect = GraphUtils.getBoundingRect(subGraph.getVertices());
 				if(boundRect.width > 0 && boundRect.height > 0) {
 					final Dimension fullSize = new Dimension(boundRect.x + boundRect.width, boundRect.y + boundRect.height);
 					final BufferedImage img = new BufferedImage(boundRect.width, boundRect.height, BufferedImage.TYPE_INT_ARGB);

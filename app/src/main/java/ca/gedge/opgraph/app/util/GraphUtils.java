@@ -18,9 +18,12 @@
  */
 package ca.gedge.opgraph.app.util;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -58,6 +61,31 @@ import ca.gedge.opgraph.io.OpGraphSerializerFactory;
 public class GraphUtils {
 	/** Logger */
 	private final static Logger LOGGER = Logger.getLogger(GraphUtils.class.getName());
+	
+	/**
+	 * Gets the bounding rectangle of a given set of nodes.
+	 * 
+	 * @return the bounding rectangle of the given collection of nodes
+	 */
+	public static Rectangle getBoundingRect(Collection<OpNode> nodes) {
+		int xmin = Integer.MAX_VALUE;
+		int xmax = Integer.MIN_VALUE;
+		int ymin = Integer.MAX_VALUE;
+		int ymax = Integer.MIN_VALUE;
+
+		for(OpNode node : nodes) {
+			final JComponent comp = node.getExtension(JComponent.class);
+			if(comp != null) {
+				final Dimension pref = comp.getPreferredSize();
+				xmin = Math.min(xmin, comp.getX());
+				xmax = Math.max(xmax, comp.getX() + pref.width);
+				ymin = Math.min(ymin, comp.getY());
+				ymax = Math.max(ymax, comp.getY() + pref.height);
+			}
+		}
+
+		return new Rectangle(xmin, ymin, xmax-xmin, ymax-ymin);
+	}
 
 	/**
 	 * Clone a node along with {@link NodeSettings}, {@link NodeMetadata},

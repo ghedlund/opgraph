@@ -44,7 +44,8 @@ public class AutoLayoutManager {
 				final Dimension size = placeNode(node, xRef.get(), yRef.get());
 				placedNodes.add(node);
 				maxYRef.set(Math.max(maxYRef.get(), yRef.get() + size.height));
-				followOutputs(graph, node, xRef.get() + size.width + DEFAULT_SPACE, yRef.get(), maxYRef, placedNodes);
+				followOutputs(graph, node, xRef.get() + size.width + DEFAULT_SPACE,
+						yRef.get(), xRef.get() + size.width + DEFAULT_SPACE, maxYRef, placedNodes);
 				
 				yRef.set(maxYRef.get() + DEFAULT_SPACE);
 			});
@@ -65,7 +66,7 @@ public class AutoLayoutManager {
 	}
 	
 	private void followOutputs(OpGraph graph, OpNode node, int x, int y,
-			AtomicReference<Integer> maxYRef, List<OpNode> placedNodes) {
+			int xoff, AtomicReference<Integer> maxYRef, List<OpNode> placedNodes) {
 		for(OpLink link:graph.getOutgoingEdges(node)) {
 			final OpNode dest = link.getDestination();
 			if(!placedNodes.contains(dest)) {
@@ -74,14 +75,14 @@ public class AutoLayoutManager {
 				
 				if(getPreferredWidth() > 0 && (x+size.width) > getPreferredWidth()) {
 					// wrap node
-					x = 15;
+					x = xoff;
 					y = maxYRef.get() + DEFAULT_SPACE;
 					placeNode(dest, x, y);
 				}
 				
 				maxYRef.set(Math.max(maxYRef.get(), y + size.height));
 				x += size.width + DEFAULT_SPACE;
-				followOutputs(graph, dest, x, y, maxYRef, placedNodes);
+				followOutputs(graph, dest, x, y, xoff, maxYRef, placedNodes);
 				y += size.height + DEFAULT_SPACE;
 			}
 		}

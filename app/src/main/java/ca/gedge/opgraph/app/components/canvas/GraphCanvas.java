@@ -1009,7 +1009,8 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 						selected.add( ((CanvasNode)comp).getNode() );
 				}
 				
-				if(e.isControlDown() || e.isShiftDown()) {
+				if((e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())
+						== Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) {
 					final HashSet<OpNode> currentSelection = new HashSet<>(getSelectionModel().getSelectedNodes());
 					currentSelection.addAll(selected);
 					selected = currentSelection;
@@ -1247,6 +1248,10 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 				// Make sure the component the event was dispatched to is a child
 				clickLocation = me.getLocationOnScreen();
 				componentsToMove.clear();
+				
+				final boolean addToSelection = 
+						((me.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())
+								== Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 				// No CanvasNode parent? Select nothing, otherwise select its node
 				SwingUtilities.invokeLater(new Runnable() {
@@ -1254,7 +1259,7 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 					public void run() {
 						final CanvasNode canvasNode = GUIHelper.getAncestorOrSelfOfClass(CanvasNode.class, source);
 						if(canvasNode == null) {
-							if(!me.isControlDown())
+							if(!addToSelection)
 								getSelectionModel().setSelectedNode(null);
 
 							final NoteComponent note = GUIHelper.getAncestorOrSelfOfClass(NoteComponent.class, source);
@@ -1268,13 +1273,13 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 						} else {
 							// If it's not already selected, then select it
 							if(!getSelectionModel().getSelectedNodes().contains(canvasNode.getNode())) {
-								if(me.isControlDown())
+								if(addToSelection)
 									getSelectionModel().addNodeToSelection(canvasNode.getNode());
 								else
 									getSelectionModel().setSelectedNode(canvasNode.getNode());
 							} else {
 								// remove from selection if control is down
-								if(me.isControlDown())
+								if(addToSelection)
 									getSelectionModel().removeNodeFromSelection(canvasNode.getNode());
 							}
 

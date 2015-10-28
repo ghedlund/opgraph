@@ -96,7 +96,7 @@ public class DefaultServiceDiscovery extends ServiceDiscovery {
 							providersList.add(rawClass.asSubclass(service));
 						}
 					} catch(ClassNotFoundException exc) {
-						LOGGER.warning("Classloader '" + data.classloader + "' could not find class");
+						LOGGER.warning("Classloader '" + data.classloader + "' could not find class " + line);
 					} catch(ClassCastException exc) {
 						LOGGER.warning("URL '" + data.url + "' contains invalid provider: " + line);
 					}

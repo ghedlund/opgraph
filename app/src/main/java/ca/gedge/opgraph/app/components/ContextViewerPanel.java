@@ -139,7 +139,10 @@ public class ContextViewerPanel extends JEditorPane {
 					sb.append("</b>: ");
 
 					final Object value = context.get(field);
-					sb.append(value == null ? "undefined" : value);
+					String valueTxt = (value != null ? value.toString() : "undefined");
+					if(valueTxt.length() > 200)
+						valueTxt = valueTxt.substring(0, 200) + '\u2026';
+					sb.append(valueTxt);
 
 					sb.append("</li>");
 				}
@@ -150,7 +153,10 @@ public class ContextViewerPanel extends JEditorPane {
 					sb.append("</b>: ");
 
 					final Object value = context.get(field);
-					sb.append(value == null ? "undefined" : value);
+					String valueTxt = (value != null ? value.toString() : "undefined");
+					if(valueTxt.length() > 200)
+						valueTxt = valueTxt.substring(0, 200) + '\u2026';
+					sb.append(valueTxt);
 
 					sb.append("</li>");
 				}

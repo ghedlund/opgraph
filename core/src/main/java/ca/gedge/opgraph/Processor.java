@@ -18,9 +18,13 @@
  */
 package ca.gedge.opgraph;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
+import ca.gedge.opgraph.ProcessorEvent.Type;
 import ca.gedge.opgraph.exceptions.BreakpointEncountered;
 import ca.gedge.opgraph.exceptions.InvalidTypeException;
 import ca.gedge.opgraph.exceptions.ProcessingException;
@@ -64,6 +68,12 @@ public class Processor {
 	 * point to the breakpoint node.
 	 */
 	private OpNode breakpointNode = null;
+	
+	/**
+	 * Processor listener
+	 */
+	private List<ProcessorListener> listeners =
+			Collections.synchronizedList(new ArrayList<>());
 
 	/**
 	 * Constructs a processing context for a given graph.
@@ -306,8 +316,11 @@ public class Processor {
 			setupInputs(currentNode, localContext);
 
 			Boolean enabled = (Boolean)localContext.get(OpNode.ENABLED_FIELD);
-			if(enabled == null || enabled)
+			if(enabled == null || enabled) {
+				fireBeginNodeEvent();
 				currentNode.operate(localContext);
+				fireEndNodeEvent();
+			}
 
 			if(!hasNext() && customProcessor != null)
 				customProcessor.terminate(globalContext);
@@ -436,6 +449,7 @@ public class Processor {
 		while(hasNext()) {
 			step(shouldBreak);
 		}
+		fireCompleteEvent();
 	}
 
 	/**
@@ -520,5 +534,35 @@ public class Processor {
 					throw new RequiredInputException(this, node, field);
 			}
 		}
+	}
+	
+	/*
+	 * Events
+	 */
+	public void addProcessorListener(ProcessorListener listener) {
+		if(!listeners.contains(listener))
+			listeners.add(listener);
+	}
+	
+	public void removeProcessorListener(ProcessorListener listener) {
+		listeners.remove(listener);
+	}
+	
+	public void fireProcessorEvent(ProcessorEvent pe) {
+		for(ProcessorListener listener:listeners) {
+			listener.processorEvent(pe);
+		}
+	}
+	
+	public void fireBeginNodeEvent() {
+		fireProcessorEvent(new ProcessorEvent(Type.BEGIN_NODE, this, currentNode));
+	}
+	
+	public void fireEndNodeEvent() {
+		fireProcessorEvent(new ProcessorEvent(Type.FINISH_NODE, this, currentNode));
+	}
+	
+	public void fireCompleteEvent() {
+		fireProcessorEvent(new ProcessorEvent(Type.COMPLETE, this, currentNode));
 	}
 }

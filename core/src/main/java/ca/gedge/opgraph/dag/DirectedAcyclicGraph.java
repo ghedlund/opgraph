@@ -20,6 +20,7 @@ package ca.gedge.opgraph.dag;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
 
 /**
  * A generic implementation of a directed acyclic graph (DAG). Topological
@@ -60,7 +62,15 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/** Whether or not the topological sorting needs to be performed */
 	private boolean shouldSort;
-
+	
+	/** Comparator for ordering of nodes within a level (default by toString()) */
+	private final Comparator<V> defaultVertexComparator = (v1, v2) -> {
+		final String name1 = v1.toString();
+		final String name2 = v2.toString();
+		return name1.compareTo(name2);
+	};
+	private Comparator<V> vertexComparator = defaultVertexComparator;
+	
 	/**
 	 * Default constructor.
 	 */
@@ -327,6 +337,25 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 			return new LinkedHashSet<E>();
 		}
 	}
+	
+	/**
+	 * Set vertex comparator used during topologicalSort.  This comparator
+	 * is used to determine ordering of vertices which are in the same level.
+	 * 
+	 * @param comparator
+	 */
+	public void setVertexComparator(Comparator<V> comparator) {
+		this.vertexComparator = comparator;
+	}
+	
+	/**
+	 * Get vertex comparator.
+	 * 
+	 * @return comparator
+	 */
+	public Comparator<V> getVertexComparator() {
+		return this.vertexComparator;
+	}
 
 	@Override
 	public Iterator<V> iterator() {
@@ -364,7 +393,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 *  
 	 * @see <a href="http://en.wikipedia.org/wiki/Topological_sorting">Wikipedia Article</a>
 	 */
-	private boolean topologicalSort() {
+	protected boolean topologicalSort() {
 		boolean ret = true;
 		if(shouldSort && vertices.size() == 1) {
 			vertexLevels.put(vertices.iterator().next(), 0);
@@ -386,18 +415,19 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 			// Ordering
 			for(int level = 0; orderedVertices.size() < vertices.size(); ++level) {
 				// Find a vertex with zero incoming edges
-				ArrayList<V> verticesToProcess = new ArrayList<V>();
-				for(Map.Entry<V, Integer> entry : incomingEdgeCount.entrySet()) {
-					if(entry.getValue() == 0)
-						verticesToProcess.add(entry.getKey());
-				}
+				List<V> verticesToProcess = 
+						incomingEdgeCount.entrySet().parallelStream()
+							.filter( (e) -> e.getValue() == 0 )
+							.map( (e) -> e.getKey() )
+							.collect(Collectors.toList());
 
 				if(verticesToProcess.size() == 0)
 					break;
 
+				final List<V> levelOrdering = new ArrayList<>();
 				for(V vertex : verticesToProcess) {
 					// Prevent reuse of this vertex
-					orderedVertices.add(vertex);
+					levelOrdering.add(vertex);
 					newLevels.put(vertex, level);
 					incomingEdgeCount.put(vertex, -1);
 
@@ -407,6 +437,8 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 						incomingEdgeCount.put(out, incomingEdgeCount.get(out) - 1);
 					}
 				}
+				levelOrdering.sort(getVertexComparator());
+				orderedVertices.addAll(levelOrdering);
 			}
 
 			boolean cycleExists = false;

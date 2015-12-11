@@ -41,7 +41,7 @@ import javax.swing.event.DocumentListener;
 
 import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.validators.ClassValidator;
 
 /**

@@ -10,8 +10,8 @@ import javax.swing.SwingConstants;
 import javax.swing.undo.CompoundEdit;
 
 import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
 import ca.gedge.opgraph.app.util.GraphUtils;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 
 public class AlignNodesEdit extends CompoundEdit {
 	

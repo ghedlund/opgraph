@@ -20,9 +20,11 @@ package ca.gedge.opgraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ca.gedge.opgraph.dag.CycleDetectedException;
 import ca.gedge.opgraph.dag.DirectedAcyclicGraph;
@@ -31,6 +33,7 @@ import ca.gedge.opgraph.exceptions.ItemMissingException;
 import ca.gedge.opgraph.extensions.CompositeNode;
 import ca.gedge.opgraph.extensions.Extendable;
 import ca.gedge.opgraph.extensions.ExtendableSupport;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.util.Pair;
 
 /**
@@ -48,12 +51,29 @@ public final class OpGraph
 
 	/** A mapping from node id to node */
 	private Map<String, OpNode> nodeMap;
+	
+	private final Comparator<OpNode> nodeComparator = (n1, n2) -> {
+		final NodeMetadata meta1 = n1.getExtension(NodeMetadata.class);
+		final NodeMetadata meta2 = n2.getExtension(NodeMetadata.class);
+		
+		int retVal = n1.getName().compareTo(n2.getName());
+		if(meta1 != null && meta2 != null) {
+			retVal = (new Integer(meta1.getY())).compareTo(meta2.getY());
+		}
+		
+		if(retVal == 0) {
+			// compare ids
+			retVal = n1.getId().compareTo(n2.getId());
+		}
+		return retVal;
+	};
 
 	/**
 	 * Default constructor.
 	 */
 	public OpGraph() {
 		this.nodeMap = new LinkedHashMap<String, OpNode>();
+		setVertexComparator(nodeComparator);
 		setId(null);
 	}
 
@@ -343,6 +363,11 @@ public final class OpGraph
 		synchronized(listeners) {
 			listeners.add(listener);
 		}
+	}
+	
+	@Override
+	public Set<OpLink> getOutgoingEdges(OpNode vertex) {
+		return super.getOutgoingEdges(vertex);
 	}
 
 	/**

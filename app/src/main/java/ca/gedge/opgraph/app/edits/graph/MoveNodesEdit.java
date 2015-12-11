@@ -28,7 +28,7 @@ import javax.swing.undo.UndoableEdit;
 
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.commands.graph.MoveNodeCommand;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 
 /**
  * Moves a collection of nodes a specified amount.

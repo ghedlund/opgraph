@@ -15,7 +15,7 @@ import ca.gedge.opgraph.OpLink;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.components.canvas.CanvasNode;
 import ca.gedge.opgraph.app.edits.graph.MoveNodesEdit;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 
 public class AutoLayoutManager {
 	

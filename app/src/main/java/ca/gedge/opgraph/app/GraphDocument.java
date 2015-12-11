@@ -23,6 +23,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Map;
+
 import javax.swing.JOptionPane;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.undo.CannotRedoException;
@@ -38,8 +39,8 @@ import ca.gedge.opgraph.Processor;
 import ca.gedge.opgraph.app.commands.core.SaveCommand;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionModel;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
 import ca.gedge.opgraph.extensions.CompositeNode;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.util.Breadcrumb;
 
 /**

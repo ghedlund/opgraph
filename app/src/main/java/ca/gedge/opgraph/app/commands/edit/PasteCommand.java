@@ -46,11 +46,11 @@ import ca.gedge.opgraph.app.commands.HookableCommand;
 import ca.gedge.opgraph.app.components.canvas.SubgraphClipboardContents;
 import ca.gedge.opgraph.app.edits.graph.AddLinkEdit;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
 import ca.gedge.opgraph.app.util.GraphUtils;
 import ca.gedge.opgraph.dag.CycleDetectedException;
 import ca.gedge.opgraph.dag.VertexNotFoundException;
 import ca.gedge.opgraph.exceptions.ItemMissingException;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 
 /**
  * Paste copied nodes (if any) from the system clipboard into the current graph.

@@ -76,17 +76,19 @@ public class CanvasOverlay extends JComponent {
 			Point p = new Point((int)anchor.getCenterX(), (int)anchor.getCenterY());
 			p = SwingUtilities.convertPoint(canvas.getCurrentlyDraggedLinkInputField(), p, canvas);
 
-			final Shape link = LinksLayer.createSmoothLink(p, canvas.getCurrentDragLinkLocation());
-			final Stroke oldStroke = g.getStroke();
-
-			if(link != null) {
-				g.setColor(canvas.isDragLinkValid() ? Color.WHITE : Color.RED);
-				g.setStroke(LinksLayer.THIN);
-				g.draw(link);
-
-				g.setColor(Color.BLACK);
-				g.setStroke(oldStroke);
-				g.draw(LinksLayer.THICK.createStrokedShape(link));
+			if(p != null && canvas.getCurrentDragLinkLocation() != null) {
+				final Shape link = LinksLayer.createSmoothLink(p, canvas.getCurrentDragLinkLocation());
+				final Stroke oldStroke = g.getStroke();
+	
+				if(link != null) {
+					g.setColor(canvas.isDragLinkValid() ? Color.WHITE : Color.RED);
+					g.setStroke(LinksLayer.THIN);
+					g.draw(link);
+	
+					g.setColor(Color.BLACK);
+					g.setStroke(oldStroke);
+					g.draw(LinksLayer.THICK.createStrokedShape(link));
+				}
 			}
 		}
 

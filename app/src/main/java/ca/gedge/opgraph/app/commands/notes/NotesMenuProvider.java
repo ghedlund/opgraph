@@ -48,8 +48,10 @@ public class NotesMenuProvider implements MenuProvider {
 
 		if(isGraph || isNote) {
 			final Point loc = model.getCanvas().getMousePosition();
-			menu.addSeparator("");
-			menu.addMenuItem("add_note", new AddNoteCommand(loc.x, loc.y));
+			if(loc != null) {
+				menu.addSeparator("");
+				menu.addMenuItem("add_note", new AddNoteCommand(loc.x, loc.y));
+			}
 		} 
 
 		if(isNote) {

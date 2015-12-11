@@ -34,10 +34,10 @@ import ca.gedge.opgraph.OpLink;
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
 import ca.gedge.opgraph.dag.CycleDetectedException;
 import ca.gedge.opgraph.dag.VertexNotFoundException;
 import ca.gedge.opgraph.exceptions.ItemMissingException;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.nodes.general.MacroNode;
 
 /**

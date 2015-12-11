@@ -24,7 +24,7 @@ import javax.swing.undo.CannotUndoException;
 
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.library.NodeData;
 
 /**

@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
 import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.app.extensions.NodeMetadata;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.io.xml.XMLSerializer;
 import ca.gedge.opgraph.io.xml.XMLSerializerFactory;
 

@@ -56,14 +56,20 @@ public final class OpGraph
 		final NodeMetadata meta1 = n1.getExtension(NodeMetadata.class);
 		final NodeMetadata meta2 = n2.getExtension(NodeMetadata.class);
 		
-		int retVal = n1.getName().compareTo(n2.getName());
+		int retVal = 0;
 		if(meta1 != null && meta2 != null) {
 			retVal = (new Integer(meta1.getY())).compareTo(meta2.getY());
+			if(retVal == 0) {
+				retVal = (new Integer(meta1.getX()).compareTo(meta2.getX()));
+			}
 		}
 		
 		if(retVal == 0) {
-			// compare ids
-			retVal = n1.getId().compareTo(n2.getId());
+			retVal = n1.getName().compareTo(n2.getName());
+			
+			if(retVal == 0)
+				// compare ids
+				retVal = n1.getId().compareTo(n2.getId());
 		}
 		return retVal;
 	};

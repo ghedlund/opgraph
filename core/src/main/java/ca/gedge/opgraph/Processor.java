@@ -115,6 +115,9 @@ public class Processor {
 			throw new NullPointerException("Graph cannot be null");
 
 		this.graph = graph;
+		this.graph.invalidateSort();
+		this.graph.topologicalSort();
+		
 		this.customProcessor = customProcessor;
 
 		reset(context);

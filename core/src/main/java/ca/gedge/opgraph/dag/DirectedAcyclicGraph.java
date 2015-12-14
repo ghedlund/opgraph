@@ -381,6 +381,10 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 			}
 		};
 	}
+	
+	public void invalidateSort() {
+		this.shouldSort = true;
+	}
 
 	/**
 	 * Topologically orders the vertices in this DAG. A topological ordering
@@ -393,7 +397,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 *  
 	 * @see <a href="http://en.wikipedia.org/wiki/Topological_sorting">Wikipedia Article</a>
 	 */
-	protected boolean topologicalSort() {
+	public boolean topologicalSort() {
 		boolean ret = true;
 		if(shouldSort && vertices.size() == 1) {
 			vertexLevels.put(vertices.iterator().next(), 0);

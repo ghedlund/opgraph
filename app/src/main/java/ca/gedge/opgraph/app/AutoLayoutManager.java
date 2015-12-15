@@ -17,6 +17,11 @@ import ca.gedge.opgraph.app.components.canvas.CanvasNode;
 import ca.gedge.opgraph.app.edits.graph.MoveNodesEdit;
 import ca.gedge.opgraph.extensions.NodeMetadata;
 
+/**
+ * Layout nodes in a graph in a logical manner.  Nodes
+ * are laid out horizontally, with nodes traversed depth first.
+ * 
+ */
 public class AutoLayoutManager {
 	
 	private final static int DEFAULT_SPACE = 15;
@@ -30,6 +35,10 @@ public class AutoLayoutManager {
 	}
 	
 	public void layoutGraph(OpGraph graph) {
+		// ensure correct sorting
+		graph.invalidateSort();
+		graph.topologicalSort();
+		
 		final List<OpNode> modifiedNodes = checkNodes(graph);
 
 		cmpEdit = new CompoundEdit();
@@ -43,7 +52,7 @@ public class AutoLayoutManager {
 			.forEach(node -> {
 				final Dimension size = placeNode(node, xRef.get(), yRef.get());
 				placedNodes.add(node);
-				maxYRef.set(Math.max(maxYRef.get(), yRef.get() + size.height));
+				maxYRef.set(yRef.get());
 				followOutputs(graph, node, xRef.get() + size.width + DEFAULT_SPACE,
 						yRef.get(), xRef.get() + size.width + DEFAULT_SPACE, maxYRef, placedNodes);
 				
@@ -65,8 +74,21 @@ public class AutoLayoutManager {
 		return modifiedNodes;
 	}
 	
+	/**
+	 * Follow outputs for a node, placing each node in depth first 
+	 * ordering.
+	 * 
+	 * @param graph
+	 * @param node
+	 * @param x currentX
+	 * @param y currentY
+	 * @param xoff indent location (used during node wrapping)
+	 * @param maxYRef reference for storing maxY value
+	 * @param placedNodes list of already placed nodes
+	 */
 	private void followOutputs(OpGraph graph, OpNode node, int x, int y,
 			int xoff, AtomicReference<Integer> maxYRef, List<OpNode> placedNodes) {
+		OpNode lastNode = null;
 		for(OpLink link:graph.getOutgoingEdges(node)) {
 			final OpNode dest = link.getDestination();
 			if(!placedNodes.contains(dest)) {
@@ -81,10 +103,19 @@ public class AutoLayoutManager {
 				}
 				
 				maxYRef.set(Math.max(maxYRef.get(), y + size.height));
-				x += size.width + DEFAULT_SPACE;
-				followOutputs(graph, dest, x, y, xoff, maxYRef, placedNodes);
+				
+				int nextX = x + size.width + DEFAULT_SPACE;
+				if(lastNode != null && 
+						(graph.getLevel(lastNode) != graph.getLevel(dest))) {
+					x = nextX;
+				}
+				followOutputs(graph, dest, nextX, y, xoff, maxYRef, placedNodes);
 				y += size.height + DEFAULT_SPACE;
+				if(y < maxYRef.get()) {
+					y = maxYRef.get() + DEFAULT_SPACE;
+				}
 			}
+			lastNode = dest;
 		}
 	}
 	

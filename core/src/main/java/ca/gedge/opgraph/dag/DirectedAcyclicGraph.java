@@ -54,12 +54,6 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 */
 	private WeakHashMap<V, Integer> vertexLevels;
 
-	/** A cache of incoming edges */
-	private WeakHashMap<V, Set<E>> incomingEdgesCache;
-
-	/** A cache of outgoing edges */
-	private WeakHashMap<V, Set<E>> outgoingEdgesCache;
-
 	/** Whether or not the topological sorting needs to be performed */
 	private boolean shouldSort;
 	
@@ -78,8 +72,6 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		this.vertices = new ArrayList<V>();
 		this.edges = new LinkedHashSet<E>();
 		this.vertexLevels = new WeakHashMap<V, Integer>();
-		this.incomingEdgesCache = new WeakHashMap<V, Set<E>>();
-		this.outgoingEdgesCache = new WeakHashMap<V, Set<E>>();
 		this.shouldSort = false;
 	}
 
@@ -162,10 +154,6 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 		edges.add(edge);
 
-		// Clear out appropriate cache entries
-		outgoingEdgesCache.remove(edge.getSource());
-		incomingEdgesCache.remove(edge.getDestination());
-
 		// Check if adding this edge created a cycle, and if so, remove it
 		boolean oldShouldSort = shouldSort;
 		shouldSort = true;
@@ -191,20 +179,12 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 			try {
 				edges.add(edge);
 
-				// XXX It'd be nice to not have to do this, but instead either directly
-				//     add this edge to the cached values of each, or maybe pass this
-				//     edge to toplogicalSort directly
-				outgoingEdgesCache.remove(edge.getSource());
-				incomingEdgesCache.remove(edge.getDestination());
-
 				// Check if adding this edge created a cycle, and if so, remove it
 				boolean oldShouldSort = shouldSort;
 				shouldSort = true;
 				canAdd = topologicalSort();
 				shouldSort = oldShouldSort;
 			} finally {
-				outgoingEdgesCache.remove(edge.getSource());
-				incomingEdgesCache.remove(edge.getDestination());
 				edges.remove(edge);
 			}
 		}
@@ -224,10 +204,6 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		edges.remove(edge);
 		final boolean removed = initalSize != edges.size();
 		if(removed) {
-			// Clear out appropriate cache entries
-			outgoingEdgesCache.remove(edge.getSource());
-			incomingEdgesCache.remove(edge.getDestination());
-
 			shouldSort = true;
 		}
 		return removed;
@@ -289,22 +265,10 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		if(!vertices.contains(vertex))
 			return new LinkedHashSet<E>();
 
-		// If not in cache, compute
-		if(!incomingEdgesCache.containsKey(vertex)) {
-			final LinkedHashSet<E> cachedValue = new LinkedHashSet<E>();
-			for(E edge : edges) {
-				if(edge.getDestination() == vertex)
-					cachedValue.add(edge);
-			}
-
-			incomingEdgesCache.put(vertex, cachedValue);
-		}
-
-		final Set<E> set = incomingEdgesCache.get(vertex);
-		if(set != null)
-			return Collections.unmodifiableSet(set);
-		else
-			return new LinkedHashSet<E>();
+		return edges.parallelStream()
+			.filter( (l) -> l.getDestination() == vertex ) 
+			.sorted( (l1, l2) -> getVertexComparator().compare(l1.getSource(), l2.getSource()) )
+			.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	/**
@@ -318,24 +282,11 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	public Set<E> getOutgoingEdges(V vertex) {
 		if(!vertices.contains(vertex))
 			return new LinkedHashSet<E>();
-
-		// See if exists in cache
-		if(!outgoingEdgesCache.containsKey(vertex)) {
-			final LinkedHashSet<E> cachedValue = new LinkedHashSet<E>();
-			for(E edge : edges) {
-				if(edge.getSource() == vertex)
-					cachedValue.add(edge);
-			}
-
-			outgoingEdgesCache.put(vertex, cachedValue);
-		}
-
-		final Set<E> set = outgoingEdgesCache.get(vertex);
-		if(set != null) {
-			return Collections.unmodifiableSet(set);
-		} else {
-			return new LinkedHashSet<E>();
-		}
+		
+		return edges.parallelStream()
+			.filter( (l) -> l.getSource() == vertex )
+			.sorted( (l1, l2) -> getVertexComparator().compare(l1.getDestination(), l2.getDestination()) )
+			.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 	
 	/**

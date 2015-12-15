@@ -25,7 +25,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,10 +88,30 @@ public class GraphUtils {
 
 		return new Rectangle(xmin, ymin, xmax-xmin, ymax-ymin);
 	}
+	
+	/**
+	 * Change id for all nodes in a graph.  This method is recursive
+	 * and will traverse nodes with the CompositeNode extension.
+	 * 
+	 * @param graph
+	 */
+	public static void changeNodeIds(OpGraph graph) {
+		for(OpNode node:graph) {
+			final String newId = Long.toHexString(UUID.randomUUID().getMostSignificantBits());
+			node.setId(newId);
+			
+			final CompositeNode cmpNode = node.getExtension(CompositeNode.class);
+			if(cmpNode != null) {
+				final OpGraph subGraph = cmpNode.getGraph();
+				changeNodeIds(subGraph);
+			}
+		}
+	}
 
 	/**
 	 * Clone a node along with {@link NodeSettings}, {@link NodeMetadata},
-	 * {@link CompositeNode}, and {@link Publishable} extensions cloned.
+	 * {@link CompositeNode}, and {@link Publishable} extensions cloned. 
+	 * The new node will have a new unique id.
 	 * 
 	 * @param node  the node to clone
 	 * 
@@ -119,9 +141,9 @@ public class GraphUtils {
 				
 				final ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
 				final OpGraph inGraph = serializer.read(bin);
+				changeNodeIds(inGraph);
 				
 				final OpNode clonedNode = inGraph.getVertices().get(0);
-				clonedNode.setId(Long.toHexString(UUID.randomUUID().getMostSignificantBits()));
 				return clonedNode;
 			} catch (IOException e) {
 				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);

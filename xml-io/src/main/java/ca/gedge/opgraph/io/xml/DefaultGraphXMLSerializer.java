@@ -92,12 +92,22 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 		parentElem.appendChild(graphElem);
 	}
 
+	/*
+	 * When reading a graph, it's possible to get many IOException errors
+	 * which are not fatal when reading the graph document.  Instead of
+	 * allowing these exceptions to continue, which causes document serialization
+	 * to fail, collect these exceptions as 'warnings' and attach
+	 * these warnings to the resulting graph.
+	 */
 	@Override
 	public Object read(XMLSerializerFactory serializerFactory, OpGraph graph, Object parent, Document doc, Element elem)
 		throws IOException
 	{
+		final SerializationWarnings warnings = new SerializationWarnings();
+		
 		if(GRAPH_QNAME.equals(XMLSerializerFactory.getQName(elem))) {
 			graph = new OpGraph();
+			
 
 			// Read children
 			final NodeList children = elem.getChildNodes();
@@ -108,27 +118,29 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 					final Element childElem = (Element)node;
 					final QName name = XMLSerializerFactory.getQName(childElem);
 					final XMLSerializer serializer = serializerFactory.getHandler(name);
-					if(serializer == null)
-						throw new IOException("Could not get handler for element: " + name);
-
-					// Determine what kind of element was read. If the element represented a
-					// node/link, add it to the graph, otherwise it should be the <extensions>
-					// element, and the extendable serializer handles adding the extensions
-					//
-					final Object objRead = serializer.read(serializerFactory, graph, graph, doc, childElem);
-					if(objRead != null) {
-						if(objRead instanceof OpNode) {
-							graph.add((OpNode)objRead);
-						} else if(objRead instanceof OpLink) {
-							try {
-								graph.add( (OpLink)objRead );
-							} catch(VertexNotFoundException exc) {
-								throw new IOException("Link references unknown node", exc);
-							} catch(CycleDetectedException exc) {
-								throw new IOException("Link induces a cycle", exc);
-							} catch(NullPointerException exc) {
-								throw new IOException("Could not construct link", exc);
+					if(serializer == null) {
+						final IOException warning = new IOException("Could not get handler for element: " + name);
+						warnings.add(warning);
+					} else {
+						// Determine what kind of element was read. If the element represented a
+						// node/link, add it to the graph, otherwise it should be the <extensions>
+						// element, and the extendable serializer handles adding the extensions
+						//
+						try {
+							final Object objRead = serializer.read(serializerFactory, graph, graph, doc, childElem);
+							if(objRead != null) {
+								if(objRead instanceof OpNode) {
+									graph.add((OpNode)objRead);
+								} else if(objRead instanceof OpLink) {
+									try {
+										graph.add( (OpLink)objRead );
+									} catch(VertexNotFoundException | CycleDetectedException | NullPointerException exc) {
+										warnings.add(exc);
+									}
+								}
 							}
+						} catch (IOException e) {
+							warnings.add(e);
 						}
 					}
 				}
@@ -150,6 +162,9 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 			}
 		}
 
+		if(warnings.size() > 0) {
+			graph.putExtension(SerializationWarnings.class, warnings);
+		}
 		return graph;
 	}
 

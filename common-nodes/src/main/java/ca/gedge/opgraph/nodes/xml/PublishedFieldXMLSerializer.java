@@ -123,6 +123,10 @@ public class PublishedFieldXMLSerializer implements XMLSerializer {
 			final OpNode destNode = macro.getGraph().getNodeById(destNodeId, true);
 			final InputField destField = destNode.getInputFieldWithKey(destFieldKey);
 
+			if(destField == null) {
+				throw new IOException("Cannot publish field " + destFieldKey + ", unable to located in destination node.");
+			}
+			
 			// Create
 			final InputField published = macro.publish(key, destNode, destField);
 

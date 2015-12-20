@@ -32,10 +32,11 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -158,72 +159,43 @@ public class LinksLayer extends JComponent {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
+		final Color SELECTED_FILL = Color.ORANGE;
+		final Color REGULAR_FILL = Color.ORANGE.darker().darker();
+
+		final IdentityHashMap<OpLink, Boolean> connectedLinks = new IdentityHashMap<OpLink, Boolean>();
+		final List<OpNode> selectedNodes = new ArrayList<>();
+		if(canvas.getDocument().getProcessingContext() != null) {
+			selectedNodes.add(canvas.getDocument().getProcessingContext().getCurrentNode());
+		} else {
+			selectedNodes.addAll(canvas.getSelectionModel().getSelectedNodes());
+		}
+
 		// Draw links between nodes
 		final Stroke oldStroke = g.getStroke();
-		if(canvas.getDocument().getProcessingContext() != null) {
-			// Find links connected to the current node
-			final IdentityHashMap<OpLink, Boolean> connectedLinks = new IdentityHashMap<OpLink, Boolean>();
-			final OpNode currentNode = canvas.getDocument().getProcessingContext().getCurrentNode();
-
-			for(OpLink link : canvas.getDocument().getGraph().getIncomingEdges(currentNode))
+		for(OpNode node : selectedNodes) {
+			for(OpLink link : canvas.getDocument().getGraph().getIncomingEdges(node))
 				connectedLinks.put(link, true);
-
-			for(OpLink link : canvas.getDocument().getGraph().getOutgoingEdges(currentNode))
+			
+			for(OpLink link : canvas.getDocument().getGraph().getOutgoingEdges(node))
 				connectedLinks.put(link, true);
+		}
 
-			// We're debugging, so draw things faded out
-			final Color SELECTED_FILL = Color.ORANGE;
-			final Color REGULAR_FILL = Color.ORANGE.darker().darker();
+		// Draw links
+		for(Map.Entry<OpLink, Shape> link : links.entrySet()) {
+			Color strokeColor = Color.BLACK;
+			Color fillColor = REGULAR_FILL;
+			if(connectedLinks.containsKey(link.getKey()))
+				fillColor = SELECTED_FILL;
 
-			// Draw links
-			for(Map.Entry<OpLink, Shape> link : links.entrySet()) {
-				Color strokeColor = Color.BLACK;
-				Color fillColor = REGULAR_FILL;
-				if(connectedLinks.containsKey(link.getKey()))
-					fillColor = SELECTED_FILL;
+			// Link fill
+			g.setColor(fillColor);
+			g.setStroke(THIN);
+			g.draw(link.getValue());
 
-				// Link fill
-				g.setColor(fillColor);
-				g.setStroke(THIN);
-				g.draw(link.getValue());
-
-				// Link outline
-				g.setColor(strokeColor);
-				g.setStroke(oldStroke);
-				g.draw(THICK.createStrokedShape(link.getValue()));
-			}
-		} else {
-			// Get incoming/outgoing links of selected nodes
-			final TreeSet<OpLink> selectedLinks = new TreeSet<OpLink>();
-			for(OpNode node : canvas.getSelectionModel().getSelectedNodes()) {
-				for(OpLink link : canvas.getDocument().getGraph().getIncomingEdges(node))
-					selectedLinks.add(link);
-
-				for(OpLink link : canvas.getDocument().getGraph().getOutgoingEdges(node))
-					selectedLinks.add(link);
-			}
-
-			// Draw links
-			for(Map.Entry<OpLink, Shape> link : links.entrySet()) {
-				Color strokeColor = Color.BLACK;
-				Color fillColor = Color.ORANGE;
-				if(link.getKey() == canvas.getCurrentlyDraggedLink()) {
-					strokeColor = new Color(0, 0, 0, 50);
-					fillColor = new Color(255, 165, 0, 50);
-				} else if(selectedLinks.contains(link.getKey())) {
-					fillColor = Color.GREEN;
-				}
-
-				// Link fill
-				g.setColor(fillColor);
-				g.setStroke(THIN);
-				g.draw(link.getValue());
-
-				// Link outline
-				g.setColor(strokeColor);
-				g.setStroke(oldStroke);
-				g.draw(THICK.createStrokedShape(link.getValue()));
-			}
+			// Link outline
+			g.setColor(strokeColor);
+			g.setStroke(oldStroke);
+			g.draw(THICK.createStrokedShape(link.getValue()));
 		}
 
 		g.setStroke(oldStroke);

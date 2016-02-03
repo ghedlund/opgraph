@@ -143,6 +143,39 @@ public final class OpGraph
 	}
 
 	/**
+	 * Finds path to the node with specified id.  Path will be a list
+	 * of one or more OpNodes.
+	 * 
+	 * @param id the id of th enode
+	 * 
+	 * @return the path of OpNodes to the specified node.
+	 */
+	public List<OpNode> getNodePath(String id) {
+		List<OpNode> retVal = new ArrayList<>();
+		
+		if(nodeMap.containsKey(id)) {
+			final OpNode node = nodeMap.get(id);
+			if(node != null)
+				retVal.add(node);
+		} else {
+			for(OpNode node: getVertices()) {
+				final CompositeNode composite = node.getExtension(CompositeNode.class);
+				if(composite != null) {
+					List<OpNode> subgraphSearch = 
+							composite.getGraph().getNodePath(id);
+					if(subgraphSearch.size() > 0) {
+						retVal.add(node);
+						retVal.addAll(subgraphSearch);
+						break;
+					}
+				}
+			}
+		}
+		
+		return retVal;
+	}
+	
+	/**
 	 * Finds a node and its parent graph by id. This is a deep operation,
 	 * and hence will recursively search through macro nodes to find the
 	 * node with the given id. 

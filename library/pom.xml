@@ -26,7 +26,7 @@
 	<parent>
 		<groupId>ca.gedge.opgraph</groupId>
 		<artifactId>opgraph</artifactId>
-		<version>0.5</version>
+		<version>0.5-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>opgraph-library</artifactId>

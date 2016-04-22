@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import ca.gedge.opgraph.ProcessorEvent.Type;
@@ -31,6 +32,7 @@ import ca.gedge.opgraph.exceptions.ProcessingException;
 import ca.gedge.opgraph.exceptions.RequiredInputException;
 import ca.gedge.opgraph.extensions.CompositeNode;
 import ca.gedge.opgraph.extensions.CustomProcessing;
+import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.extensions.CustomProcessing.CustomProcessor;
 import ca.gedge.opgraph.validators.TypeValidator;
 
@@ -161,6 +163,8 @@ public class Processor {
 
 		if(customProcessor != null)
 			customProcessor.initialize(globalContext);
+		
+		installNodeDefaults(getGraph(), globalContext);
 	}
 
 	/**
@@ -489,6 +493,22 @@ public class Processor {
 				final InputField dest = link.getDestinationField();
 				context.put(dest, val);
 			}
+		}
+	}
+	
+	private void installNodeDefaults(OpGraph graph, OpContext context) {
+		for(OpNode node : graph.getVertices()) {
+			// Add defaults, if any exist
+			final NodeMetadata meta = node.getExtension(NodeMetadata.class);
+			if(meta != null) {
+				for(Map.Entry<InputField, Object> entry : meta.getDefaults().entrySet())
+					context.getChildContext(node).put(entry.getKey(), entry.getValue());
+			}
+
+			// If composite, recursively descend
+			final CompositeNode composite = node.getExtension(CompositeNode.class);
+			if(composite != null)
+				installNodeDefaults(composite.getGraph(), context.getChildContext(node));
 		}
 	}
 

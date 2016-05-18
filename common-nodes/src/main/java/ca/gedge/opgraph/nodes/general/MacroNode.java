@@ -57,6 +57,8 @@ public class MacroNode
 
 	/** A list of published outputs */
 	protected List<PublishedOutput> publishedOutputs;
+	
+	private Processor currentProcessor;
 
 	/**
 	 * The source file for this macro.
@@ -148,20 +150,27 @@ public class MacroNode
 	public void operate(OpContext context) throws ProcessingException {
 		if(graph != null) {
 			// First set up processor
-			final Processor processor = new Processor(graph);
-			processor.reset(context);
+			currentProcessor = new Processor(graph);
+			currentProcessor.reset(context);
 
 			// The reset call above could clear out the context, so map after
 			mapInputs(context);
 
 			// Now run the graph
-			processor.stepAll();
-			if(processor.getError() != null)
-				throw processor.getError();
+			currentProcessor.stepAll();
+			if(currentProcessor.getError() != null)
+				throw currentProcessor.getError();
 
 			// Map the published outputs from the child nodes back into context
 			mapOutputs(context);
 		}
+	}
+	
+	@Override
+	public void setCanceled(boolean canceled) {
+		super.setCanceled(canceled);
+		if(currentProcessor != null)
+			currentProcessor.stop();
 	}
 
 	//

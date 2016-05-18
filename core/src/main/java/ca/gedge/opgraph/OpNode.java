@@ -22,8 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.prefs.NodeChangeEvent;
 
 import ca.gedge.opgraph.dag.Vertex;
+import ca.gedge.opgraph.exceptions.NodeCanceledException;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 import ca.gedge.opgraph.extensions.Extendable;
 import ca.gedge.opgraph.extensions.ExtendableSupport;
@@ -72,6 +74,12 @@ public abstract class OpNode implements Extendable, Vertex {
 
 	/** The list of output fields this node has */
 	private List<OutputField> outputFields;
+	
+	/**
+	 * Graph operation may be canceled by the user while
+	 * the operate method is running.
+	 */
+	private volatile boolean canceled = false;
 
 	/**
 	 * Constructs a node with a generated id, this class' name as the node name
@@ -120,6 +128,40 @@ public abstract class OpNode implements Extendable, Vertex {
 		this.inputFields = new ArrayList<InputField>();
 		this.inputFields.add(ENABLED_FIELD);
 		this.breakpoint = false;
+	}
+	
+	/**
+	 * Has operation been canceled.
+	 * 
+	 * @return canceled
+	 */
+	public synchronized boolean isCanceled() {
+		return this.canceled;
+	}
+	
+	/**
+	 * Set node as canceled.
+	 * @param canceled
+	 */
+	public synchronized void setCanceled(boolean canceled) {
+		this.canceled = canceled;
+	}
+	
+	/**
+	 * Check if node operation has been canceled.
+	 * If canceled, this method will throw a new
+	 * NodeCanceledException.  It is the responsibility
+	 * of the implementing class to check this method
+	 * at appropriate times during the operate() method.
+	 * 
+	 * @throws NodeCanceldException
+	 */
+	public synchronized void checkCanceled() throws NodeCanceledException {
+		if(isCanceled()) {
+			// reset canceled flag
+			canceled = false;
+			throw new NodeCanceledException(null, "Node operation canceled by user");
+		}
 	}
 	
 	/**

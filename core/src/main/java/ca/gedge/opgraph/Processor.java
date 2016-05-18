@@ -71,6 +71,8 @@ public class Processor {
 	 */
 	private OpNode breakpointNode = null;
 	
+	private volatile boolean shutdown = false;
+	
 	/**
 	 * Processor listener
 	 */
@@ -447,13 +449,30 @@ public class Processor {
 	}
 	
 	/**
+	 * Stop processing graph during after a call to stepAll.
+	 */
+	public void stop() {
+		shutdown = true;
+		if(currentNode != null) {
+			currentNode.setCanceled(true);
+		}
+		if(currentMacro != null) {
+			currentMacro.stop();
+		}
+	}
+	
+	/**
 	 * Processes the graph to completion or
 	 * breakpoint if <code>shouldBreak</code> is <code>true</code>
 	 * 
 	 * @param shouldBreak
 	 */
 	public void stepAll(boolean shouldBreak) throws BreakpointEncountered {
+		shutdown = false;
 		while(hasNext()) {
+			if(shutdown) {
+				throw new BreakpointEncountered(this, currentNode);
+			}
 			step(shouldBreak);
 		}
 		fireCompleteEvent();

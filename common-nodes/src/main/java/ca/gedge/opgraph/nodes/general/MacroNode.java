@@ -163,6 +163,9 @@ public class MacroNode
 
 			// Map the published outputs from the child nodes back into context
 			mapOutputs(context);
+			
+			// free macro processor memory
+			currentProcessor.getContext().clearChildContexts();
 		}
 	}
 	

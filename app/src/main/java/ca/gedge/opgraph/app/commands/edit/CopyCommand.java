@@ -87,8 +87,9 @@ public class CopyCommand extends HookableCommand {
 				}
 
 				// Add to system clipboard
-				final SubgraphClipboardContents clipboardContents = new SubgraphClipboardContents(document, selectedGraph);
-				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboardContents, document.getCanvas());
+				final SubgraphClipboardContents clipboardContents = new SubgraphClipboardContents(
+						GraphEditorModel.getActiveEditorModel().getCanvas(), selectedGraph);
+				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboardContents, null);
 			}
 		}
 	}

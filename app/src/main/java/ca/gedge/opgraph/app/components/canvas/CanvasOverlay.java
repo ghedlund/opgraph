@@ -71,17 +71,17 @@ public class CanvasOverlay extends JComponent {
 		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
 		// The drag link
-		if(canvas.getCurrentlyDraggedLinkInputField() != null) {
-			Ellipse2D anchor = canvas.getCurrentlyDraggedLinkInputField().getAnchor();
+		if(canvas.getUI().getCurrentlyDraggedLinkInputField() != null) {
+			Ellipse2D anchor = canvas.getUI().getCurrentlyDraggedLinkInputField().getAnchor();
 			Point p = new Point((int)anchor.getCenterX(), (int)anchor.getCenterY());
-			p = SwingUtilities.convertPoint(canvas.getCurrentlyDraggedLinkInputField(), p, canvas);
+			p = SwingUtilities.convertPoint(canvas.getUI().getCurrentlyDraggedLinkInputField(), p, canvas);
 
-			if(p != null && canvas.getCurrentDragLinkLocation() != null) {
-				final Shape link = LinksLayer.createSmoothLink(p, canvas.getCurrentDragLinkLocation());
+			if(p != null && canvas.getUI().getCurrentDragLinkLocation() != null) {
+				final Shape link = LinksLayer.createSmoothLink(p, canvas.getUI().getCurrentDragLinkLocation());
 				final Stroke oldStroke = g.getStroke();
 	
 				if(link != null) {
-					g.setColor(canvas.isDragLinkValid() ? Color.WHITE : Color.RED);
+					g.setColor(canvas.getUI().isDragLinkValid() ? Color.WHITE : Color.RED);
 					g.setStroke(LinksLayer.THIN);
 					g.draw(link);
 	
@@ -93,7 +93,7 @@ public class CanvasOverlay extends JComponent {
 		}
 
 		// the selection rect
-		final Rectangle selectionRect = canvas.getSelectionRect();
+		final Rectangle selectionRect = canvas.getUI().getSelectionRect();
 		if(selectionRect != null) {
 			int x = selectionRect.x;
 			int y = selectionRect.y;

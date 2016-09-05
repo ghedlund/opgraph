@@ -56,9 +56,6 @@ public class GraphDocument {
 	/** Key for the processing undo state property */
 	public static final String UNDO_STATE = "undoState";
 
-	/** Active canvas */
-	private final WeakReference<GraphCanvas> canvas; // REMOVEME eventually
-
 	/** The selection model this canvas uses */
 	private GraphCanvasSelectionModel selectionModel;
 
@@ -79,14 +76,20 @@ public class GraphDocument {
 
 	/** Support for property changes */
 	private PropertyChangeSupport changeSupport;
+	
+	/**
+	 * Construct a graph document.
+	 */
+	public GraphDocument() {
+		this(new OpGraph());
+	}
 
 	/**
 	 * Constructs a graph document.
 	 * 
-	 * @param canvas  the canvas that is displaying this document
+	 * @param graph
 	 */
-	public GraphDocument(GraphCanvas canvas) {
-		this.canvas = new WeakReference<GraphCanvas>(canvas);
+	public GraphDocument(OpGraph graph) {
 		this.selectionModel = new GraphCanvasSelectionModel();
 		this.breadcrumb = new Breadcrumb<OpGraph, String>();
 
@@ -135,7 +138,7 @@ public class GraphDocument {
 		this.changeSupport = new PropertyChangeSupport(this);
 
 		// Reset for freshnesss
-		reset(null, null);
+		reset(null, graph);
 	}
 
 	/**
@@ -205,21 +208,27 @@ public class GraphDocument {
 	public Breadcrumb<OpGraph, String> getBreadcrumb() {
 		return breadcrumb;
 	}
+	
+	/**
+	 * Return the root graph for the document.
+	 * 
+	 * @return root graph of document
+	 */
+	public OpGraph getRootGraph() {
+		return breadcrumb.getStates().get(breadcrumb.size()-1);
+	}
 
 	/**
+	 * Return the graph at the top of the breadcrumb stack.
+	 * This is the graph currently being displayed by the 
+	 * canvas.
+	 * 
 	 * @return the graph
 	 */
 	public OpGraph getGraph() {
 		return breadcrumb.getCurrentState();
 	}
-
-	/**
-	 * @return the canvas
-	 */
-	public GraphCanvas getCanvas() {
-		return canvas.get();
-	}
-
+	
 	/**
 	 * @return the selectionModel
 	 */

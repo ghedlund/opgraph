@@ -90,18 +90,18 @@ public class PasteCommand extends HookableCommand {
 					final Map<String, String> nodeMap = new HashMap<String, String>();
 
 					// Keep track of the number of times this graph has been pasted
-					Integer timesDuplicated = nodeClipboardContents.graphDuplicates.get(graph);
+					Integer timesDuplicated = nodeClipboardContents.getGraphDuplicates().get(graph);
 					if(timesDuplicated == null) {
 						timesDuplicated = 0;
 					} else {
 						timesDuplicated = timesDuplicated + 1;
 					}
 
-					nodeClipboardContents.graphDuplicates.put(graph, timesDuplicated);
+					nodeClipboardContents.getGraphDuplicates().put(graph, timesDuplicated);
 
 					// Create a new node edit for each node in the contents
 					final Collection<OpNode> newNodes = new ArrayList<OpNode>();
-					for(OpNode node : nodeClipboardContents.subGraph.getVertices()) {
+					for(OpNode node : nodeClipboardContents.getGraph().getVertices()) {
 						// Clone the node
 						final OpNode newNode = GraphUtils.cloneNode(node);
 						newNodes.add(newNode);
@@ -122,7 +122,7 @@ public class PasteCommand extends HookableCommand {
 					document.getSelectionModel().setSelectedNodes(newNodes);
 
 					// Add copied node to graph
-					for(OpLink link : nodeClipboardContents.subGraph.getEdges()) {
+					for(OpLink link : nodeClipboardContents.getGraph().getEdges()) {
 						final OpNode srcNode = graph.getNodeById(nodeMap.get(link.getSource().getId()), false);
 						final OutputField srcField = srcNode.getOutputFieldWithKey(link.getSourceField().getKey());
 						final OpNode dstNode = graph.getNodeById(nodeMap.get(link.getDestination().getId()), false);

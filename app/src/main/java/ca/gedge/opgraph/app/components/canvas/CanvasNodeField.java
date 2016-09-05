@@ -338,7 +338,7 @@ public class CanvasNodeField extends JComponent {
 			GraphCanvas parentCanvas = (GraphCanvas)SwingUtilities.getAncestorOfClass(GraphCanvas.class, CanvasNodeField.this);
 			if(parentCanvas != null) {
 				if(anchor.contains(e.getPoint()))
-					parentCanvas.startLinkDrag(CanvasNodeField.this);
+					parentCanvas.getUI().startLinkDrag(CanvasNodeField.this);
 			}
 		}
 
@@ -346,7 +346,7 @@ public class CanvasNodeField extends JComponent {
 		public void mouseReleased(MouseEvent e) {
 			GraphCanvas parentCanvas = (GraphCanvas)SwingUtilities.getAncestorOfClass(GraphCanvas.class, CanvasNodeField.this);
 			if(parentCanvas != null)
-				parentCanvas.endLinkDrag(SwingUtilities.convertPoint(CanvasNodeField.this, e.getPoint(), parentCanvas));
+				parentCanvas.getUI().endLinkDrag(SwingUtilities.convertPoint(CanvasNodeField.this, e.getPoint(), parentCanvas));
 		}
 	};
 
@@ -359,7 +359,7 @@ public class CanvasNodeField extends JComponent {
 		public void mouseDragged(MouseEvent e) {
 			GraphCanvas parentCanvas = (GraphCanvas)SwingUtilities.getAncestorOfClass(GraphCanvas.class, CanvasNodeField.this);
 			if(parentCanvas != null)
-				parentCanvas.updateLinkDrag(SwingUtilities.convertPoint(CanvasNodeField.this, e.getPoint(), parentCanvas));
+				parentCanvas.getUI().updateLinkDrag(SwingUtilities.convertPoint(CanvasNodeField.this, e.getPoint(), parentCanvas));
 		}
 
 		@Override

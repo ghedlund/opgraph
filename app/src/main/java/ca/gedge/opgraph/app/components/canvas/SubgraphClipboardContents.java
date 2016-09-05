@@ -62,14 +62,14 @@ public class SubgraphClipboardContents implements Transferable {
 	/** Clipboard data flavor */
 	public static final DataFlavor copyFlavor = new DataFlavor(SubgraphClipboardContents.class, "SubgraphClipboardContents");
 
-	/** The document containing the graph to copy from */
-	public final GraphDocument document;
+	/** The canvas */
+	private final GraphCanvas canvas;
 
 	/** The copied sub-graph */
-	public final OpGraph subGraph;
+	private final OpGraph subGraph;
 
 	/** Mapping from graph to the number of times it has been pasted into each graph */
-	public final Map<OpGraph, Integer> graphDuplicates = new HashMap<OpGraph, Integer>();
+	private final Map<OpGraph, Integer> graphDuplicates = new HashMap<OpGraph, Integer>();
 
 	/** Cached data values */
 	private final Map<DataFlavor, Object> cachedData = new HashMap<DataFlavor, Object>();
@@ -80,10 +80,22 @@ public class SubgraphClipboardContents implements Transferable {
 	 * @param document  the document containing the graph 
 	 * @param selectedGraph  the subgraph which is being copied
 	 */
-	public SubgraphClipboardContents(GraphDocument document, OpGraph selectedGraph) {
-		this.document = document;
+	public SubgraphClipboardContents(GraphCanvas canvas, OpGraph selectedGraph) {
+		this.canvas = canvas;
 		this.subGraph = selectedGraph;
-		this.graphDuplicates.put(document.getGraph(), new Integer(0));
+		this.graphDuplicates.put(canvas.getDocument().getGraph(), new Integer(0));
+	}
+	
+	public Map<OpGraph, Integer> getGraphDuplicates() {
+		return this.graphDuplicates;
+	}
+	
+	public OpGraph getGraph() {
+		return this.subGraph;
+	}
+	
+	public GraphCanvas getCanvas() {
+		return this.canvas;
 	}
 
 	//
@@ -94,6 +106,7 @@ public class SubgraphClipboardContents implements Transferable {
 	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
 		// First, check to see if we've cached a value for this data flavor 
 		Object retVal = cachedData.get(flavor);
+		final GraphDocument document = canvas.getDocument();
 
 		if(retVal == null) {
 			if(flavor == copyFlavor) {
@@ -114,9 +127,10 @@ public class SubgraphClipboardContents implements Transferable {
 					g.setTransform(transform);
 					g.setClip(boundRect);
 
-					// Paint to graphics (without selection)
 					document.getSelectionModel().setSelectedNodes(null);
-					document.getCanvas().paint(g);
+					canvas.getUI().getGridLayer().setVisible(false);
+					canvas.paint(g);
+					canvas.getUI().getGridLayer().setVisible(true);
 					document.getSelectionModel().setSelectedNodes(currentSelection);
 
 					// Create the image

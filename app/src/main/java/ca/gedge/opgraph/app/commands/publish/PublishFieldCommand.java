@@ -77,11 +77,11 @@ class PublishFieldCommand extends HookableCommand {
 	 * @param field  the field to publish
 	 */
 	public void publishFieldOfSelected(ContextualItem field) {
-		if(publishable != null && field != null && node != null) {
-			final GraphDocument document = GraphEditorModel.getActiveDocument();
-			document.getUndoSupport().postEdit(new PublishFieldEdit(document.getGraph(), publishable, node, field.getKey(), field));
-			document.getCanvas().updateAnchorFillStates(node);
-		}
+//		if(publishable != null && field != null && node != null) {
+//			final GraphDocument document = GraphEditorModel.getActiveDocument();
+//			document.getUndoSupport().postEdit(new PublishFieldEdit(document.getGraph(), publishable, node, field.getKey(), field));
+//			document.getCanvas().updateAnchorFillStates(node);
+//		}
 	}
 
 	/**
@@ -126,7 +126,7 @@ class PublishFieldCommand extends HookableCommand {
 				document.getUndoSupport().endUpdate();
 			}
 
-			document.getCanvas().updateAnchorFillStates(node);
+//			document.getCanvas().updateAnchorFillStates(node);
 		}
 	}
 

@@ -21,6 +21,7 @@ package ca.gedge.opgraph.io.xml;
 import static ca.gedge.opgraph.io.xml.XMLSerializerFactory.*;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
@@ -59,7 +60,7 @@ public class DefaultExtendableXMLSerializer implements XMLSerializer {
 		for(Class<?> extension : ext.getExtensionClasses()) {
 			final XMLSerializer serializer = serializerFactory.getHandler(extension);
 			if(serializer == null) {
-				LOGGER.warning("Extendable contains a serializable extension with no handler: " + extension.getName());
+				LOGGER.log(Level.INFO, "Extendable contains a serializable extension with no handler: " + extension.getName());
 			} else {
 				serializer.write(serializerFactory, doc, extensionsElem, ext.getExtension(extension));
 			}
@@ -97,7 +98,7 @@ public class DefaultExtendableXMLSerializer implements XMLSerializer {
 						//      write this Extendable back to XML, those extensions won't
 						//      be lost.
 						//
-						LOGGER.warning("Extension element has no handler: " + qname);
+						LOGGER.info("Extension element has no handler: " + qname);
 					} else {
 						serializer.read(serializerFactory, graph, ext, doc, childElem);
 					}

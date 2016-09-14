@@ -49,6 +49,9 @@ import ca.gedge.opgraph.util.Breadcrumb;
 public class GraphDocument {
 	/** Key for the processing context property */
 	public static final String PROCESSING_CONTEXT = "processor";
+	
+	/** Key for changes to the debug state */
+	public static final String DEBUG_STATE = "debugState";
 
 	/** Key for the processing source */
 	public static final String SOURCE = "source";
@@ -330,9 +333,14 @@ public class GraphDocument {
 	 * 
 	 * @param processor  the processing context
 	 */
+	private OpNode prevDebugNode = null;
 	public void updateDebugState(Processor processor) {
-		if(processor != null && this.processor == processor)
+		if(processor != null && this.processor == processor) {
+			OpNode newNode = processor.getCurrentNode();
+			changeSupport.firePropertyChange(DEBUG_STATE, prevDebugNode, newNode);
+			prevDebugNode = newNode;
 			changeSupport.firePropertyChange(PROCESSING_CONTEXT, new Object(), processor);
+		}
 	}
 
 	//

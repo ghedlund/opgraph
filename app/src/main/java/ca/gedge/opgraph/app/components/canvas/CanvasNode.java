@@ -34,6 +34,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -41,10 +42,12 @@ import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
+import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.UndoableEditListener;
 
 import ca.gedge.opgraph.ContextualItem;
@@ -56,7 +59,7 @@ import ca.gedge.opgraph.OutputField;
 /**
  * A component that visualizes an {@link OpNode}.
  */
-public class CanvasNode extends JPanel {
+public class CanvasNode extends JComponent {
 	/** The node being displayed */
 	private OpNode node;
 
@@ -118,8 +121,9 @@ public class CanvasNode extends JPanel {
 	 * @throws NullPointerException  if <code>node</code> is <code>null</code>
 	 */
 	public CanvasNode(OpNode node, NodeStyle style) {
-		super(new GridBagLayout());
-
+		super();
+		setLayout(new GridBagLayout());
+		
 		// Create components
 		this.selected = false;
 		this.name = new CanvasNodeName(node, style);

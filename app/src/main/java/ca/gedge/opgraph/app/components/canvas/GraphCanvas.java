@@ -142,6 +142,7 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 		this.document = document;
 		this.document.getBreadcrumb().addBreadcrumbListener(breadcrumbListener);
 		this.document.getSelectionModel().addSelectionListener(canvasSelectionListener);
+		this.document.addPropertyChangeListener("anchorFillStates", (e) -> updateAnchorFillStates((OpNode)e.getNewValue()) );
 		changeGraph(null, this.document.getGraph());
 	}
 	

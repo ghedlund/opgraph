@@ -52,6 +52,9 @@ class PublishFieldCommand extends HookableCommand {
 
 	/** The field to publish */
 	private ContextualItem field;
+	
+	/** The graph document */
+	private GraphDocument document;
 
 	/**
 	 * Constructs a command that publishes a field of a given node.
@@ -60,9 +63,10 @@ class PublishFieldCommand extends HookableCommand {
 	 * @param node  the node with a field to publish
 	 * @param field  the field to publish
 	 */
-	public PublishFieldCommand(Publishable publishable, OpNode node, ContextualItem field) {
+	public PublishFieldCommand(GraphDocument document, Publishable publishable, OpNode node, ContextualItem field) {
 		super(field.getKey());
 
+		this.document = document;
 		this.publishable = publishable;
 		this.node = node;
 		this.field = field;
@@ -77,11 +81,10 @@ class PublishFieldCommand extends HookableCommand {
 	 * @param field  the field to publish
 	 */
 	public void publishFieldOfSelected(ContextualItem field) {
-//		if(publishable != null && field != null && node != null) {
-//			final GraphDocument document = GraphEditorModel.getActiveDocument();
-//			document.getUndoSupport().postEdit(new PublishFieldEdit(document.getGraph(), publishable, node, field.getKey(), field));
-//			document.getCanvas().updateAnchorFillStates(node);
-//		}
+		if(publishable != null && field != null && node != null) {
+			document.getUndoSupport().postEdit(new PublishFieldEdit(document.getGraph(), publishable, node, field.getKey(), field));
+			document.firePropertyChange("anchorFillStates", new Object(), node);
+		}
 	}
 
 	/**
@@ -91,7 +94,6 @@ class PublishFieldCommand extends HookableCommand {
 	 */
 	public void unpublishFieldOfSelected(ContextualItem field) {
 		if(publishable != null && field != null && node != null) {
-			final GraphDocument document = GraphEditorModel.getActiveDocument();
 			final OpGraph graphOfMacroParent = document.getBreadcrumb().peekState(1);
 			final OpNode publishNode = ((publishable instanceof OpNode) ? (OpNode)publishable : null);
 
@@ -126,7 +128,8 @@ class PublishFieldCommand extends HookableCommand {
 				document.getUndoSupport().endUpdate();
 			}
 
-//			document.getCanvas().updateAnchorFillStates(node);
+			document.firePropertyChange("anchorFillStates", new Object(), node);
+//			model.getCanvas().updateAnchorFillStates(node);
 		}
 	}
 

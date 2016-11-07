@@ -384,4 +384,9 @@ public class GraphDocument {
 	public void removePropertyChangeListener(String property, PropertyChangeListener listener) {
 		changeSupport.removePropertyChangeListener(property, listener);
 	}
+	
+	public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		changeSupport.firePropertyChange(propertyName, oldValue, newValue);
+	}
+	
 }

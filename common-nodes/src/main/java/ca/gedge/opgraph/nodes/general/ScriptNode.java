@@ -306,7 +306,7 @@ public class ScriptNode
 				languageChoices.add(factory.getLanguageName());
 			}
 
-			final JComboBox languageBox = new JComboBox(languageChoices);
+			final JComboBox<String> languageBox = new JComboBox<>(languageChoices);
 			languageBox.setEditable(false);
 			languageBox.addActionListener(new ActionListener() {
 				@Override

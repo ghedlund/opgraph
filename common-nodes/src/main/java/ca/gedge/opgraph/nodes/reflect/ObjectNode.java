@@ -65,7 +65,8 @@ public class ObjectNode extends AbstractReflectNode {
 	
 	public void setDeclaredClass(Class<?> clazz) {
 		super.setDeclaredClass(clazz);
-		super.setName(clazz.getSimpleName());
+		if(getName().equals("ClassNode"))
+			super.setName(clazz.getSimpleName());
 		
 		this.type = clazz;
 		

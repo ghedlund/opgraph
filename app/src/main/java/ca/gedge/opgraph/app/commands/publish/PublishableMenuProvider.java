@@ -24,6 +24,7 @@ package ca.gedge.opgraph.app.commands.publish;
 import java.awt.event.MouseEvent;
 import javax.swing.JMenu;
 import ca.gedge.opgraph.OpNode;
+import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.MenuProvider;
 import ca.gedge.opgraph.app.commands.publish.PublishedFieldMenuHelper;
@@ -41,10 +42,10 @@ public class PublishableMenuProvider implements MenuProvider {
 	}
 
 	@Override
-	public void installPopupItems(Object context, MouseEvent event, GraphEditorModel model, PathAddressableMenu menu) {
+	public void installPopupItems(Object context, MouseEvent event, GraphDocument doc, PathAddressableMenu menu) {
 		if(context != null && (context instanceof OpNode)) {
 			final OpNode node = (OpNode)context;
-			final Publishable publishable = model.getDocument().getGraph().getExtension(Publishable.class);
+			final Publishable publishable = doc.getGraph().getExtension(Publishable.class);
 
 			if(publishable != null) {
 				menu.addSeparator("");
@@ -52,8 +53,8 @@ public class PublishableMenuProvider implements MenuProvider {
 				final JMenu inputs = menu.addMenu("published_inputs", "Publish Inputs");
 				final JMenu outputs = menu.addMenu("published_outputs", "Publish Outputs");
 
-				PublishedFieldMenuHelper.populate(inputs, publishable, node, true);
-				PublishedFieldMenuHelper.populate(outputs, publishable, node, false);
+				PublishedFieldMenuHelper.populate(inputs, doc, publishable, node, true);
+				PublishedFieldMenuHelper.populate(outputs, doc, publishable, node, false);
 			}
 		}
 	}

@@ -27,6 +27,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import ca.gedge.opgraph.OpGraph;
+import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.MenuProvider;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
@@ -42,12 +43,12 @@ public class NotesMenuProvider implements MenuProvider {
 	}
 
 	@Override
-	public void installPopupItems(Object context, MouseEvent event, GraphEditorModel model, PathAddressableMenu menu) {
+	public void installPopupItems(Object context, MouseEvent event, GraphDocument doc, PathAddressableMenu menu) {
 		final boolean isGraph = (context instanceof OpGraph);
 		final boolean isNote = (context instanceof Note);
 
 		if(isGraph || isNote) {
-			final Point loc = model.getCanvas().getMousePosition();
+			final Point loc = event.getPoint();
 			if(loc != null) {
 				menu.addSeparator("");
 				menu.addMenuItem("add_note", new AddNoteCommand(loc.x, loc.y));

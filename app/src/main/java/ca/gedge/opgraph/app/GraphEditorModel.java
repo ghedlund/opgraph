@@ -67,6 +67,8 @@ public class GraphEditorModel {
 	 * Gets the {@link GraphEditorModel} that is currently active.
 	 * 
 	 * @return  the active editor model, or <code>null</code> if no model active
+	 * 
+	 * @deprecated
 	 */
 	public static GraphEditorModel getActiveEditorModel() {
 		return activeModel;
@@ -76,6 +78,8 @@ public class GraphEditorModel {
 	 * Sets a given model as the active model for the application.
 	 * 
 	 * @param model  the new model
+	 * 
+	 * @deprecated
 	 */
 	public static void setActiveEditorModel(GraphEditorModel model) {
 		activeModel = model;
@@ -85,6 +89,8 @@ public class GraphEditorModel {
 	 * Gets the {@link GraphDocument} that is currently active.
 	 * 
 	 * @return  the active document, or <code>null</code> if no document active
+	 * 
+	 * @deprecated
 	 */
 	public static GraphDocument getActiveDocument() {
 		final GraphEditorModel model = getActiveEditorModel();
@@ -175,7 +181,6 @@ public class GraphEditorModel {
 			// Initialize components
 			canvas = new GraphCanvas(this.document);
 			canvas.getSelectionModel().addSelectionListener(graphSelectionListener);
-			canvas.addMouseListener(contextMenuHandler);
 		}
 		return canvas;
 	}
@@ -258,40 +263,7 @@ public class GraphEditorModel {
 		return Collections.unmodifiableList(menuProviders);
 	}
 
-	/**
-	 * Constructs a popup menu for a node.
-	 * 
-	 * @param event  the mouse event that created the popup
-	 * 
-	 * @return an appropriate popup menu for the given node
-	 */
-	private JPopupMenu constructPopup(MouseEvent event) {
-		final GraphDocument document = canvas.getDocument();
-		Object context = document.getGraph();
-
-		// Try to find a more specific context
-		final CanvasNode node = GUIHelper.getAncestorOrSelfOfClass(CanvasNode.class, event.getComponent());
-		if(node != null) {
-			context = node.getNode();
-		} else {
-			final NoteComponent note = GUIHelper.getAncestorOrSelfOfClass(NoteComponent.class, event.getComponent());
-			if(note != null)
-				context = note.getNote();
-		}
-
-		final JPopupMenu popup = new JPopupMenu();
-		if(context != null) {
-			final PathAddressableMenuImpl addressable = new PathAddressableMenuImpl(popup);
-			final MenuManager manager = new MenuManager();
-			for(MenuProvider menuProvider : manager.getMenuProviders())
-				menuProvider.installPopupItems(context, event, this, addressable);
-		}
-
-		if(popup.getComponentCount() == 0)
-			return null;
-
-		return popup;
-	}
+	
 	
 	//
 	// GraphCanvasSelectionListener
@@ -313,31 +285,4 @@ public class GraphEditorModel {
 		}
 	};
 	
-	private final MouseInputAdapter contextMenuHandler = new MouseInputAdapter() {
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			if(e.isPopupTrigger())
-				showContextMenu(e);
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			if(e.isPopupTrigger())
-				showContextMenu(e);
-		}
-		
-		private void showContextMenu(MouseEvent me) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					final Point loc = SwingUtilities.convertPoint((Component)me.getSource(), me.getPoint(), canvas);
-					final JPopupMenu popup = constructPopup(me);
-					if(popup != null)
-						popup.show(canvas, loc.x, loc.y);
-				}
-			});
-		}
-		
-	};
 }

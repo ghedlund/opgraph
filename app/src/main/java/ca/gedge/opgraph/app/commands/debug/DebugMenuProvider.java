@@ -59,7 +59,7 @@ public class DebugMenuProvider implements MenuProvider {
 	}
 
 	@Override
-	public void installPopupItems(Object context, MouseEvent event, GraphEditorModel model, PathAddressableMenu menu) {
+	public void installPopupItems(Object context, MouseEvent event, GraphDocument doc, PathAddressableMenu menu) {
 		//
 	}
 }

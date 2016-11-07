@@ -85,7 +85,7 @@ public class CommonNodesMenuProvider implements MenuProvider {
 	}
 
 	@Override
-	public void installPopupItems(Object context, MouseEvent event, GraphEditorModel model, PathAddressableMenu menu) {
+	public void installPopupItems(Object context, MouseEvent event, GraphDocument model, PathAddressableMenu menu) {
 		// Nothing to do
 	}
 }

@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 
 import javax.swing.JMenu;
 
+import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.MenuProvider;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
@@ -20,7 +21,7 @@ public class ReflectNodeMenuProvider implements MenuProvider {
 
 	@Override
 	public void installPopupItems(Object context, MouseEvent event,
-			GraphEditorModel model, PathAddressableMenu menu) {
+			GraphDocument doc, PathAddressableMenu menu) {
 		final AddObjectCommand addObject = new AddObjectCommand(event.getPoint());
 		addObject.putValue(AddObjectCommand.NAME, "Add object...");
 		menu.addMenuItem("add_object", addObject);

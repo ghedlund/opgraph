@@ -104,16 +104,16 @@ public class EditMenuProvider implements MenuProvider {
 	}
 
 	@Override
-	public void installPopupItems(Object context, MouseEvent event, GraphEditorModel model, PathAddressableMenu menu) {
+	public void installPopupItems(Object context, MouseEvent event, GraphDocument doc, PathAddressableMenu menu) {
 		// Add copy and paste commands for nodes
 		if(context != null && (context instanceof OpNode || context instanceof OpGraph)) {
 			// Add copy command if selection is available
-			if(model.getDocument().getSelectionModel().getSelectedNodes().size() > 0)
+			if(doc.getSelectionModel().getSelectedNodes().size() > 0)
 				menu.addMenuItem("copy", new CopyCommand());
 
 			// Check clipboard
 			if(!GraphicsEnvironment.isHeadless()) {
-				final Transferable clipboardContents = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(model.getCanvas());
+				final Transferable clipboardContents = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(context);
 				if(clipboardContents != null && clipboardContents.isDataFlavorSupported(SubgraphClipboardContents.copyFlavor)) {
 					// Add paste command
 					menu.addMenuItem("paste", new PasteCommand());
@@ -121,7 +121,7 @@ public class EditMenuProvider implements MenuProvider {
 			}
 
 			// Add duplicate command if selection is available
-			if(model.getDocument().getSelectionModel().getSelectedNodes().size() > 0)
+			if(doc.getSelectionModel().getSelectedNodes().size() > 0)
 				menu.addMenuItem("duplicate", new DuplicateCommand());
 		}
 	}

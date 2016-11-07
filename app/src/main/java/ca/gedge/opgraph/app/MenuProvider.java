@@ -42,8 +42,8 @@ public interface MenuProvider {
 	 * 
 	 * @param context  the object used as context
 	 * @param event  the mouse event that created the popup
-	 * @param model  an application model that menu items can act upon
+	 * @param document the graph document
 	 * @param menu  the menu to install things to
 	 */
-	public abstract void installPopupItems(Object context, MouseEvent event, GraphEditorModel model, PathAddressableMenu menu);
+	public abstract void installPopupItems(Object context, MouseEvent event, GraphDocument document, PathAddressableMenu menu);
 }

@@ -564,6 +564,48 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 		super.paint(g, c);
 	}
 	
+	/**
+	 * Constructs a popup menu for a node.
+	 * 
+	 * @param event  the mouse event that created the popup
+	 * 
+	 * @return an appropriate popup menu for the given node
+	 */
+	private JPopupMenu constructPopup(MouseEvent event) {
+		final GraphDocument document = canvas.getDocument();
+		Object context = document.getGraph();
+
+		// Try to find a more specific context
+		final CanvasNode node = GUIHelper.getAncestorOrSelfOfClass(CanvasNode.class, event.getComponent());
+		if(node != null) {
+			context = node.getNode();
+		} else {
+			final NoteComponent note = GUIHelper.getAncestorOrSelfOfClass(NoteComponent.class, event.getComponent());
+			if(note != null)
+				context = note.getNote();
+		}
+
+		final JPopupMenu popup = new JPopupMenu();
+		if(context != null) {
+			final PathAddressableMenuImpl addressable = new PathAddressableMenuImpl(popup);
+			final MenuManager manager = new MenuManager();
+			for(MenuProvider menuProvider : manager.getMenuProviders())
+				menuProvider.installPopupItems(context, event, document, addressable);
+		}
+
+		if(popup.getComponentCount() == 0)
+			return null;
+
+		return popup;
+	}
+	
+	private void showContextMenu(MouseEvent me) {
+		final Point loc = SwingUtilities.convertPoint((Component)me.getSource(), me.getPoint(), canvas);
+		final JPopupMenu popup = constructPopup(me);
+		if(popup != null)
+			popup.show(canvas, loc.x, loc.y);
+	}
+	
 	//
 	// DropTargetListener
 	//
@@ -699,6 +741,10 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 								}
 							}
 						}
+						
+						if(me.isPopupTrigger()) {
+							showContextMenu(me);
+						}
 					}
 				});
 			} else if(e.getID() == MouseEvent.MOUSE_CLICKED && ((MouseEvent)e).getClickCount() == 2) {
@@ -785,6 +831,10 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 							canvas.getDocument().getUndoSupport().endUpdate();
 						}
 					}
+				}
+				
+				if(me.isPopupTrigger()) {
+					showContextMenu(me);
 				}
 
 				clickLocation = null;

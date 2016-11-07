@@ -43,19 +43,18 @@ public class PublishedFieldMenuHelper {
 	 * @param isInputs  <code>true</code> to show published inputs,
 	 *                  <code>false</code> to show outputs
 	 */
-	public static void populate(JMenu menu, Publishable publishable, OpNode node, boolean isInputs) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
+	public static void populate(JMenu menu, GraphDocument document, Publishable publishable, OpNode node, boolean isInputs) {
 		if(document != null && document.getBreadcrumb().peekState(1) != null) {
 			if(isInputs) {
 				for(InputField field : node.getInputFields()) {
-					final AbstractAction action = new PublishFieldCommand(publishable, node, field);
+					final AbstractAction action = new PublishFieldCommand(document, publishable, node, field);
 					final JCheckBoxMenuItem item = new JCheckBoxMenuItem(action);
 					item.setSelected(publishable.getPublishedInput(node, field) != null);
 					menu.add(item);
 				}
 			} else {
 				for(OutputField field : node.getOutputFields()) {
-					final AbstractAction action = new PublishFieldCommand(publishable, node, field);
+					final AbstractAction action = new PublishFieldCommand(document, publishable, node, field);
 					final JCheckBoxMenuItem item = new JCheckBoxMenuItem(action);
 					item.setSelected(publishable.getPublishedOutput(node, field) != null);
 					menu.add(item);

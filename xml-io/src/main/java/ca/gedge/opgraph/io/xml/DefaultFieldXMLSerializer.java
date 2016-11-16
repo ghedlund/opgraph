@@ -57,9 +57,13 @@ public class DefaultFieldXMLSerializer implements XMLSerializer {
 			// Only write if field is non-fixed, or fixed but with extensions
 			if(!field.isFixed() || field.getExtensionClasses().size() > 0) {
 				final Element fieldElem = doc.createElementNS(INPUT_QNAME.getNamespaceURI(), INPUT_QNAME.getLocalPart());
-				fieldElem.setAttribute("key", field.getKey());
+				fieldElem.setAttribute("name", field.getKey());
 				fieldElem.setAttribute("optional", Boolean.toString(field.isOptional()));
 				fieldElem.setTextContent(field.getDescription());
+				
+				if(field.isFixed()) {
+					fieldElem.setAttribute("fixed", Boolean.toString(Boolean.TRUE));
+				}
 
 				// XXX Store type validators?
 
@@ -80,9 +84,13 @@ public class DefaultFieldXMLSerializer implements XMLSerializer {
 			// Only write if field is non-fixed, or fixed but with extensions
 			if(!field.isFixed() || field.getExtensionClasses().size() > 0) {
 				final Element fieldElem = doc.createElementNS(OUTPUT_QNAME.getNamespaceURI(), OUTPUT_QNAME.getLocalPart());
-				fieldElem.setAttribute("key", field.getKey());
+				fieldElem.setAttribute("name", field.getKey());
 				fieldElem.setAttribute("type", field.getOutputType().getName());
 				fieldElem.setTextContent(field.getDescription());
+				
+				if(field.isFixed()) {
+					fieldElem.setAttribute("fixed", Boolean.toString(Boolean.TRUE));
+				}
 
 				// Extensions
 				if(field.getExtensionClasses().size() > 0) {
@@ -106,16 +114,28 @@ public class DefaultFieldXMLSerializer implements XMLSerializer {
 	{
 		ContextualItem item = null;
 		if(INPUT_QNAME.equals(XMLSerializerFactory.getQName(elem))) {
+			Class<?> inputType = Object.class;
+			if(elem.hasAttribute("type")) {
+				final String outputTypeClassName = elem.getAttribute("type");
+				try {
+					inputType = Class.forName(outputTypeClassName);
+				} catch(ClassNotFoundException exc) {
+					throw new IOException("Unknown output type for field: " + outputTypeClassName);
+				}
+			}
+			
+			boolean fixed = (elem.hasAttribute("fixed")
+					? Boolean.parseBoolean(elem.getAttributeNS(DEFAULT_NAMESPACE, "optional"))
+					: false);
+				
+			boolean optional = (elem.hasAttribute("optional") 
+					? Boolean.parseBoolean(elem.getAttributeNS(DEFAULT_NAMESPACE, "optional"))
+					: false);
 			// Create
-			final String key = elem.getAttribute( "key");
+			final String key = elem.getAttribute( "name");
 			final String description = elem.getTextContent();
-			final InputField field = new InputField(key, description);
-
-			if(elem.hasAttribute("optional"))
-				field.setOptional(Boolean.parseBoolean(elem.getAttributeNS(DEFAULT_NAMESPACE, "optional")));
-
-			// XXX Read type validator?
-
+			final InputField field = new InputField(key, description, fixed, optional, inputType);
+		
 			// Read children
 			final NodeList children = elem.getChildNodes();
 			for(int childIndex = 0; childIndex < children.getLength(); ++childIndex) {
@@ -133,7 +153,6 @@ public class DefaultFieldXMLSerializer implements XMLSerializer {
 
 			item = field;
 		} else if(OUTPUT_QNAME.equals(XMLSerializerFactory.getQName(elem))) {
-			// Create
 			Class<?> outputType = Object.class;
 			if(elem.hasAttribute("type")) {
 				final String outputTypeClassName = elem.getAttribute("type");
@@ -143,11 +162,16 @@ public class DefaultFieldXMLSerializer implements XMLSerializer {
 					throw new IOException("Unknown output type for field: " + outputTypeClassName);
 				}
 			}
-
-			final String key = elem.getAttribute("key");
+			
+			boolean fixed = (elem.hasAttribute("fixed")
+					? Boolean.parseBoolean(elem.getAttributeNS(DEFAULT_NAMESPACE, "optional"))
+					: false);
+				
+			// Create
+			final String key = elem.getAttribute( "name");
 			final String description = elem.getTextContent();
-			final OutputField field = new OutputField(key, description, false, outputType);
-
+			final OutputField field = new OutputField(key, description, fixed, outputType);
+	
 			// Read children
 			final NodeList children = elem.getChildNodes();
 			for(int childIndex = 0; childIndex < children.getLength(); ++childIndex) {

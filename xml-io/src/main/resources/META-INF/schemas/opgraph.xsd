@@ -138,6 +138,11 @@
 				<xs:documentation>If an input field, whether or not it is optional.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="fixed" use="optional" type="xs:boolean" default="false">
+			<xs:annotation>
+				<xs:documentation>Fixed fields are only exported to XML if they have extensions which require saving.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 
 	<!-- Definition of a link -->

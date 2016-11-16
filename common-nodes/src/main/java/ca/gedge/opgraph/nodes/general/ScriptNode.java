@@ -27,9 +27,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -47,9 +49,11 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
 
+import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OpNodeInfo;
+import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.Processor;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.GraphEditorModel;
@@ -167,19 +171,27 @@ public class ScriptNode
 			try {
 				engine.eval(script);
 
-				// XXX Perhaps have InputFields and OutputFields store temporary
-				//     sets of fields and only remove the input/output fields that
-				//     don't exist in them (isntead of all fields)
-				//
+				final List<InputField> fixedInputs =
+						getInputFields().stream().filter( f -> f.isFixed() && f != ENABLED_FIELD ).collect( Collectors.toList() );
+				final List<OutputField> fixedOutputs =
+						getOutputFields().stream().filter( OutputField::isFixed ).collect( Collectors.toList() );
+				
 				removeAllInputFields();
 				removeAllOutputFields();
+				
+				for(InputField field:fixedInputs) {
+					putField(field);
+				}
+				for(OutputField field:fixedOutputs) {
+					putField(field);
+				}
 
 				final InputFields inputFields = new InputFields(this);
 				final OutputFields outputFields = new OutputFields(this);
 				try {
 					((Invocable)engine).invokeFunction("init", inputFields, outputFields);
 				} catch(NoSuchMethodException exc) {
-					// XXX init() not necessary, but should we warn?
+					LOGGER.fine(exc.getLocalizedMessage());
 				}
 			} catch(ScriptException exc) {
 				LOGGER.warning("Script error: " + exc.getLocalizedMessage());

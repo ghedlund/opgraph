@@ -59,6 +59,9 @@ public class DoubleClickableTextField {
 
 	/** The text before editing began */
 	private String oldText;
+	
+	/** Text color before editing */
+	private Color oldTextColor;
 
 	/** Whether or not we are currently editing */
 	private boolean editing;
@@ -102,11 +105,14 @@ public class DoubleClickableTextField {
 		if(textComponent.isEditable() && this.editing != editing) {
 			this.editing = editing;
 
-			if(editing)
+			if(editing) {
 				oldText = textComponent.getText();
+				oldTextColor = textComponent.getForeground();
+			}
 
 			textComponent.setFocusable(editing);
 			textComponent.setOpaque(editing);
+			textComponent.setForeground(editing ? Color.black : oldTextColor);
 			textComponent.setBackground(editing ? bgColor : null);
 			textComponent.setHighlighter(editing ? highlighter : null);
 

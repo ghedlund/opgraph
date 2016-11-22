@@ -227,6 +227,14 @@ public final class OpContext extends HashMap<String, Object> {
 	public Object get(ContextualItem item) {
 		return (item == null ? null : get(item.getKey()));
 	}
+	
+	public boolean isLocal(ContextualItem item) {
+		return (item == null ? false : isLocal(item.getKey()));
+	}
+	
+	public boolean isLocal(String key) {
+		return super.containsKey(key);
+	}
 
 	//
 	// Overrides
@@ -295,4 +303,5 @@ public final class OpContext extends HashMap<String, Object> {
 			ret = parent.containsValue(value);
 		return ret;
 	}
+	
 }

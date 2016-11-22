@@ -113,8 +113,7 @@ public class ObjectNode extends AbstractReflectNode {
 	
 	@Override
 	public void operate(OpContext context) throws ProcessingException {
-		Object obj = 
-				(this.value == null ? context.get(inputValueField) : value);
+		Object obj = (this.value == null ? context.get(inputValueField) : value);
 		if(obj == null) {
 			// look for value in context
 			obj = context.get(getContextKey());

@@ -100,6 +100,8 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 		
 		// we only handle one type of iterable object, if there are more default to Object.class
 		final Class<?> genericType = (paramTypes.size() == 1 ? paramTypes.iterator().next() : Object.class);
+		
+		// XXX Change this to a new iteration value node
 		// create a new node inside the graph that show depicts the current value
 		final ContextualItemClassNode node = new ContextualItemClassNode(CURRENT_VALUE_KEY, genericType);
 				
@@ -158,10 +160,13 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 		if(graph != null) {
 			final Processor processor = new Processor(graph);
 			
+			
 			final Iterable<?> iterable = (Iterable<?>)obj;
 			final Iterator<?> itr = iterable.iterator();
 			while(itr.hasNext()) {
 				processor.reset(context);
+				
+				mapInputs(context);
 				
 				final Object currentValue = itr.next();
 				context.put(CURRENT_VALUE_KEY, currentValue);
@@ -169,6 +174,8 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 				processor.stepAll();
 				if(processor.getError() != null)
 					throw processor.getError();
+				
+				mapOutputs(context);
 			}
 		}
 		

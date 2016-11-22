@@ -68,4 +68,8 @@ public class ProcessingException extends RuntimeException {
 		return this.context;
 	}
 	
+	public void setContext(Processor context) {
+		this.context = context;
+	}
+	
 }

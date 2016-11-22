@@ -337,6 +337,7 @@ public class Processor {
 			//LOGGER.log(Level.SEVERE, exc.getLocalizedMessage(), exc);
 			currentError = exc;
 			nodeIter = null; // prevent further processing
+			if(exc.getContext() == null) exc.setContext(this);
 			throw currentError;
 		} catch(Throwable exc) {
 			//LOGGER.log(Level.SEVERE, exc.getLocalizedMessage(), exc);
@@ -545,35 +546,36 @@ public class Processor {
 	private void checkInputs(OpNode node, OpContext context)
 		throws InvalidTypeException, RequiredInputException
 	{
-		//
 		for(InputField field : node.getInputFields()) {
-			// Working context already has value, no need to check links
-			if(context.containsKey(field))
-				continue;
+			boolean linkFound = false;
+			for(OpLink link : graph.getIncomingEdges(node)) {
+				if(link.getDestinationField() == field) {
+					// Make sure this link actually has a value flowing through it
+					final OpContext sourceContext = globalContext.findChildContext(link.getSource());
+					if(sourceContext != null && sourceContext.containsKey(link.getSourceField())) {
+						final Object val = sourceContext.get(link.getSourceField());
+						linkFound = true;
 
-			if(!field.isOptional()) {
-				boolean linkFound = false;
-				for(OpLink link : graph.getIncomingEdges(node)) {
-					if(link.getDestinationField() == field) {
-						// Make sure this link actually has a value flowing through it
-						final OpContext sourceContext = globalContext.findChildContext(link.getSource());
-						if(sourceContext != null && sourceContext.containsKey(link.getSourceField())) {
-							final Object val = sourceContext.get(link.getSourceField());
-							linkFound = true;
+						// Make sure value type is accepted at the destination field
+						final TypeValidator validator = field.getValidator();
+						if(validator != null && !validator.isAcceptable(val))
+							throw new InvalidTypeException(this, link.getDestinationField(), val);
 
-							// Make sure value type is accepted at the destination field
-							final TypeValidator validator = field.getValidator();
-							if(validator != null && !validator.isAcceptable(val))
-								throw new InvalidTypeException(this, link.getDestinationField(), val);
-
-							break;
-						}
+						break;
 					}
 				}
+			}
 
-				// No link for required input; throw exception!
-				if(!linkFound)
+			// No link for required input; throw exception!
+			if(!linkFound) {
+				final boolean alreadyHasLocal = context.isLocal(field);
+				if(!field.isOptional() && !alreadyHasLocal)
 					throw new RequiredInputException(this, node, field);
+				
+				if(!alreadyHasLocal) {
+					// hide parent reference of local variable
+					context.put(field, null);
+				}
 			}
 		}
 	}

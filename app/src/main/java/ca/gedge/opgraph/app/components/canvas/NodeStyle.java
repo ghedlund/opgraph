@@ -33,10 +33,10 @@ import ca.gedge.opgraph.extensions.CompositeNode;
  * TODO perhaps move this over to javax.swing.UIManager
  */
 public class NodeStyle {
-	private static final NodeStyle DEFAULT;
-	private static final NodeStyle COMPOSITE;
-	private static final NodeStyle OBJECT;
-	private static final NodeStyle ITERATION;
+	public static final NodeStyle DEFAULT;
+	public static final NodeStyle COMPOSITE;
+	public static final NodeStyle OBJECT;
+	public static final NodeStyle ITERATION;
 	
 	private static final Map<Class<? extends OpNode>, NodeStyle> installedStyles;
 

@@ -2,7 +2,6 @@ ca.gedge.opgraph.nodes.general.ConstantValueNode
 ca.gedge.opgraph.nodes.general.MacroNode
 ca.gedge.opgraph.nodes.general.PassThroughNode
 ca.gedge.opgraph.nodes.general.RangeNode
-ca.gedge.opgraph.nodes.general.ScriptNode
 
 ca.gedge.opgraph.nodes.iteration.CurrentIterationNode
 ca.gedge.opgraph.nodes.iteration.ForEachNode

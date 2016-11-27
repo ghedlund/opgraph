@@ -70,7 +70,8 @@ import ca.gedge.opgraph.nodes.general.script.OutputFields;
 @OpNodeInfo(
 	name="Script",
 	description="Executes a script.",
-	category="General"
+	category="General",
+	showInLibrary=false
 )
 public class ScriptNode 
 	extends OpNode

@@ -321,7 +321,7 @@ public abstract class OpNode implements Extendable, Vertex {
 			firePropertyChange(CATEGORY_PROPERTY, oldCategory, this.category);
 		}
 	}
-
+	
 	/**
 	 * Adds an input field to this node.
 	 * 
@@ -330,6 +330,17 @@ public abstract class OpNode implements Extendable, Vertex {
 	 * @throws IllegalArgumentException  if the given field will overwrite a fixed field
 	 */
 	public final void putField(InputField field) {
+		putField(-1, field);
+	}
+
+	/**
+	 * Adds an input field to this node.
+	 * 
+	 * @param field  the input field
+	 * 
+	 * @throws IllegalArgumentException  if the given field will overwrite a fixed field
+	 */
+	public final void putField(int pos, InputField field) {
 		if(field != null) {
 			int index = 0;
 			InputField foundField = null;
@@ -344,7 +355,10 @@ public abstract class OpNode implements Extendable, Vertex {
 			}
 
 			if(foundField == null) {
-				inputFields.add(field);
+				if(pos < 0)
+					inputFields.add(field);
+				else
+					inputFields.add(pos, field);
 				fireFieldAdded(field);
 			} else {
 				foundField.setDescription(field.getDescription());
@@ -352,6 +366,17 @@ public abstract class OpNode implements Extendable, Vertex {
 				foundField.setValidator(field.getValidator());
 			}
 		}
+	}
+	
+	/**
+	 * Adds an output field to this node.
+	 * 
+	 * @param field  the input field
+	 * 
+	 * @throws IllegalArgumentException  if the given field will overwrite a fixed field
+	 */
+	public final void putField(OutputField field) {
+		putField(-1, field);
 	}
 
 	/**
@@ -361,7 +386,7 @@ public abstract class OpNode implements Extendable, Vertex {
 	 * 
 	 * @throws IllegalArgumentException  if the given field will overwrite a fixed field
 	 */
-	public final void putField(OutputField field) {
+	public final void putField(int pos, OutputField field) {
 		if(field != null) {
 			int index = 0;
 			OutputField foundField = null;
@@ -376,7 +401,10 @@ public abstract class OpNode implements Extendable, Vertex {
 			}
 
 			if(foundField == null) {
-				outputFields.add(field);
+				if(pos < 0)
+					outputFields.add(field);
+				else
+					outputFields.add(pos, field);
 				fireFieldAdded(field);
 			} else {
 				foundField.setDescription(field.getDescription());

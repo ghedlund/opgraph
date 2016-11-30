@@ -109,13 +109,13 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 			graph.add(node);
 		}
 		
-		inputValueField = new InputField("obj", "input value", clazz);
+		inputValueField = new InputField("collection", "input value", clazz);
 		inputValueField.setOptional(false);
 		inputValueField.setFixed(true);
-		putField(inputValueField);
+		putField(1, inputValueField);
 		
-		outputValueField = new OutputField("obj", "output value", true, clazz);
-		putField(outputValueField);
+		outputValueField = new OutputField("collection", "output value", true, clazz);
+		putField(0, outputValueField);
 		
 		final ObjectNodeFieldGenerator fieldGenerator = new ObjectNodeFieldGenerator();
 		fieldGenerator.scanClass(clazz);

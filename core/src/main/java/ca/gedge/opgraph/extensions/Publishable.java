@@ -50,7 +50,7 @@ public interface Publishable {
 		 * @param nodeInputField  the input field to publish
 		 */
 		public PublishedInput(String key, OpNode destinationNode, InputField nodeInputField) {
-			super(key, nodeInputField.getDescription(), nodeInputField.isOptional(), true);
+			super(key, nodeInputField.getDescription(), nodeInputField.isOptional(), false);
 
 			this.destinationNode = destinationNode;
 			this.nodeInputField = nodeInputField;
@@ -78,7 +78,7 @@ public interface Publishable {
 		 * @param nodeOutputField  the output field to publish
 		 */
 		public PublishedOutput(String key, OpNode sourceNode, OutputField nodeOutputField) {
-			super(key, nodeOutputField.getDescription(), true, nodeOutputField.getOutputType());
+			super(key, nodeOutputField.getDescription(), false, nodeOutputField.getOutputType());
 			this.sourceNode = sourceNode;
 			this.nodeOutputField = nodeOutputField;
 		}

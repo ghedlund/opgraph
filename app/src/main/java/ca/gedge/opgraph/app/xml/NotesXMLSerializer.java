@@ -83,11 +83,14 @@ public class NotesXMLSerializer implements XMLSerializer {
 			final JComponent noteComp = note.getExtension(JComponent.class);
 			if(noteComp != null) {
 				final String colorString = Integer.toHexString(noteComp.getBackground().getRGB() & 0xFFFFFF);
-
+				
+				int width = (int)(noteComp.getWidth() > 0 ? noteComp.getWidth() : noteComp.getPreferredSize().getWidth());
+				int height = (int)(noteComp.getHeight() > 0 ? noteComp.getHeight() : noteComp.getPreferredSize().getHeight());
+					
 				noteElem.setAttribute("x", "" + noteComp.getX());
 				noteElem.setAttribute("y", "" + noteComp.getY());
-				noteElem.setAttribute("width", "" + noteComp.getWidth());
-				noteElem.setAttribute("height", "" + noteComp.getHeight());
+				noteElem.setAttribute("width", "" + width);
+				noteElem.setAttribute("height", "" + height);
 				noteElem.setAttribute("color", "0x" + colorString);
 			}
 

@@ -18,6 +18,7 @@
  */
 package ca.gedge.opgraph.app.components.canvas;
 
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,6 +27,9 @@ import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -39,9 +43,21 @@ import ca.gedge.opgraph.app.edits.node.ChangeNodeNameEdit;
 import ca.gedge.opgraph.app.util.GUIHelper;
 
 /**
- * A text field that displays the name of a node. Supports undo/redo.
+ * Name panel for nodes, includes 
+ *  - A left decoration - default is the node icon
+ *  - A text field that displays the name of a node. Supports undo/redo.
+ *  - A right decoration - default is an empty {@link JLabel}
  */
-public class CanvasNodeName extends JTextField {
+public class CanvasNodeName extends JPanel {
+	
+	private JLabel iconDecoration = new JLabel();
+	private JComponent leftDecoration = iconDecoration;
+	 
+	private JLabel defaultRightDecoration = new JLabel();
+	private JComponent rightDecoration = defaultRightDecoration;
+	
+	private JTextField nameField;
+	
 	/** Double-click support */
 	private DoubleClickableTextField doubleClickSupport;
 
@@ -63,17 +79,68 @@ public class CanvasNodeName extends JTextField {
 	 * @throws NullPointerException  if the specified node is <code>null</code> 
 	 */
 	public CanvasNodeName(OpNode node, NodeStyle style) {
-		this.doubleClickSupport = new DoubleClickableTextField(this);
-		this.undoSupport = new UndoableEditSupport();
+		super();
+		
+		init(node, style);
+		setOpaque(false);
+	}
+	
+	private void init(OpNode node, NodeStyle style) {
+		setLayout(new BorderLayout());
+		
+		this.nameField = new JTextField() {
+			@Override
+			protected void paintComponent(Graphics gfx) {
+				if(doubleClickSupport.isEditing()) {
+					super.paintComponent(gfx);
+				} else {
+					final Graphics2D g = (Graphics2D)gfx;
+					final Rectangle rect = GUIHelper.getInterior(this);
+					final int halign = nameField.getHorizontalAlignment();
+					final int valign = SwingConstants.CENTER;
+					final Point p = GUIHelper.placeTextInRectangle(g, nameField.getText(), rect, halign, valign);
 
-		setHorizontalAlignment(CENTER);
-		setFont(getFont().deriveFont(Font.BOLD));
+					// Draw shadow under text, if necessary
+					if(style.NodeNameTextShadowColor != null) {
+						g.setColor(style.NodeNameTextShadowColor);
+						g.drawString(nameField.getText(), p.x + 1, p.y + 1);
+					}
+
+					g.setColor(nameField.getForeground());
+					g.drawString(nameField.getText(), p.x, p.y);
+				}
+			}
+		};
+		this.nameField.setOpaque(false);
+		this.doubleClickSupport = new DoubleClickableTextField(this.nameField);
+		
+		this.undoSupport = new UndoableEditSupport();
+		
+		nameField.setHorizontalAlignment(JTextField.CENTER);
+		nameField.setFont(getFont().deriveFont(Font.BOLD));
+		
 		setNode(node);
 		setStyle(style);
-
+		
 		this.doubleClickSupport.addPropertyChangeListener(DoubleClickableTextField.TEXT_PROPERTY, textListener);
+		
+		add(leftDecoration, BorderLayout.WEST);
+		add(nameField, BorderLayout.CENTER);
+		add(rightDecoration, BorderLayout.EAST);
+	}
+	
+	public JTextField getNameField() {
+		return this.nameField;
 	}
 
+	public JComponent getLeftDecoration() {
+		return this.leftDecoration;
+	}
+	
+	public JComponent getRightDecoration() {
+		return this.rightDecoration;
+	}
+	
 	/**
 	 * Gets the node whose name is displayed by this component.
 	 *  
@@ -100,9 +167,9 @@ public class CanvasNodeName extends JTextField {
 		this.node.addNodeListener(nodeListener);
 
 		// Update component
-		setBorder(new EmptyBorder(2, 5, 2, 5));
-		setText(node.getName());
-		setToolTipText(node.getDescription());
+		nameField.setBorder(new EmptyBorder(2, 5, 2, 5));
+		nameField.setText(node.getName());
+		nameField.setToolTipText(node.getDescription());
 	}
 
 	/**
@@ -113,8 +180,10 @@ public class CanvasNodeName extends JTextField {
 	public void setStyle(NodeStyle style) {
 		this.style = (style == null ? new NodeStyle() : style);
 
-		setBackground(this.style.NodeNameTopColor);
-		setForeground(this.style.NodeNameTextColor);
+		iconDecoration.setIcon(style.NodeIcon);
+		
+//		nameField.setBackground(this.style.NodeNameTopColor);
+		nameField.setForeground(this.style.NodeNameTextColor);
 
 		revalidate();
 		repaint();
@@ -124,27 +193,7 @@ public class CanvasNodeName extends JTextField {
 	// Overrides
 	//
 
-	@Override
-	protected void paintComponent(Graphics gfx) {
-		if(doubleClickSupport.isEditing()) {
-			super.paintComponent(gfx);
-		} else {
-			final Graphics2D g = (Graphics2D)gfx;
-			final Rectangle rect = GUIHelper.getInterior(this);
-			final int halign = getHorizontalAlignment();
-			final int valign = SwingConstants.CENTER;
-			final Point p = GUIHelper.placeTextInRectangle(g, getText(), rect, halign, valign);
-
-			// Draw shadow under text, if necessary
-			if(style.NodeNameTextShadowColor != null) {
-				g.setColor(style.NodeNameTextShadowColor);
-				g.drawString(getText(), p.x + 1, p.y + 1);
-			}
-
-			g.setColor(getForeground());
-			g.drawString(getText(), p.x, p.y);
-		}
-	}
+	
 
 	//
 	// OpNodeListener
@@ -154,7 +203,7 @@ public class CanvasNodeName extends JTextField {
 		@Override
 		public void nodePropertyChanged(String propertyName, Object oldValue, Object newValue) {
 			if(propertyName.equals(OpNode.NAME_PROPERTY))
-				setText((String)newValue);
+				nameField.setText((String)newValue);
 		}
 	}; 
 

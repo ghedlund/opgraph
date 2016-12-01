@@ -20,6 +20,7 @@ package ca.gedge.opgraph.app.components.canvas;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -43,6 +44,7 @@ import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
@@ -216,7 +218,7 @@ public class CanvasNode extends JComponent {
 	 */
 	public void setStyle(NodeStyle style) {
 		this.style = (style == null ? new NodeStyle() : style);
-
+		
 		setBorder(style.NodeBorder);
 		setBackground(this.style.NodeBackgroundColor);
 		setForeground(this.style.NodeBorderColor);
@@ -257,7 +259,7 @@ public class CanvasNode extends JComponent {
 
 			setStyle(NodeStyle.getStyleForNode(node));
 			super.setToolTipText(node.getDescription());
-			name.setText(node.getName());
+			name.getNameField().setText(node.getName());
 			updateFields();
 		}
 	}

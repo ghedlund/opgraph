@@ -19,9 +19,16 @@
 package ca.gedge.opgraph.app.components.canvas;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import ca.gedge.opgraph.OpNode;
@@ -42,6 +49,7 @@ public class NodeStyle {
 
 	static {
 		DEFAULT = new NodeStyle();
+		DEFAULT.NodeIcon = null;
 		DEFAULT.NodeBorderColor = Color.GRAY;
 		DEFAULT.NodeBackgroundColor = new Color(255, 255, 255, 200);
 		DEFAULT.NodeFocusColor = new Color(255, 200, 0, 255);
@@ -55,6 +63,11 @@ public class NodeStyle {
 		DEFAULT.AnchorPublishedFillColor = new Color(50, 255, 50, 150);
 
 		COMPOSITE = new NodeStyle(DEFAULT);
+		try {
+			COMPOSITE.NodeIcon = new ImageIcon(ImageIO.read(NodeStyle.class.getClassLoader().getResourceAsStream("data/icons/16x16/opgraph/graph.png")));
+		} catch (IOException e) {
+			Logger.getAnonymousLogger().log(Level.WARNING, e.getLocalizedMessage(), e);
+		}
 		COMPOSITE.NodeBorderColor = new Color(100, 155, 100);
 		COMPOSITE.NodeBackgroundColor = new Color(200, 255, 200, 200);
 		COMPOSITE.NodeNameTopColor = new Color(150, 200, 100, 255);
@@ -114,6 +127,9 @@ public class NodeStyle {
 
 	/** The bottom color for the background of the node name section */ 
 	public Color NodeNameBottomColor = Color.WHITE;
+	
+	/** Icon shown with the node name */
+	public Icon NodeIcon = null;
 
 	/** The color for the node name text */
 	public Color NodeNameTextColor = Color.BLACK;
@@ -154,6 +170,8 @@ public class NodeStyle {
 	
 	public NodeStyle(NodeStyle style) {
 		super();
+		
+		this.NodeIcon = style.NodeIcon;
 		
 		this.AnchorDefaultFillColor = style.AnchorDefaultFillColor;
 		this.AnchorLinkFillColor = style.AnchorLinkFillColor;

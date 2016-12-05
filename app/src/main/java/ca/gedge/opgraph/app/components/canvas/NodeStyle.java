@@ -49,7 +49,12 @@ public class NodeStyle {
 
 	static {
 		DEFAULT = new NodeStyle();
-		DEFAULT.NodeIcon = null;
+		try {
+			DEFAULT.NodeIcon = new ImageIcon(ImageIO.read(NodeStyle.class.getClassLoader().getResourceAsStream("data/icons/16x16/opgraph/bricks.png")));
+		} catch (IOException e) {
+			Logger.getAnonymousLogger().log(Level.WARNING, e.getLocalizedMessage(), e);
+		}
+		
 		DEFAULT.NodeBorderColor = Color.GRAY;
 		DEFAULT.NodeBackgroundColor = new Color(255, 255, 255, 200);
 		DEFAULT.NodeFocusColor = new Color(255, 200, 0, 255);

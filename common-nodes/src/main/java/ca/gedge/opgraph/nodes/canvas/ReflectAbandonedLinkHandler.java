@@ -33,15 +33,11 @@ public class ReflectAbandonedLinkHandler implements AbandonedLinkHandler {
 			// create a new node based on the type of the source at the drop point
 			final Class<?> type = outputField.getOutputType();
 			
-//			final Type genericSuperclass = type.getGenericSuperclass();
-//			ParameterizedType superclass = (ParameterizedType)genericSuperclass;
-//			final Object[] v = superclass.getActualTypeArguments();
-//			for(Object a:v) System.out.println(a);
-			
 			OpNode newNode = null;
-			
+			String fieldName = "obj";
 			if(Iterable.class.isAssignableFrom(type)) {
 				newNode = new IterableClassNode(type);
+				fieldName = "collection";
 			} else {
 				newNode = new ObjectNode(type);
 			}
@@ -50,7 +46,7 @@ public class ReflectAbandonedLinkHandler implements AbandonedLinkHandler {
 			document.getUndoSupport().postEdit(addNodeEdit);
 			
 			// setup link to new node
-			final InputField inputField = newNode.getInputFieldWithKey("obj");
+			final InputField inputField = newNode.getInputFieldWithKey(fieldName);
 			try {
 				final OpLink link = new OpLink(sourceNode.getNode(), outputField, newNode, inputField);
 				final AddLinkEdit addLinkEdit = new AddLinkEdit(document.getGraph(), link);

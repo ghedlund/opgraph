@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -42,17 +43,17 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	implements Iterable<V>
 {
 	/** The vertices in this DAG */
-	private List<V> vertices;
+	List<V> vertices;
 
 	/** The edges in this DAG */
-	private Set<E> edges;
+	Set<E> edges;
 
 	/**
 	 * A mapping from vertex to its level.
 	 * 
 	 * @see #getLevel(Object)
 	 */
-	private WeakHashMap<V, Integer> vertexLevels;
+	private Map<V, Integer> vertexLevels;
 
 	/** Whether or not the topological sorting needs to be performed */
 	private boolean shouldSort;
@@ -176,16 +177,16 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	public boolean canAddEdge(E edge) {
 		boolean canAdd = false;
 		if(vertices.contains(edge.getSource()) && vertices.contains(edge.getDestination())) {
+			final Set<E> testEdges = new HashSet<>(this.edges);
+			testEdges.add(edge);
+			
+			// Test for cycle
+			final TopologicalSort<V, E> sorter = new TopologicalSort<>(getVertexComparator());
 			try {
-				edges.add(edge);
-
-				// Check if adding this edge created a cycle, and if so, remove it
-				boolean oldShouldSort = shouldSort;
-				shouldSort = true;
-				canAdd = topologicalSort();
-				shouldSort = oldShouldSort;
-			} finally {
-				edges.remove(edge);
+				sorter.sort(this.vertices, testEdges);
+				canAdd = true;
+			} catch (CycleDetectedException e) {
+				canAdd = false;
 			}
 		}
 		return canAdd;
@@ -350,71 +351,19 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 */
 	public boolean topologicalSort() {
 		boolean ret = true;
-		if(shouldSort && vertices.size() == 1) {
-			vertexLevels.put(vertices.iterator().next(), 0);
-		} else if(shouldSort && vertices.size() > 1) {
-			final ArrayList<V> orderedVertices = new ArrayList<V>();
-			final WeakHashMap<V, Integer> newLevels = new WeakHashMap<V, Integer>();
-			final HashMap<V, Integer> incomingEdgeCount = new HashMap<V, Integer>();
-
-			//
-			for(V vertex : vertices)
-				incomingEdgeCount.put(vertex, 0);
-
-			// Gather initial incoming edge count
-			for(E edge : edges) {
-				int count = incomingEdgeCount.get(edge.getDestination());
-				incomingEdgeCount.put(edge.getDestination(), count + 1);
-			}
-
-			// Ordering
-			for(int level = 0; orderedVertices.size() < vertices.size(); ++level) {
-				// Find a vertex with zero incoming edges
-				List<V> verticesToProcess = 
-						incomingEdgeCount.entrySet().parallelStream()
-							.filter( (e) -> e.getValue() == 0 )
-							.map( (e) -> e.getKey() )
-							.collect(Collectors.toList());
-
-				if(verticesToProcess.size() == 0)
-					break;
-
-				final List<V> levelOrdering = new ArrayList<>();
-				for(V vertex : verticesToProcess) {
-					// Prevent reuse of this vertex
-					levelOrdering.add(vertex);
-					newLevels.put(vertex, level);
-					incomingEdgeCount.put(vertex, -1);
-
-					// Reduce incoming edge count after removing vertex
-					for(E edge : getOutgoingEdges(vertex)) {
-						V out = edge.getDestination();
-						incomingEdgeCount.put(out, incomingEdgeCount.get(out) - 1);
-					}
-				}
-				levelOrdering.sort(getVertexComparator());
-				orderedVertices.addAll(levelOrdering);
-			}
-
-			boolean cycleExists = false;
-			for(Integer value : incomingEdgeCount.values()) {
-				if(value > 0) {
-					cycleExists = true;
-					break;
-				}
-			}
-
-			// If no cycle, we want to update the vertices to the new
-			// ordered list and flag them as not needing sorting.
-			if(cycleExists) {
-				ret = false;
-			} else {
-				vertexLevels = newLevels;
-				vertices = orderedVertices;
-				shouldSort = false;
-			}
+		
+		final TopologicalSort<V, E> sorter = new TopologicalSort<V, E>(getVertexComparator());
+		try {
+			sorter.sort(this);
+			
+			this.vertices = new ArrayList<>(sorter.getVertexOrder());
+			this.vertexLevels = new WeakHashMap<>(sorter.getVertexLevels());
+			shouldSort = false;
+		} catch (CycleDetectedException e) {
+			ret = false;
 		}
 
 		return ret;
 	}
+	
 }

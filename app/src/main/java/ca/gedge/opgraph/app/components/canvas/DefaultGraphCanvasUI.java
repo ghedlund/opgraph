@@ -456,7 +456,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 								final OpLink link = new OpLink(source, sourceField, destination, destField);
 								if(currentlyDraggedLink == null) {
 									document.getUndoSupport().postEdit(new AddLinkEdit(graph, link));
-								} else if(!link.equals(currentlyDraggedLink)) {
+								} else {
 									document.getUndoSupport().beginUpdate();
 									document.getUndoSupport().postEdit(new RemoveLinkEdit(graph, currentlyDraggedLink));
 									document.getUndoSupport().postEdit(new AddLinkEdit(graph, link));
@@ -554,13 +554,11 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 
 	@Override
 	public void uninstallUI(JComponent c) {
-		// TODO Auto-generated method stub
 		super.uninstallUI(c);
 	}
 
 	@Override
 	public void paint(Graphics g, JComponent c) {
-		// TODO Auto-generated method stub
 		super.paint(g, c);
 	}
 	

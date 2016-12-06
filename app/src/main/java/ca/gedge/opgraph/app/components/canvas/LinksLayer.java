@@ -181,21 +181,21 @@ public class LinksLayer extends JComponent {
 		}
 
 		// Draw links
-		for(Map.Entry<OpLink, Shape> link : links.entrySet()) {
+		for(OpLink link:canvas.getDocument().getGraph().getEdges()) {
 			Color strokeColor = Color.BLACK;
 			Color fillColor = REGULAR_FILL;
-			if(connectedLinks.containsKey(link.getKey()))
+			if(connectedLinks.containsKey(link))
 				fillColor = SELECTED_FILL;
 
 			// Link fill
 			g.setColor(fillColor);
 			g.setStroke(THIN);
-			g.draw(link.getValue());
+			g.draw(links.get(link));
 
 			// Link outline
 			g.setColor(strokeColor);
 			g.setStroke(oldStroke);
-			g.draw(THICK.createStrokedShape(link.getValue()));
+			g.draw(THICK.createStrokedShape(links.get(link)));
 		}
 
 		g.setStroke(oldStroke);

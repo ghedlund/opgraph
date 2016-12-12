@@ -181,7 +181,7 @@ public class LinksLayer extends JComponent {
 		}
 
 		// Draw links
-		for(OpLink link:canvas.getDocument().getGraph().getEdges()) {
+		for(OpLink link:links.keySet()) {
 			Color strokeColor = Color.BLACK;
 			Color fillColor = REGULAR_FILL;
 			if(connectedLinks.containsKey(link))

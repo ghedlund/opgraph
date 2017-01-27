@@ -27,6 +27,8 @@ import java.util.List;
 import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpContext;
 import ca.gedge.opgraph.OpGraph;
+import ca.gedge.opgraph.OpGraphListener;
+import ca.gedge.opgraph.OpLink;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OpNodeInfo;
 import ca.gedge.opgraph.OutputField;
@@ -96,6 +98,37 @@ public class MacroNode
 		this.graph = (graph == null ? new OpGraph() : graph);
 		this.publishedInputs = new ArrayList<PublishedInput>();
 		this.publishedOutputs = new ArrayList<PublishedOutput>();
+		
+		graph.addGraphListener( new OpGraphListener() {
+			
+			@Override
+			public void nodeRemoved(OpGraph graph, OpNode node) {
+				// unpublish fields if node is deleted
+				for(PublishedInput pi:getPublishedInputs().toArray(new PublishedInput[0])) {
+					if(pi.destinationNode == node) {
+						unpublish(pi.destinationNode, pi.nodeInputField);
+					}
+				}
+				for(PublishedOutput po:getPublishedOutputs().toArray(new PublishedOutput[0])) {
+					if(po.sourceNode == node) {
+						unpublish(po.sourceNode, po.nodeOutputField);
+					}
+				}
+			}
+			
+			@Override
+			public void nodeAdded(OpGraph graph, OpNode node) {
+			}
+			
+			@Override
+			public void linkRemoved(OpGraph graph, OpLink link) {
+			}
+			
+			@Override
+			public void linkAdded(OpGraph graph, OpLink link) {
+			}
+			
+		});
 
 		putExtension(CompositeNode.class, this);
 		putExtension(CustomProcessing.class, this);

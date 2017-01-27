@@ -95,7 +95,7 @@ public class TestOpGraph {
 		public void operate(OpContext context) {
 			double x = (Double)context.get(X_FIELD);
 			double y = 1.0;
-			if(context.containsKey(Y_FIELD))
+			if(context.get(Y_FIELD) != null)
 				y = (Double)context.get(Y_FIELD);
 
 			context.put(RESULT_FIELD, x * y);

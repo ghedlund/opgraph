@@ -175,7 +175,8 @@ public final class OpContext extends HashMap<String, Object> {
 	 * Removes all child contexts in this context.
 	 */
 	public void clearChildContexts() {
-		childContexts.clear();
+		if(childContexts != null)
+			childContexts.clear();
 	}
 
 	//

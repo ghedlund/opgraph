@@ -99,7 +99,7 @@ public class MacroNode
 		this.publishedInputs = new ArrayList<PublishedInput>();
 		this.publishedOutputs = new ArrayList<PublishedOutput>();
 		
-		graph.addGraphListener( new OpGraphListener() {
+		this.graph.addGraphListener( new OpGraphListener() {
 			
 			@Override
 			public void nodeRemoved(OpGraph graph, OpNode node) {

@@ -42,6 +42,7 @@ import ca.gedge.opgraph.Processor;
 import ca.gedge.opgraph.app.components.BreadcrumbViewer;
 import ca.gedge.opgraph.app.components.ConsolePanel;
 import ca.gedge.opgraph.app.components.ContextViewerPanel;
+import ca.gedge.opgraph.app.components.GraphOutline;
 import ca.gedge.opgraph.app.components.NodeDefaultsPanel;
 import ca.gedge.opgraph.app.components.NodeSettingsPanel;
 import ca.gedge.opgraph.app.components.PathAddressableMenuImpl;
@@ -120,6 +121,9 @@ public class GraphEditorModel {
 
 	/** The viewer component for the node library */
 	private ContextViewerPanel debugPanel;
+	
+	/** The outline component for the graph */
+	private GraphOutline graphOutline;
 
 	/** List of menu providers */
 	private ArrayList<MenuProvider> menuProviders;
@@ -254,6 +258,13 @@ public class GraphEditorModel {
 			nodeSettings = new NodeSettingsPanel();
 		}
 		return nodeSettings;
+	}
+	
+	public GraphOutline getGraphOutline() {
+		if(graphOutline == null) {
+			graphOutline = new GraphOutline(getDocument());
+		}
+		return graphOutline;
 	}
 
 	/**

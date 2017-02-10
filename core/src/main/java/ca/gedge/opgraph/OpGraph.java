@@ -400,7 +400,8 @@ public final class OpGraph
 	 */
 	public void addGraphListener(OpGraphListener listener) {
 		synchronized(listeners) {
-			listeners.add(listener);
+			if(!listeners.contains(listener)) 
+				listeners.add(listener);
 		}
 	}
 	

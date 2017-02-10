@@ -25,6 +25,7 @@ import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 import ca.gedge.opgraph.nodes.general.MacroNode;
 import ca.gedge.opgraph.util.ReflectUtil;
+import ca.gedge.opgraph.validators.TypeValidator;
 
 /**
  * 
@@ -109,7 +110,20 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 			graph.add(node);
 		}
 		
-		inputValueField = new InputField("collection", "input value", clazz);
+		inputValueField = new InputField("collection", "input value", new TypeValidator() {
+			
+			@Override
+			public boolean isAcceptable(Class<?> cls) {
+				return clazz.isAssignableFrom(cls);
+			}
+			
+			@Override
+			public boolean isAcceptable(Object obj) {
+				return isAcceptable(obj.getClass());
+			}
+			
+		});
+		
 		inputValueField.setOptional(false);
 		inputValueField.setFixed(true);
 		putField(1, inputValueField);

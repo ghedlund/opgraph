@@ -747,4 +747,5 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 
 	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents) { }
+
 }

@@ -50,6 +50,10 @@ public class ChangeNodeNameEdit extends AbstractUndoableEdit {
 		this.oldName = node.getName();
 		perform();
 	}
+	
+	public OpNode getNode() {
+		return this.node;
+	}
 
 	/**
 	 * Performs this edit.

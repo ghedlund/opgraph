@@ -44,7 +44,7 @@ public final class InvalidTypeException extends ProcessingException {
 	 * @param value  the value that was not accepted by the given field
 	 */
 	public InvalidTypeException(Processor context, InputField field, Object value) {
-		super(context, "Field '" + field.getKey() + "' doesn't accepte value '" + value + "'");
+		super(context, "Field '" + field.getKey() + "' doesn't accept value '" + value + "'");
 		this.field = field;
 		this.value = value;
 	}

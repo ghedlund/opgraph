@@ -126,7 +126,7 @@ public class NodeStyle {
 		}
 		return DEFAULT;
 	}
-
+	
 	/** The top color for the background of the node name section */ 
 	public Color NodeNameTopColor = Color.WHITE;
 

@@ -822,7 +822,8 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 								final Component comp = compLoc.getFirst();
 								if(comp instanceof NoteComponent) {
 									final Note note = ((NoteComponent)comp).getNote();
-									comp.setLocation(comp.getX() - deltaX, comp.getY() - deltaY);
+									final Point p = new Point(comp.getX()-deltaX, comp.getY()-deltaY);
+									comp.setLocation(p);
 									canvas.getDocument().getUndoSupport().postEdit(new MoveNoteEdit(note, deltaX, deltaY));
 								}
 							}

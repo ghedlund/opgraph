@@ -62,6 +62,9 @@ import ca.gedge.opgraph.OutputField;
  * A component that visualizes an {@link OpNode}.
  */
 public class CanvasNode extends JComponent {
+	
+	public final static String COMPONENT_LOCATION = "_location";
+	
 	/** The node being displayed */
 	private OpNode node;
 

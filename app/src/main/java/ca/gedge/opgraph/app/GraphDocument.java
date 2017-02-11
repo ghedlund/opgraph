@@ -41,7 +41,7 @@ import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionModel;
 import ca.gedge.opgraph.extensions.CompositeNode;
 import ca.gedge.opgraph.extensions.NodeMetadata;
-import ca.gedge.opgraph.util.Breadcrumb;
+import ca.phon.ui.jbreadcrumb.Breadcrumb;
 
 /**
  * Document model used for graphs.

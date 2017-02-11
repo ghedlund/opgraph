@@ -73,8 +73,11 @@ import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.extensions.Publishable;
 import ca.gedge.opgraph.extensions.Publishable.PublishedInput;
 import ca.gedge.opgraph.extensions.Publishable.PublishedOutput;
-import ca.gedge.opgraph.util.BreadcrumbListener;
 import ca.gedge.opgraph.util.Pair;
+import ca.phon.ui.jbreadcrumb.Breadcrumb;
+import ca.phon.ui.jbreadcrumb.BreadcrumbEvent;
+import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.BreadcrumbEventType;
+import ca.phon.ui.jbreadcrumb.BreadcrumbListener;
 
 /**
  * A canvas for creating/modifying an {@link OpGraph}.
@@ -225,13 +228,13 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 			} else {
 				// Given the current processing context, find the path that
 				// gets to the current node
-				final LinkedList<Pair<OpGraph, String>> path = new LinkedList<Pair<OpGraph, String>>();
+				final LinkedList<Breadcrumb.EntrySet<OpGraph, String>> path = new LinkedList<Breadcrumb.EntrySet<OpGraph, String>>();
 
 				String id = context.getGraphOfContext().getId();
 				Processor activeContext = context;
 				while(activeContext != null) {
 					final OpGraph graph = activeContext.getGraphOfContext();
-					path.addLast(new Pair<OpGraph, String>(graph, id));
+					path.addLast(new Breadcrumb.EntrySet<OpGraph, String>(graph, id));
 
 					if(activeContext.getCurrentNodeOfContext() != null)
 						id = activeContext.getCurrentNodeOfContext().getName();
@@ -703,21 +706,22 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 
 	private final BreadcrumbListener<OpGraph, String> breadcrumbListener = new BreadcrumbListener<OpGraph, String>() {
 		@Override
-		public void stateChanged(OpGraph oldGraph, OpGraph newGraph) {
-			// XXX Could this move to changeGraph instead?
-			if(oldGraph != null){
-				oldGraph.removeGraphListener(graphAdapter);
-
-				final Notes notes = oldGraph.getExtension(Notes.class);
-				if(notes != null)
-					notes.removeCollectionListener(notesAdapter);
+		public void breadCrumbEvent(BreadcrumbEvent<OpGraph, String> event) {
+			if(event.getEventType() == BreadcrumbEventType.GOTO_STATE) {
+				final OpGraph oldGraph = event.getOldState();
+				final OpGraph newGraph = event.getState();
+				// XXX Could this move to changeGraph instead?
+				if(oldGraph != null){
+					oldGraph.removeGraphListener(graphAdapter);
+					
+					final Notes notes = oldGraph.getExtension(Notes.class);
+					if(notes != null)
+						notes.removeCollectionListener(notesAdapter);
+				}
+				
+				changeGraph(oldGraph, newGraph);
 			}
-
-			changeGraph(oldGraph, newGraph);
 		}
-
-		@Override
-		public void stateAdded(OpGraph state, String value) {}
 	};
 
 	//

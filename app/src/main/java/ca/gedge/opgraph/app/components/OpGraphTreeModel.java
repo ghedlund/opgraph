@@ -3,15 +3,10 @@ package ca.gedge.opgraph.app.components;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 import javax.swing.JTree;
-import javax.swing.event.EventListenerList;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -178,41 +173,5 @@ public class OpGraphTreeModel extends DefaultTreeModel {
 		}
 		
 	};
-//	
-//	private static class OpNodeMutableNode extends DefaultMutableTreeNode {
-//
-//		public OpNodeMutableNode(OpNode node) {
-//			super(node);
-//		}
-//		
-//		public OpNode getOpNode() {
-//			return (OpNode)super.getUserObject();
-//		}
-//
-//		@Override
-//		public boolean equals(Object obj) {
-//			if(!(obj instanceof OpGraphMutbleNode)) return false;
-//			return ((OpNodeMutableNode)obj).getOpNode() == getOpNode();
-//		}
-//		
-//	}
-//	
-//	private static class OpGraphMutbleNode extends DefaultMutableTreeNode {
-//		
-//		public OpGraphMutbleNode(OpGraph graph) {
-//			super(graph);
-//		}
-//		
-//		public OpGraph getGraph() {
-//			return (OpGraph)super.getUserObject();
-//		}
-//
-//		@Override
-//		public boolean equals(Object obj) {
-//			if(!(obj instanceof OpGraphMutbleNode)) return false;
-//			return ((OpGraphMutbleNode)obj).getGraph() == getGraph();
-//		}
-//		
-//	}
 
 }

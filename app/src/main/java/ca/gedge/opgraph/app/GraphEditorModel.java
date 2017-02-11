@@ -39,7 +39,6 @@ import javax.swing.event.MouseInputAdapter;
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.Processor;
-import ca.gedge.opgraph.app.components.BreadcrumbViewer;
 import ca.gedge.opgraph.app.components.ConsolePanel;
 import ca.gedge.opgraph.app.components.ContextViewerPanel;
 import ca.gedge.opgraph.app.components.GraphOutline;
@@ -53,6 +52,7 @@ import ca.gedge.opgraph.app.components.library.NodeLibraryViewer;
 import ca.gedge.opgraph.app.extensions.NoteComponent;
 import ca.gedge.opgraph.app.util.GUIHelper;
 import ca.gedge.opgraph.util.ServiceDiscovery;
+import ca.phon.ui.jbreadcrumb.JBreadcrumb;
 
 /**
  * A model for the graph editor.
@@ -102,7 +102,7 @@ public class GraphEditorModel {
 	private GraphDocument document;
 
 	/** The breadcrumb attached to the canvas */
-	private BreadcrumbViewer<OpGraph, ?> breadcrumb;
+	private JBreadcrumb<OpGraph, ?> breadcrumb;
 
 	/** The canvas this window is viewing */
 	private GraphCanvas canvas;
@@ -213,9 +213,9 @@ public class GraphEditorModel {
 	/**
 	 * @return the breadcrumb
 	 */
-	public BreadcrumbViewer<OpGraph, ?> getBreadcrumb() {
+	public JBreadcrumb<OpGraph, ?> getBreadcrumb() {
 		if(breadcrumb == null) {
-			breadcrumb = new BreadcrumbViewer<OpGraph, String>(document.getBreadcrumb());
+			breadcrumb = new JBreadcrumb<OpGraph, String>(document.getBreadcrumb());
 		}
 		return breadcrumb;
 	}

@@ -34,7 +34,8 @@ import ca.gedge.opgraph.app.components.canvas.NodeStyle;
 import ca.gedge.opgraph.app.edits.graph.MoveNodesEdit;
 import ca.gedge.opgraph.app.edits.node.ChangeNodeNameEdit;
 import ca.gedge.opgraph.extensions.CompositeNode;
-import ca.gedge.opgraph.util.BreadcrumbListener;
+import ca.phon.ui.jbreadcrumb.BreadcrumbEvent;
+import ca.phon.ui.jbreadcrumb.BreadcrumbListener;
 
 /**
  * Provides an outline component for {@link OpGraph}s.  The outline
@@ -96,12 +97,10 @@ public class GraphOutline extends JPanel {
 			}
 		});
 		
-		graphDocument.getBreadcrumb().addBreadcrumbListener(new BreadcrumbListener<OpGraph, String>() {
-			
-			@Override
-			public void stateChanged(OpGraph oldState, OpGraph newState) {
+		graphDocument.getBreadcrumb().addBreadcrumbListener( (e) -> {
+			if(e.getEventType() == BreadcrumbEvent.BreadcrumbEventType.GOTO_STATE) {
 				// make sure new state is expanded in tree
-				final DefaultMutableTreeNode treeNode = model.getMutableNode(newState);
+				final DefaultMutableTreeNode treeNode = model.getMutableNode(e.getState());
 				if(treeNode != null) {
 					SwingUtilities.invokeLater(() -> {
 						final TreePath path = new TreePath(model.getPathToRoot(treeNode));
@@ -122,12 +121,6 @@ public class GraphOutline extends JPanel {
 					});
 				}
 			}
-			
-			@Override
-			public void stateAdded(OpGraph state, String value) {
-				
-			}
-			
 		});
 	}
 	
@@ -158,7 +151,7 @@ public class GraphOutline extends JPanel {
 							} else if(parentGraph != null && graphDocument.getBreadcrumb().containsState(parentGraph)) {
 								graphDocument.getBreadcrumb().gotoState(parentGraph);
 							} else {
-								graphDocument.getBreadcrumb().gotoState(graphDocument.getBreadcrumb().getStates().get(graphDocument.getBreadcrumb().size()-1));
+								graphDocument.getBreadcrumb().gotoState(graphDocument.getBreadcrumb().getStates().get(0));
 								
 								for(int i = 0; i < graphPath.size()-1; i++) {
 									final OpNode node = graphPath.get(i);

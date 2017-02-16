@@ -120,6 +120,11 @@ public class OpGraphTreeModel extends DefaultTreeModel {
 		super.nodesWereInserted(parentNode, new int[]{ nodeIdx });
 	}
 	
+	public void nodeChanged(OpNode node) {
+		final DefaultMutableTreeNode treeNode = getMutableNode(node);
+		super.nodeChanged(treeNode);
+	}
+	
 	public void updateChildOrder(DefaultMutableTreeNode treeNode, OpGraph graph) {
 		final TreeNode[] nodePath = super.getPathToRoot(treeNode);
 		final TreePath treePath = new TreePath(nodePath);

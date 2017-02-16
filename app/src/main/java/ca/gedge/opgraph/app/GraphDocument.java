@@ -218,7 +218,7 @@ public class GraphDocument {
 	 * @return root graph of document
 	 */
 	public OpGraph getRootGraph() {
-		return breadcrumb.getStates().get(breadcrumb.size()-1);
+		return breadcrumb.getStates().get(0);
 	}
 
 	/**

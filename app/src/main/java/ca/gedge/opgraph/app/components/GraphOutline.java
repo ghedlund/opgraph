@@ -127,6 +127,10 @@ public class GraphOutline extends JPanel {
 	public OpGraphTreeModel getModel() {
 		return this.model;
 	}
+	
+	public JTree getTree() {
+		return this.tree;
+	}
 
 	private final MouseListener treeClickListener = new MouseInputAdapter() {
 		

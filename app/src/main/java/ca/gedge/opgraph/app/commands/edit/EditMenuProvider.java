@@ -57,7 +57,7 @@ public class EditMenuProvider implements MenuProvider {
 		final RedoCommand redo = new RedoCommand(model.getDocument().getUndoManager());
 
 		final CopyCommand copy = new CopyCommand();
-		final PasteCommand paste = new PasteCommand();
+		final PasteCommand paste = new PasteCommand(model.getDocument());
 		final DuplicateCommand duplicate = new DuplicateCommand();
 
 		menu.addMenuItem("edit/copy", copy);
@@ -116,7 +116,7 @@ public class EditMenuProvider implements MenuProvider {
 				final Transferable clipboardContents = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(context);
 				if(clipboardContents != null && clipboardContents.isDataFlavorSupported(SubgraphClipboardContents.copyFlavor)) {
 					// Add paste command
-					menu.addMenuItem("paste", new PasteCommand());
+					menu.addMenuItem("paste", new PasteCommand(doc));
 				}
 			}
 

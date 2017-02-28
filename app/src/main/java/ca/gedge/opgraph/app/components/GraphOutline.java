@@ -3,22 +3,36 @@ package ca.gedge.opgraph.app.components;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.event.MenuListener;
 import javax.swing.event.MouseInputAdapter;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeSelectionModel;
@@ -27,12 +41,17 @@ import javax.swing.tree.TreeSelectionModel;
 import javax.swing.undo.UndoableEdit;
 
 import ca.gedge.opgraph.OpGraph;
+import ca.gedge.opgraph.OpLink;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
+import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 import ca.gedge.opgraph.app.components.canvas.NodeStyle;
+import ca.gedge.opgraph.app.components.canvas.SubgraphClipboardContents;
 import ca.gedge.opgraph.app.edits.graph.MoveNodesEdit;
 import ca.gedge.opgraph.app.edits.node.ChangeNodeNameEdit;
+import ca.gedge.opgraph.dag.CycleDetectedException;
+import ca.gedge.opgraph.dag.VertexNotFoundException;
 import ca.gedge.opgraph.extensions.CompositeNode;
 import ca.phon.ui.jbreadcrumb.BreadcrumbEvent;
 import ca.phon.ui.jbreadcrumb.BreadcrumbListener;
@@ -43,10 +62,13 @@ import ca.phon.ui.jbreadcrumb.BreadcrumbListener;
  * display the relevent node in the {@link GraphCanvas} and select it.
  *
  */
-public class GraphOutline extends JPanel {
+public class GraphOutline extends JPanel implements ClipboardOwner {
 
 	private static final long serialVersionUID = -1208476967494976769L;
 	
+	private final static Logger LOGGER = Logger.getLogger(GraphOutline.class.getName());
+	
+	private JPopupMenu contextMenu;
 	private JTree tree;
 	private OpGraphTreeModel model;
 	
@@ -72,10 +94,42 @@ public class GraphOutline extends JPanel {
 		this.tree.setModel(this.model);
 		this.tree.setCellRenderer(new OpGraphTreeCellRenderer());
 		this.tree.addMouseListener(treeClickListener);
-		// TODO selection should be one or more items under a single tree (i.e., graph)
+
+		final Action copyAct = new AbstractAction() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				copySelectionToClipboard(e);
+			}
+			
+		};
+		final ActionMap am = tree.getActionMap();
+		am.put("copy", copyAct);
+		
+		// custom selection model
 		final GraphSelectionModel selectionModel = new GraphSelectionModel();
 		selectionModel.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 		this.tree.setSelectionModel(selectionModel);
+		
+		contextMenu = new JPopupMenu();
+		contextMenu.addPopupMenuListener(new PopupMenuListener() {
+			
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				setupContextMenu();
+			}
+			
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+				
+			}
+			
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e) {
+				
+			}
+		});
+		tree.setComponentPopupMenu(contextMenu);
 		
 		final JScrollPane scroller = new JScrollPane(tree);
 		add(scroller, BorderLayout.CENTER);
@@ -88,12 +142,6 @@ public class GraphOutline extends JPanel {
 				final DefaultMutableTreeNode treeNode = this.model.getMutableNode(graph);
 				if(treeNode != null)
 					this.model.updateChildOrder(treeNode, graph);
-			} else if (edit instanceof ChangeNodeNameEdit) {
-				// TODO this doesn't work - this edit is not passed to this undo support instance
-				final OpNode node = ((ChangeNodeNameEdit)edit).getNode();
-				final DefaultMutableTreeNode treeNode = this.model.getMutableNode(node);
-				if(treeNode != null)
-					this.model.nodeChanged(treeNode);
 			}
 		});
 		
@@ -122,6 +170,82 @@ public class GraphOutline extends JPanel {
 				}
 			}
 		});
+	}
+	
+	protected void setupContextMenu() {
+		final JPopupMenu contextMenu = getContextMenu();
+		contextMenu.removeAll();
+		
+		if(tree.getSelectionCount() > 0) {
+			// add copy & paste items
+			final Action copyAct = tree.getActionMap().get("copy");
+			copyAct.putValue(Action.NAME, "Copy");
+			copyAct.putValue(Action.SHORT_DESCRIPTION, "Copy selected nodes to clipboard.");
+			
+			contextMenu.add(copyAct);
+		}
+		
+		if(tree.getSelectionCount() == 1) {
+			final TreePath selectedPath = tree.getSelectionPath();
+			final DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode)selectedPath.getLastPathComponent();
+			if(lastNode.getUserObject() instanceof CompositeNode) {
+				// TODO add paste command
+			}
+		}
+	}
+	
+	public JPopupMenu getContextMenu() {
+		return this.contextMenu;
+	}
+	
+	/**
+	 * Copies the selected nodes in the outline to the clipboard
+	 */
+	public void copySelectionToClipboard(ActionEvent evt) {
+		if(tree.getSelectionCount() == 1 && tree.getSelectionRows()[0] == 0) {
+			// create transferable object
+			final SubgraphClipboardContents clipboardContents = 
+					new SubgraphClipboardContents(GraphEditorModel.getActiveEditorModel().getCanvas(), graphDocument.getRootGraph());
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboardContents, this);
+		} else {
+			// create a new graph with the selected nodes
+			final OpGraph graph = new OpGraph();
+			final List<DefaultMutableTreeNode> nodesToCopy = new ArrayList<>();
+			final GraphSelectionModel selectionModel = (GraphSelectionModel)getTree().getSelectionModel();
+			for(TreePath selectedPath:selectionModel.getSelectionPaths()) {
+				final DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)selectedPath.getLastPathComponent();
+				if(treeNode.getUserObject() instanceof OpNode) {
+					nodesToCopy.add(treeNode);
+				}
+			}
+			
+			if(nodesToCopy.size() > 0) {
+				final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)nodesToCopy.get(0).getParent();
+				if(parentNode.getUserObject() instanceof OpGraph) {
+					final OpGraph parentGraph = (OpGraph)parentNode.getUserObject();
+					
+					for(DefaultMutableTreeNode treeNode:nodesToCopy) {
+						final OpNode node = (OpNode)treeNode.getUserObject();
+						graph.add(node);
+					}
+					
+					for(OpLink link:parentGraph.getEdges()) {
+						if(graph.contains(link.getSource()) && graph.contains(link.getDestination())) {
+							try {
+								graph.add(link);
+							} catch (VertexNotFoundException | CycleDetectedException e) {
+								LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+							}
+						}
+					}
+				}
+				
+				// create transferable object
+				final SubgraphClipboardContents clipboardContents = 
+						new SubgraphClipboardContents(GraphEditorModel.getActiveEditorModel().getCanvas(), graph);
+				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboardContents, this);
+			}
+		}
 	}
 	
 	public OpGraphTreeModel getModel() {
@@ -226,24 +350,59 @@ public class GraphOutline extends JPanel {
 			return root;
 		}
 		
-		
-		
 		@Override
 		public void addSelectionPaths(TreePath[] paths) {
 			TreePath rootPath = rootPath();
-			if(rootPath == null) {
+			if(rootPath == null && paths.length > 0) {
 				rootPath = paths[0].getParentPath();
+				// case when first selection is the root path
+				if(rootPath == null && paths.length > 1)
+					rootPath = paths[1].getParentPath();
+			}
+
+			List<TreePath> sameParent = new ArrayList<>();
+			if(rootPath != null) {
+				for(int i = 0; i < paths.length; i++) {
+					if(rootPath.equals(paths[i].getParentPath())) {
+						sameParent.add(paths[i]);
+					}
+				}
+			} else {
+				// can only happen when we have a single selection of root
+				sameParent.add(paths[0]);
 			}
 			
-			boolean sameParent = true;
-			for(int i = 0; i < paths.length; i++) {
-				sameParent &= rootPath.equals(paths[i].getParentPath());
+			if(sameParent.size() > 0)
+				super.addSelectionPaths(sameParent.toArray(new TreePath[0]));
+		}
+		
+		@Override
+		public void addSelectionPath(TreePath path) {
+			TreePath rootPath = rootPath();
+			if(rootPath == null || rootPath.equals(path.getParentPath())) {
+				super.addSelectionPath(path);
 			}
-			
-			if(sameParent)
-					super.addSelectionPaths(paths);
 		}
 
+		@Override
+		public void setSelectionPath(TreePath path) {
+			super.clearSelection();
+			
+			addSelectionPath(path);
+		}
+
+		@Override
+		public void setSelectionPaths(TreePath[] pPaths) {
+			super.clearSelection();
+			
+			addSelectionPaths(pPaths);
+		}
+		
+	}
+
+	@Override
+	public void lostOwnership(Clipboard clipboard, Transferable contents) {
+		
 	}
 	
 }

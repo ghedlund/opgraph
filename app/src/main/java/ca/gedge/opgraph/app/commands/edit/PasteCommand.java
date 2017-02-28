@@ -58,12 +58,16 @@ import ca.gedge.opgraph.extensions.NodeMetadata;
 public class PasteCommand extends HookableCommand {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(PasteCommand.class.getName());
+	
+	private GraphDocument document;
 
 	/**
 	 * Default constructor.
 	 */
-	public PasteCommand() {
+	public PasteCommand(GraphDocument document) {
 		super("Paste");
+		
+		this.document = document;
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 
@@ -76,7 +80,6 @@ public class PasteCommand extends HookableCommand {
 		if(GraphicsEnvironment.isHeadless())
 			return;
 
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			// Check to make sure the clipboard has something we can paste
 			final Transferable clipboardContents = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(this);

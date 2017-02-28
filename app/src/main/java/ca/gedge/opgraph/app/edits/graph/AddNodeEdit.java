@@ -115,6 +115,10 @@ public class AddNodeEdit extends AbstractUndoableEdit {
 		graph.add(node);
 	}
 
+	public OpNode getNode() {
+		return this.node;
+	}
+	
 	//
 	// AbstractUndoableEdit
 	//

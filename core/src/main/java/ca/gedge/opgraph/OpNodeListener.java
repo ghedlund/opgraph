@@ -32,7 +32,7 @@ public interface OpNodeListener {
 	 * @param oldValue  the old value of the property
 	 * @param newValue  the new value of the property
 	 */
-	public abstract void nodePropertyChanged(String propertyName, Object oldValue, Object newValue);
+	public abstract void nodePropertyChanged(OpNode node, String propertyName, Object oldValue, Object newValue);
 
 	/**
 	 * Called when an input field was added to a node.

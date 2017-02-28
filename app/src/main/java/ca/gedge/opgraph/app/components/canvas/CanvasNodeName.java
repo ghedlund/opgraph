@@ -201,7 +201,7 @@ public class CanvasNodeName extends JPanel {
 
 	final OpNodeAdapter nodeListener = new OpNodeAdapter() {
 		@Override
-		public void nodePropertyChanged(String propertyName, Object oldValue, Object newValue) {
+		public void nodePropertyChanged(OpNode node, String propertyName, Object oldValue, Object newValue) {
 			if(propertyName.equals(OpNode.NAME_PROPERTY))
 				nameField.setText((String)newValue);
 		}

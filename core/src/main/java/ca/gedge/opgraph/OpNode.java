@@ -553,7 +553,8 @@ public abstract class OpNode implements Extendable, Vertex {
 	 */
 	public void addNodeListener(OpNodeListener listener) {
 		synchronized(listeners) {
-			listeners.add(listener);
+			if(!listeners.contains(listener))
+				listeners.add(listener);
 		}
 	}
 
@@ -571,7 +572,7 @@ public abstract class OpNode implements Extendable, Vertex {
 	private void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
 		synchronized(listeners) {
 			for(OpNodeListener listener : listeners)
-				listener.nodePropertyChanged(propertyName, oldValue, newValue);
+				listener.nodePropertyChanged(this, propertyName, oldValue, newValue);
 		}
 	}
 

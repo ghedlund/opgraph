@@ -1,5 +1,6 @@
 package ca.gedge.opgraph.app.components;
 
+import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,10 +11,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import ca.gedge.opgraph.InputField;
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpGraphListener;
 import ca.gedge.opgraph.OpLink;
 import ca.gedge.opgraph.OpNode;
+import ca.gedge.opgraph.OpNodeListener;
+import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.extensions.CompositeNode;
 
 /**
@@ -41,6 +45,8 @@ public class OpGraphTreeModel extends DefaultTreeModel {
 				childGraph.addGraphListener(graphListener);
 				setupTree(childNode, childGraph);
 			}
+			
+			opnode.addNodeListener(nodeListener);
 		}
 	}
 	
@@ -106,9 +112,11 @@ public class OpGraphTreeModel extends DefaultTreeModel {
 		
 		final DefaultMutableTreeNode parentNode = getMutableNode(graph);
 		final DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(node);
+		node.addNodeListener(nodeListener);
 		
 		if(node instanceof CompositeNode) {
 			final OpGraph childGraph = ((CompositeNode)node).getGraph();
+			childGraph.addGraphListener(graphListener);
 			setupTree(childNode, childGraph);
 		}
 		
@@ -148,7 +156,33 @@ public class OpGraphTreeModel extends DefaultTreeModel {
 			tree.expandPath(expandedPaths.nextElement());
 		}
 	}
-	
+
+	private final OpNodeListener nodeListener = new OpNodeListener() {
+
+		@Override
+		public void nodePropertyChanged(OpNode node, String propertyName, Object oldValue, Object newValue) {
+			if(propertyName.equals(OpNode.NAME_PROPERTY))
+				nodeChanged(node);
+		}
+
+		@Override
+		public void fieldAdded(OpNode node, InputField field) {
+		}
+
+		@Override
+		public void fieldRemoved(OpNode node, InputField field) {
+		}
+
+		@Override
+		public void fieldAdded(OpNode node, OutputField field) {
+		}
+
+		@Override
+		public void fieldRemoved(OpNode node, OutputField field) {
+		}
+		
+	};
+
 	private final OpGraphListener graphListener = new OpGraphListener() {
 		
 		@Override

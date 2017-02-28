@@ -20,6 +20,7 @@ package ca.gedge.opgraph.app.components.canvas;
 
 import java.awt.Dimension;
 import java.awt.LayoutManager;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -42,6 +43,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
+import javax.swing.Scrollable;
 import javax.swing.undo.CompoundEdit;
 
 import ca.gedge.opgraph.ContextualItem;
@@ -91,7 +93,7 @@ import ca.phon.ui.jbreadcrumb.BreadcrumbListener;
  *     breadcrumb from this class also, which doesn't really feel like it
  *     belongs here. This class should never set the model on itself.
  */
-public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
+public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrollable {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(GraphCanvas.class.getName());
 	
@@ -510,7 +512,7 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 
 	private class GraphCanvasAdapter implements OpGraphListener, OpNodeListener {
 		@Override
-		public void nodePropertyChanged(String propertyName, Object oldValue, Object newValue) {}
+		public void nodePropertyChanged(OpNode node, String propertyName, Object oldValue, Object newValue) {}
 
 		@Override
 		public void nodeAdded(final OpGraph graph, final OpNode v) {
@@ -751,5 +753,30 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner {
 
 	@Override
 	public void lostOwnership(Clipboard clipboard, Transferable contents) { }
+
+	@Override
+	public Dimension getPreferredScrollableViewportSize() {
+		return null;
+	}
+
+	@Override
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return 20;
+	}
+
+	@Override
+	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+		return 100;
+	}
+
+	@Override
+	public boolean getScrollableTracksViewportWidth() {
+		return false;
+	}
+
+	@Override
+	public boolean getScrollableTracksViewportHeight() {
+		return false;
+	}
 
 }

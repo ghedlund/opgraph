@@ -408,7 +408,7 @@ public class CanvasNode extends JComponent {
 		}
 
 		@Override
-		public void nodePropertyChanged(String propertyName, Object oldValue, Object newValue) {
+		public void nodePropertyChanged(OpNode node, String propertyName, Object oldValue, Object newValue) {
 			if(propertyName.equals(OpNode.NAME_PROPERTY)) {
 				revalidate();
 				repaint();

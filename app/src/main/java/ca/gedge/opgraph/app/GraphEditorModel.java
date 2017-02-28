@@ -42,7 +42,7 @@ import ca.gedge.opgraph.Processor;
 import ca.gedge.opgraph.app.components.ConsolePanel;
 import ca.gedge.opgraph.app.components.ContextViewerPanel;
 import ca.gedge.opgraph.app.components.GraphOutline;
-import ca.gedge.opgraph.app.components.NodeDefaultsPanel;
+import ca.gedge.opgraph.app.components.NodeFieldsPanel;
 import ca.gedge.opgraph.app.components.NodeSettingsPanel;
 import ca.gedge.opgraph.app.components.PathAddressableMenuImpl;
 import ca.gedge.opgraph.app.components.canvas.CanvasNode;
@@ -111,7 +111,7 @@ public class GraphEditorModel {
 	private ConsolePanel console;
 
 	/** The panel that allows one to edit default values for node input fields */
-	private NodeDefaultsPanel nodeDefaults;
+	private NodeFieldsPanel nodeFields;
 
 	/** The panel that allows one to modify node settings */
 	private NodeSettingsPanel nodeSettings;
@@ -223,11 +223,11 @@ public class GraphEditorModel {
 	/**
 	 * @return the nodeDefaults
 	 */
-	public NodeDefaultsPanel getNodeDefaults() {
-		if(nodeDefaults == null) {
-			nodeDefaults = new NodeDefaultsPanel();
+	public NodeFieldsPanel getNodeFieldsPanel() {
+		if(nodeFields == null) {
+			nodeFields = new NodeFieldsPanel(document);
 		}
-		return nodeDefaults;
+		return nodeFields;
 	}
 
 	/**
@@ -287,8 +287,8 @@ public class GraphEditorModel {
 			if(selected.size() == 1)
 				node = selected.iterator().next();
 
-			if(nodeDefaults != null)
-				nodeDefaults.setNode(node);
+			if(nodeFields != null)
+				nodeFields.setNode(node);
 			if(nodeSettings != null)
 				nodeSettings.setNode(node);
 			if(debugPanel != null)

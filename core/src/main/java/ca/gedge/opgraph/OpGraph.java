@@ -378,7 +378,7 @@ public final class OpGraph
 		}
 
 		@Override
-		public void nodePropertyChanged(String propertyName, Object oldValue, Object newValue) {}
+		public void nodePropertyChanged(OpNode node, String propertyName, Object oldValue, Object newValue) {}
 
 		@Override
 		public void fieldAdded(OpNode node, OutputField field) {}

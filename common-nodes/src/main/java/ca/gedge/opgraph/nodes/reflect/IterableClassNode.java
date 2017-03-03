@@ -21,8 +21,11 @@ import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.Processor;
 import ca.gedge.opgraph.app.GraphDocument;
+import ca.gedge.opgraph.app.components.canvas.NodeStyle;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
+import ca.gedge.opgraph.extensions.CustomProcessing;
+import ca.gedge.opgraph.extensions.CustomProcessing.CustomProcessor;
 import ca.gedge.opgraph.nodes.general.MacroNode;
 import ca.gedge.opgraph.util.ReflectUtil;
 import ca.gedge.opgraph.validators.TypeValidator;
@@ -30,10 +33,14 @@ import ca.gedge.opgraph.validators.TypeValidator;
 /**
  * 
  */
-public class IterableClassNode extends MacroNode implements NodeSettings, ReflectNode {
+public class IterableClassNode extends MacroNode implements NodeSettings, ReflectNode, CustomProcessing, CustomProcessor {
 	
 	private static final Logger LOGGER = Logger
 			.getLogger(IterableClassNode.class.getName());
+	
+	static {
+		NodeStyle.installStyleForNode(IterableClassNode.class, NodeStyle.ITERATION);
+	}
 	
 	/** 
 	 * {@link OpContext} key for the current value
@@ -57,23 +64,27 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 	public IterableClassNode() {
 		super();
 		putExtension(NodeSettings.class, this);
+		putExtension(CustomProcessing.class, this);
 	}
 	
 	public IterableClassNode(OpGraph graph) {
 		super(graph);
 		putExtension(NodeSettings.class, this);
+		putExtension(CustomProcessing.class, this);
 	}
 	
 	public IterableClassNode(Class<?> clazz) {
 		super();
 		setDeclaredClass(clazz);
 		putExtension(NodeSettings.class, this);
+		putExtension(CustomProcessing.class, this);
 	}
 	
 	public IterableClassNode(OpGraph graph, Class<?> clazz) {
 		super(graph);
 		setDeclaredClass(clazz);
 		putExtension(NodeSettings.class, this);
+		putExtension(CustomProcessing.class, this);
 	}
 	
 	public void setDeclaredClass(Class<?> clazz) {
@@ -251,4 +262,96 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 			}
 		}
 	}
+	
+	/*
+	 * Custom processing
+	 */
+	private Object obj;
+	
+	private OpContext globalContext;
+	private Iterator<?> iterator;
+	private Iterator<OpNode> processIterator;
+	private Object currentValue;
+
+	@Override
+	public boolean hasNext() {
+		boolean hasMoreElements = (iterator != null && iterator.hasNext());
+		boolean hasMoreNodes = (processIterator != null && processIterator.hasNext());
+		return hasMoreElements || hasMoreNodes;
+	}
+
+	@Override
+	public OpNode next() {
+		if(currentValue == null || !processIterator.hasNext()) {
+			currentValue = iterator.next();
+			processIterator = graph.getVertices().iterator();
+			
+			globalContext.put(CURRENT_VALUE_KEY, currentValue);
+		}
+		return processIterator.next();
+	}
+
+	@Override
+	public void initialize(OpContext context) {
+		globalContext = context;
+		obj = context.get(inputValueField);
+		if(obj == null) {
+			// attempt to instantiate a new object
+			try {
+				obj = type.newInstance();
+			} catch (InstantiationException e) {
+				throw new ProcessingException(null, e);
+			} catch (IllegalAccessException e) {
+				throw new ProcessingException(null, e);
+			}
+		}
+		
+		for(ObjectNodePropertyInputField classInput:classInputs) {
+			final Object val = context.get(classInput);
+			if(val != null) {
+				final Method setMethod = classInput.setMethod;
+				try {
+					setMethod.invoke(obj, val);
+				} catch (IllegalArgumentException e) {
+					throw new ProcessingException(null, e);
+				} catch (IllegalAccessException e) {
+					throw new ProcessingException(null, e);
+				} catch (InvocationTargetException e) {
+					throw new ProcessingException(null, e);
+				}
+			}
+		}
+		
+		mapInputs(context);
+		
+		final Iterable<?> iterable = (Iterable<?>)obj;
+		iterator = iterable.iterator();
+		if(graph != null) {
+			processIterator = graph.getVertices().iterator();
+		}
+	}
+
+	@Override
+	public void terminate(OpContext context) {
+		for(ObjectNodePropertyOutputField classOutput:classOutputs) {
+			try {
+				final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
+				context.put(classOutput, val);
+			} catch (IllegalArgumentException e) {
+				throw new ProcessingException(null, e);
+			} catch (IllegalAccessException e) {
+				throw new ProcessingException(null, e);
+			} catch (InvocationTargetException e) {
+				throw new ProcessingException(null, e);
+			}
+		}
+		
+		context.put(outputValueField, obj);
+	}
+	
+	@Override
+	public CustomProcessor getCustomProcessor() {
+		return this;
+	}
+	
 }

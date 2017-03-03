@@ -555,6 +555,11 @@ public class Processor {
 					if(sourceContext != null && sourceContext.containsKey(link.getSourceField())) {
 						final Object val = sourceContext.get(link.getSourceField());
 						linkFound = true;
+						
+						if(field.getKey().equals("enabled") && !Boolean.parseBoolean(val.toString())) {
+							// don't process any more inputs, they will be ignored
+							return;
+						}
 
 						// Make sure value type is accepted at the destination field
 						final TypeValidator validator = field.getValidator();

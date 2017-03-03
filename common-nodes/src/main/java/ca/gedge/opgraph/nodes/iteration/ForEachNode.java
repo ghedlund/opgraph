@@ -35,6 +35,7 @@ import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OpNodeInfo;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.Processor;
+import ca.gedge.opgraph.app.components.canvas.NodeStyle;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 import ca.gedge.opgraph.nodes.general.MacroNode;
 import ca.gedge.opgraph.validators.CollectionValidator;
@@ -50,6 +51,11 @@ import ca.gedge.opgraph.validators.CollectionValidator;
 	category="Iteration"
 )
 public class ForEachNode extends MacroNode {
+	
+	static {
+		NodeStyle.installStyleForNode(ForEachNode.class, NodeStyle.ITERATION);
+	}
+	
 	/** {@link OpContext} key for the current iteration */
 	public static final String CURRENT_ITERATION_KEY = "currentIteration";
 

@@ -26,6 +26,10 @@ public class ReflectNodeMenuProvider implements MenuProvider {
 		addObject.putValue(AddObjectCommand.NAME, "Add object...");
 		menu.addMenuItem("add_object", addObject);
 		
+		final AddClassCommand addClass = new AddClassCommand(event.getPoint());
+		addClass.putValue(AddClassCommand.NAME, "Add class...");
+		menu.addMenuItem("add_class", addClass);
+		
 		final AddStaticFieldCommand addStaticField = new AddStaticFieldCommand(event.getPoint());
 		addStaticField.putValue(AddStaticFieldCommand.NAME, "Add static field...");
 		menu.addMenuItem("add_static_field", addStaticField);

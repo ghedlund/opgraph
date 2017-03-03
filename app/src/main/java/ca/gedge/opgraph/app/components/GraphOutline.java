@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.event.EventListenerList;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.PopupMenuEvent;
@@ -67,6 +69,8 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 	private static final long serialVersionUID = -1208476967494976769L;
 	
 	private final static Logger LOGGER = Logger.getLogger(GraphOutline.class.getName());
+	
+	private final EventListenerList listeners = new EventListenerList();
 	
 	private JPopupMenu contextMenu;
 	private JTree tree;
@@ -117,16 +121,24 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 			@Override
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 				setupContextMenu();
+				
+				for(PopupMenuListener listener:listeners.getListeners(PopupMenuListener.class)) {
+					listener.popupMenuWillBecomeVisible(e);
+				}
 			}
 			
 			@Override
 			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-				
+				for(PopupMenuListener listener:listeners.getListeners(PopupMenuListener.class)) {
+					listener.popupMenuWillBecomeInvisible(e);
+				}
 			}
 			
 			@Override
 			public void popupMenuCanceled(PopupMenuEvent e) {
-				
+				for(PopupMenuListener listener:listeners.getListeners(PopupMenuListener.class)) {
+					listener.popupMenuCanceled(e);
+				}
 			}
 		});
 		tree.setComponentPopupMenu(contextMenu);
@@ -173,7 +185,6 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 	}
 	
 	protected void setupContextMenu() {
-		final JPopupMenu contextMenu = getContextMenu();
 		contextMenu.removeAll();
 		
 		if(tree.getSelectionCount() > 0) {
@@ -194,8 +205,12 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 		}
 	}
 	
-	public JPopupMenu getContextMenu() {
-		return this.contextMenu;
+	public void addContextMenuListener(PopupMenuListener listener) {
+		listeners.add(PopupMenuListener.class, listener);
+	}
+	
+	public void removeContextMenuListener(PopupMenuListener listener) {
+		listeners.remove(PopupMenuListener.class, listener);
 	}
 	
 	/**
@@ -221,8 +236,11 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 			
 			if(nodesToCopy.size() > 0) {
 				final DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode)nodesToCopy.get(0).getParent();
-				if(parentNode.getUserObject() instanceof OpGraph) {
-					final OpGraph parentGraph = (OpGraph)parentNode.getUserObject();
+				if(parentNode.getUserObject() instanceof CompositeNode
+						|| parentNode.getUserObject() instanceof OpGraph) {
+					final OpGraph parentGraph = 
+							(parentNode.getUserObject() instanceof OpGraph ? (OpGraph)parentNode.getUserObject() 
+									: ((CompositeNode)parentNode.getUserObject()).getGraph());
 					
 					for(DefaultMutableTreeNode treeNode:nodesToCopy) {
 						final OpNode node = (OpNode)treeNode.getUserObject();

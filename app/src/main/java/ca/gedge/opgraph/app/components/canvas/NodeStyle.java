@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import ca.gedge.opgraph.OpNode;
@@ -80,15 +79,18 @@ public class NodeStyle {
 		
 		OBJECT = new NodeStyle(DEFAULT);
 		
-		
 		ITERATION = new NodeStyle(DEFAULT);
 		ITERATION.NodeBorderColor = Color.yellow;
 		ITERATION.NodeBackgroundColor = new Color(100, 255, 200, 200);
 		ITERATION.NodeNameTopColor = new Color(30, 220, 180, 255);
 		ITERATION.NodeNameBottomColor = new Color(0,  180, 150, 255);
+		try {
+			ITERATION.NodeIcon = new ImageIcon(ImageIO.read(NodeStyle.class.getClassLoader().getResourceAsStream("data/icons/16x16/opgraph/graph-loop.png")));
+		} catch (IOException e) {
+			Logger.getAnonymousLogger().log(Level.WARNING, e.getLocalizedMessage(), e);
+		}
 
 		installedStyles = new HashMap<Class<? extends OpNode>, NodeStyle>();
-		installedStyles.put(OpNode.class, DEFAULT);
 	}
 
 	/**
@@ -111,10 +113,6 @@ public class NodeStyle {
 	 */
 	public static NodeStyle getStyleForNode(OpNode node) {
 		if(node != null) {
-			// CompositeNode extension is fixed
-			if(node.getExtension(CompositeNode.class) != null)
-				return COMPOSITE;
-
 			// Go through superclasses to see if we can find something
 			Class<?> cls = node.getClass();
 			while(cls != null) {
@@ -123,6 +121,10 @@ public class NodeStyle {
 
 				cls = cls.getSuperclass();
 			}
+			
+			// CompositeNode extension is fixed
+			if(node.getExtension(CompositeNode.class) != null)
+				return COMPOSITE;
 		}
 		return DEFAULT;
 	}

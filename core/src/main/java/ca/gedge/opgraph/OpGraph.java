@@ -2,17 +2,17 @@
  * Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
  *
  * This file is part of the OpGraph project.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -51,11 +51,11 @@ public final class OpGraph
 
 	/** A mapping from node id to node */
 	private Map<String, OpNode> nodeMap;
-	
+
 	private final Comparator<OpNode> nodeComparator = (n1, n2) -> {
 		final NodeMetadata meta1 = n1.getExtension(NodeMetadata.class);
 		final NodeMetadata meta2 = n2.getExtension(NodeMetadata.class);
-		
+
 		int retVal = 0;
 		if(meta1 != null && meta2 != null) {
 			retVal = (new Integer(meta1.getY())).compareTo(meta2.getY());
@@ -63,10 +63,10 @@ public final class OpGraph
 				retVal = (new Integer(meta1.getX()).compareTo(meta2.getX()));
 			}
 		}
-		
+
 		if(retVal == 0) {
 			retVal = n1.getName().compareTo(n2.getName());
-			
+
 			if(retVal == 0)
 				// compare ids
 				retVal = n1.getId().compareTo(n2.getId());
@@ -83,9 +83,17 @@ public final class OpGraph
 		setId(null);
 	}
 
+	public void updateNodeMap() {
+		nodeMap.clear();
+
+		for(OpNode node:getVertices()) {
+			nodeMap.put(node.getId(), node);
+		}
+	}
+
 	/**
 	 * Gets the id for this graph.
-	 * 
+	 *
 	 * @return the id
 	 */
 	public String getId() {
@@ -94,7 +102,7 @@ public final class OpGraph
 
 	/**
 	 * Sets the id for this graph.
-	 * 
+	 *
 	 * @param id  the id
 	 */
 	public void setId(String id) {
@@ -107,11 +115,11 @@ public final class OpGraph
 
 	/**
 	 * Gets a node by its id.
-	 * 
+	 *
 	 * @param id  the id of the node
 	 * @param deep  if <code>true</code>, performs a deep search where composite
 	 *              nodes will also be searched for a node with the given id
-	 * 
+	 *
 	 * @return  the node with the given id, or <code>null</code> if no such
 	 *          node exists in this graph
 	 */
@@ -123,36 +131,36 @@ public final class OpGraph
 			return nodeMap.get(id);
 		}
 	}
-	
+
 	/**
 	 * Find all nodes with given name.
-	 * 
+	 *
 	 * @param name the title of the node
 	 * @return the nodes with given name, does not go 'deep'
 	 */
 	public List<OpNode> getNodesByName(String name) {
 		final List<OpNode> retVal = new ArrayList<OpNode>();
-		
+
 		for(OpNode node:nodeMap.values()) {
 			if(node.getName().equals(name)) {
 				retVal.add(node);
 			}
 		}
-		
+
 		return retVal;
 	}
 
 	/**
 	 * Finds path to the node with specified id.  Path will be a list
 	 * of one or more OpNodes.
-	 * 
+	 *
 	 * @param id the id of th enode
-	 * 
+	 *
 	 * @return the path of OpNodes to the specified node.
 	 */
 	public List<OpNode> getNodePath(String id) {
 		List<OpNode> retVal = new ArrayList<>();
-		
+
 		if(nodeMap.containsKey(id)) {
 			final OpNode node = nodeMap.get(id);
 			if(node != null)
@@ -161,7 +169,7 @@ public final class OpGraph
 			for(OpNode node: getVertices()) {
 				final CompositeNode composite = node.getExtension(CompositeNode.class);
 				if(composite != null) {
-					List<OpNode> subgraphSearch = 
+					List<OpNode> subgraphSearch =
 							composite.getGraph().getNodePath(id);
 					if(subgraphSearch.size() > 0) {
 						retVal.add(node);
@@ -171,17 +179,17 @@ public final class OpGraph
 				}
 			}
 		}
-		
+
 		return retVal;
 	}
-	
+
 	/**
 	 * Finds a node and its parent graph by id. This is a deep operation,
 	 * and hence will recursively search through macro nodes to find the
-	 * node with the given id. 
-	 * 
+	 * node with the given id.
+	 *
 	 * @param id  the id of the node
-	 * 
+	 *
 	 * @return  the graph/node pair, or <code>null</code> if no such node
 	 *          exists anywhere in this graph or its macros
 	 */
@@ -213,12 +221,12 @@ public final class OpGraph
 	 * node/field pair. This is a convenience method which catches
 	 * exceptions from the {@link OpLink} constructor, and from
 	 * {@link #add(OpLink)}.
-	 * 
+	 *
 	 * @param source  source node
 	 * @param sourceFieldKey  the key of the field connected at the source
 	 * @param destination  destination node
 	 * @param destinationFieldKey  the key of the field connected at the destination
-	 * 
+	 *
 	 * @return the link that was created, or <code>null</code> if the link
 	 *         could not be created
 	 */
@@ -246,12 +254,12 @@ public final class OpGraph
 	 * Connects the given source node/field pair to a given destination node/field
 	 * pair. This is a convenience method which catches exceptions from the
 	 * {@link OpLink} constructor, and from {@link #add(OpLink)}.
-	 * 
+	 *
 	 * @param source  source node
 	 * @param sourceField  the field connected at the source
 	 * @param destination  destination node
 	 * @param destinationField  the field connected at the destination
-	 * 
+	 *
 	 * @return the link that was created, or <code>null</code> if the link
 	 *         could not be created
 	 */
@@ -283,7 +291,7 @@ public final class OpGraph
 	public void add(OpNode node) {
 		if(node != null && node.getId() != null) {
 			if(nodeMap.containsKey(node)) {
-				// XXX What to do if node with that id already exists? 
+				// XXX What to do if node with that id already exists?
 			} else {
 				super.add(node);
 				node.addNodeListener(nodeListener);
@@ -318,19 +326,19 @@ public final class OpGraph
 			fireLinkRemoved(link);
 		return removed;
 	}
-	
+
 	public List<OpNode> getBreakpoints() {
 		final List<OpNode> retVal = new ArrayList<OpNode>();
-		
+
 		for(OpNode node:this) {
 			if(node.isBreakpoint()) {
 				retVal.add(node);
 			}
 		}
-		
+
 		return retVal;
 	}
-	
+
 	//
 	// Extendable
 	//
@@ -395,16 +403,16 @@ public final class OpGraph
 
 	/**
 	 * Adds a listener to this graph.
-	 * 
+	 *
 	 * @param listener  the listener to add
 	 */
 	public void addGraphListener(OpGraphListener listener) {
 		synchronized(listeners) {
-			if(!listeners.contains(listener)) 
+			if(!listeners.contains(listener))
 				listeners.add(listener);
 		}
 	}
-	
+
 	@Override
 	public Set<OpLink> getOutgoingEdges(OpNode vertex) {
 		return super.getOutgoingEdges(vertex);
@@ -412,7 +420,7 @@ public final class OpGraph
 
 	/**
 	 * Removes a listener from this graph.
-	 * 
+	 *
 	 * @param listener  the listener to remove
 	 */
 	public void removeGraphListener(OpGraphListener listener) {

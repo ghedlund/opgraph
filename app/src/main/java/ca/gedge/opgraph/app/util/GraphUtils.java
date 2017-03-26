@@ -2,17 +2,17 @@
  * Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
  *
  * This file is part of the OpGraph project.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,7 +55,7 @@ import ca.gedge.opgraph.io.OpGraphSerializerFactory;
 
 /**
  * Helper methods for graphs.
- * 
+ *
  * TODO Need to generalize cloning of extensions. This would be best done through implementing
  *      Cloneable and Object#clone() for everything, and throwing up a warning dialog whenever
  *      an extension is encountered which doesn't implement Cloneable.
@@ -63,10 +63,10 @@ import ca.gedge.opgraph.io.OpGraphSerializerFactory;
 public class GraphUtils {
 	/** Logger */
 	private final static Logger LOGGER = Logger.getLogger(GraphUtils.class.getName());
-	
+
 	/**
 	 * Gets the bounding rectangle of a given set of nodes.
-	 * 
+	 *
 	 * @return the bounding rectangle of the given collection of nodes
 	 */
 	public static Rectangle getBoundingRect(Collection<OpNode> nodes) {
@@ -88,46 +88,47 @@ public class GraphUtils {
 
 		return new Rectangle(xmin, ymin, xmax-xmin, ymax-ymin);
 	}
-	
+
 	/**
 	 * Change id for all nodes in a graph.  This method is recursive
 	 * and will traverse nodes with the CompositeNode extension.
-	 * 
+	 *
 	 * @param graph
 	 */
 	public static void changeNodeIds(OpGraph graph) {
 		for(OpNode node:graph) {
 			final String newId = Long.toHexString(UUID.randomUUID().getMostSignificantBits());
 			node.setId(newId);
-			
+
 			final CompositeNode cmpNode = node.getExtension(CompositeNode.class);
 			if(cmpNode != null) {
 				final OpGraph subGraph = cmpNode.getGraph();
 				changeNodeIds(subGraph);
 			}
 		}
+		graph.updateNodeMap();
 	}
 
 	/**
 	 * Clone a node along with {@link NodeSettings}, {@link NodeMetadata},
-	 * {@link CompositeNode}, and {@link Publishable} extensions cloned. 
+	 * {@link CompositeNode}, and {@link Publishable} extensions cloned.
 	 * The new node will have a new unique id.
-	 * 
+	 *
 	 * @param node  the node to clone
-	 * 
+	 *
 	 * @return the cloned node, or <code>null</code> if the node could not be cloned
-	 * 
+	 *
 	 * @throws NullPointerException  if node is <code>null</code>
 	 */
 	public static OpNode cloneNode(OpNode node) {
 		if(node == null)
 			throw new NullPointerException();
-		
+
 		final Class<? extends OpNode> nodeClass = node.getClass();
-		
-		final OpGraphSerializer serializer = 
+
+		final OpGraphSerializer serializer =
 				OpGraphSerializerFactory.getDefaultSerializer();
-		
+
 		// using the serializer ensure we clone all data necessary
 		// to rebuild the object
 		if(serializer !=  null) {
@@ -135,14 +136,14 @@ public class GraphUtils {
 				final OpGraph tempGraph = new OpGraph();
 				tempGraph.setId("root");
 				tempGraph.add(node);
-				
+
 				final ByteArrayOutputStream bout = new ByteArrayOutputStream();
 				serializer.write(tempGraph, bout);
-				
+
 				final ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
 				final OpGraph inGraph = serializer.read(bin);
 				changeNodeIds(inGraph);
-				
+
 				final OpNode clonedNode = inGraph.getVertices().get(0);
 				return clonedNode;
 			} catch (IOException e) {
@@ -152,21 +153,21 @@ public class GraphUtils {
 			try {
 				final OpNode newNode = nodeClass.newInstance();
 				newNode.setName(node.getName());
-	
+
 				// copy node settings (if available)
 				final NodeSettings nodeSettings = node.getExtension(NodeSettings.class);
 				final NodeSettings newNodeSettings = newNode.getExtension(NodeSettings.class);
 				if(nodeSettings != null && newNodeSettings != null) {
 					newNodeSettings.loadSettings(nodeSettings.getSettings());
 				}
-	
+
 				// copy meta data (if available)
 				final NodeMetadata metaData = node.getExtension(NodeMetadata.class);
 				if(metaData != null) {
 					final NodeMetadata newMetaData = new NodeMetadata(metaData.getX(), metaData.getY());
 					newNode.putExtension(NodeMetadata.class, newMetaData);
 				}
-	
+
 				// if a composite node, clone graph
 				final CompositeNode compositeNode = node.getExtension(CompositeNode.class);
 				final CompositeNode newCompositeNode = newNode.getExtension(CompositeNode.class);
@@ -175,7 +176,7 @@ public class GraphUtils {
 					final OpGraph graph = compositeNode.getGraph();
 					final OpGraph newGraph = cloneGraph(graph, null, nodeMap);
 					newCompositeNode.setGraph(newGraph);
-	
+
 					// setup published fields (if available)
 					final Publishable publishable = node.getExtension(Publishable.class);
 					final Publishable newPublishable = newNode.getExtension(Publishable.class);
@@ -187,7 +188,7 @@ public class GraphUtils {
 								newPublishable.publish(pubInput.getKey(), destNode, destField);
 							}
 						}
-	
+
 						for(PublishedOutput pubOutput:publishable.getPublishedOutputs()) {
 							final OpNode srcNode = newGraph.getNodeById(nodeMap.get(pubOutput.sourceNode.getId()), false);
 							if(srcNode != null) {
@@ -197,9 +198,9 @@ public class GraphUtils {
 						}
 					}
 				}
-	
+
 				// XXX Other extensions. See note attached to class javadoc.
-	
+
 				return newNode;
 			} catch (InstantiationException e) {
 				LOGGER.severe(e.getMessage());
@@ -212,9 +213,9 @@ public class GraphUtils {
 
 	/**
 	 * Clone the given graph.
-	 * 
+	 *
 	 * TODO Deal with cloning custom extensions
-	 * 
+	 *
 	 * @param graph  the graph to clone
 	 * @param newGraph  graph to modify. If <code>null</code> a new graph will be
 	 *                  created and returned. If not <code>null</code>, the return
@@ -274,9 +275,9 @@ public class GraphUtils {
 
 	/**
 	 * Clones the given graph.
-	 * 
+	 *
 	 * @param graph  the graph to clone
-	 * 
+	 *
 	 * @return the cloned graph
 	 */
 	public static OpGraph cloneGraph(OpGraph graph) {
@@ -285,9 +286,9 @@ public class GraphUtils {
 
 	/**
 	 * Clone a graph note.
-	 * 
+	 *
 	 * @param note  the note to clone
-	 * 
+	 *
 	 * @return the cloned note
 	 */
 	public static Note cloneNote(Note note) {

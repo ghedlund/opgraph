@@ -26,6 +26,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -48,6 +50,8 @@ public class NodeMetadataXMLSerializer implements XMLSerializer {
 	static final String NAMESPACE = "http://gedge.ca/ns/opgraph-app";
 	static final String PREFIX = "oga";
 	static final QName META_QNAME = new QName(NAMESPACE, "meta", PREFIX);
+
+	static final Logger LOGGER = Logger.getLogger(NodeMetadataXMLSerializer.class.getName());
 
 	@Override
 	public void write(XMLSerializerFactory serializerFactory, Document doc, Element parentElem, Object obj)
@@ -110,30 +114,33 @@ public class NodeMetadataXMLSerializer implements XMLSerializer {
 					final Element defaultElem = (Element) defaultNode;
 					final String fieldKey = defaultElem.getAttribute("for");
 					final InputField field = node.getInputFieldWithKey(fieldKey);
-					if(field == null)
-						throw new Error("Default value references unknown input field: " + fieldKey);
+					if(field == null) {
+						LOGGER.log(Level.WARNING, "Default value references unknown input field: " + fieldKey);
+						continue;
+					}
 
 					final String valueTypeClassName = defaultElem.getAttribute("type");
 					final String valueString = defaultElem.getTextContent();
 					try {
 						boolean parsed = false;
 						final Class<?> valueClass = Class.forName(valueTypeClassName);
-						
+
 						if(valueClass == String.class) {
 							meta.setDefault(field, valueString);
 							parsed = true;
 						} else {
 							final String parseMethodName = "parse" + valueClass.getSimpleName();
 							final Method parseMethod = valueClass.getMethod(parseMethodName, String.class);
-							
+
 							if(parseMethod != null && Modifier.isStatic(parseMethod.getModifiers())) {
 								meta.setDefault(field, parseMethod.invoke(null, valueString));
 								parsed = true;
 							}
 						}
 
-						if(!parsed)
-							throw new Error("Couldn't parse default value");
+						if(!parsed) {
+							LOGGER.log(Level.WARNING, "Couldn't parse default value " + valueString + " for key " + fieldKey);
+						}
 					} catch(ClassNotFoundException exc) {
 						throw new Error("Unknown default value type: " + valueTypeClassName);
 					} catch(IllegalArgumentException exc) {

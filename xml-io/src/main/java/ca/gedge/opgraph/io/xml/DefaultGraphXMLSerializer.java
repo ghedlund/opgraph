@@ -21,6 +21,8 @@ package ca.gedge.opgraph.io.xml;
 import static ca.gedge.opgraph.io.xml.XMLSerializerFactory.DEFAULT_NAMESPACE;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -41,6 +43,9 @@ import ca.gedge.opgraph.extensions.Extendable;
  * A default serializer for reading/writing {@link OpGraph} to/from XML.
  */
 public class DefaultGraphXMLSerializer implements XMLSerializer {
+
+	private final static Logger LOGGER = Logger.getLogger(DefaultGraphXMLSerializer.class.getName());
+
 	// qualified names
 	static final QName OPGRAPH_QNAME = new QName(DEFAULT_NAMESPACE, "opgraph", XMLConstants.DEFAULT_NS_PREFIX);
 	static final QName GRAPH_QNAME = new QName(DEFAULT_NAMESPACE, "graph", XMLConstants.DEFAULT_NS_PREFIX);
@@ -59,13 +64,20 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 		final OpGraph graph = (OpGraph)obj;
 		final Element graphElem = doc.createElementNS(GRAPH_QNAME.getNamespaceURI(), GRAPH_QNAME.getLocalPart());
 
+		final SerializationWarnings warnings = new SerializationWarnings();
+		graph.putExtension(SerializationWarnings.class, warnings);
+
 		graphElem.setAttribute("id", graph.getId());
 
 		// Nodes first
 		for(OpNode node : graph.getVertices()) {
 			final XMLSerializer serializer = serializerFactory.getHandler(node.getClass());
-			if(serializer == null)
-				throw new IOException("Cannot get handler for node: " + node.getClass().getName());
+			if(serializer == null) {
+				final SerializerNotFound warning = new SerializerNotFound(node.getClass());
+				LOGGER.log(Level.WARNING, warning.getLocalizedMessage(), warning);
+				warnings.add(warning);
+				continue;
+			}
 
 			serializer.write(serializerFactory, doc, graphElem, node);
 		}
@@ -73,8 +85,12 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 		// Link next
 		for(OpLink link : graph.getEdges()) {
 			final XMLSerializer serializer = serializerFactory.getHandler(link.getClass());
-			if(serializer == null)
-				throw new IOException("Cannot get handler for link: " + link.getClass().getName());
+			if(serializer == null) {
+				final SerializerNotFound warning = new SerializerNotFound(link.getClass());
+				LOGGER.log(Level.WARNING, warning.getLocalizedMessage(), warning);
+				warnings.add(warning);
+				continue;
+			}
 
 			serializer.write(serializerFactory, doc, graphElem, link);
 		}
@@ -82,8 +98,11 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 		// Extensions last
 		if(graph.getExtensionClasses().size() > 0) {
 			final XMLSerializer serializer = serializerFactory.getHandler(Extendable.class);
-			if(serializer == null)
-				throw new IOException("No XML serializer for extensions");
+			if(serializer == null) {
+				final SerializerNotFound warning = new SerializerNotFound(Extendable.class);
+				LOGGER.log(Level.WARNING, warning.getLocalizedMessage(), warning);
+				warnings.add(warning);
+			}
 
 			serializer.write(serializerFactory, doc, graphElem, graph);
 		}
@@ -104,10 +123,10 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 		throws IOException
 	{
 		final SerializationWarnings warnings = new SerializationWarnings();
-		
+
 		if(GRAPH_QNAME.equals(XMLSerializerFactory.getQName(elem))) {
 			graph = new OpGraph();
-			
+
 
 			// Read children
 			final NodeList children = elem.getChildNodes();

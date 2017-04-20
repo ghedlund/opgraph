@@ -79,7 +79,12 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 				continue;
 			}
 
-			serializer.write(serializerFactory, doc, graphElem, node);
+			try {
+				serializer.write(serializerFactory, doc, graphElem, node);
+			} catch (IOException e) {
+				LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+				warnings.add(e);
+			}
 		}
 
 		// Link next
@@ -92,7 +97,12 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 				continue;
 			}
 
-			serializer.write(serializerFactory, doc, graphElem, link);
+			try {
+				serializer.write(serializerFactory, doc, graphElem, link);
+			} catch (IOException e) {
+				LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+				warnings.add(e);
+			}
 		}
 
 		// Extensions last
@@ -104,10 +114,14 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 				warnings.add(warning);
 			}
 
-			serializer.write(serializerFactory, doc, graphElem, graph);
+			try {
+				serializer.write(serializerFactory, doc, graphElem, graph);
+			} catch (IOException e) {
+				LOGGER.log(Level.WARNING, e.getLocalizedMessage(), e);
+				warnings.add(e);
+			}
 		}
 
-		//
 		parentElem.appendChild(graphElem);
 	}
 

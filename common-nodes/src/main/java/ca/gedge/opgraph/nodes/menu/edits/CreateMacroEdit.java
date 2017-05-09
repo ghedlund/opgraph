@@ -2,17 +2,17 @@
  * Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
  *
  * This file is part of the OpGraph project.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -20,9 +20,11 @@ package ca.gedge.opgraph.nodes.menu.edits;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.undo.AbstractUndoableEdit;
@@ -39,6 +41,8 @@ import ca.gedge.opgraph.dag.VertexNotFoundException;
 import ca.gedge.opgraph.exceptions.ItemMissingException;
 import ca.gedge.opgraph.extensions.NodeMetadata;
 import ca.gedge.opgraph.nodes.general.MacroNode;
+import ca.gedge.opgraph.nodes.reflect.ObjectNode;
+import ca.gedge.opgraph.util.Pair;
 
 /**
  * An edit that creates a macro from a given collection of nodes in a graph.
@@ -61,12 +65,16 @@ public class CreateMacroEdit extends AbstractUndoableEdit {
 	/** Links attached to the newly created macro */
 	private Set<OpLink> newLinks;
 
+	final Map<Pair<OpNode, OutputField>, OpNode> inputNodeMap = new HashMap<>();
+
+	final Map<Pair<OpNode, InputField>, OpNode> outputNodeMap = new HashMap<>();
+
 	/**
 	 * Constructs a macro-creation edit which will automatically create a
 	 * macro from a given collection of nodes.
-	 * 
+	 *
 	 * @param graph  the graph to which this edit will be applied
-	 * @param nodes  the nodes from which the macro will be created 
+	 * @param nodes  the nodes from which the macro will be created
 	 */
 	public CreateMacroEdit(OpGraph graph, Collection<OpNode> nodes) {
 		this.graph = graph;
@@ -113,11 +121,12 @@ public class CreateMacroEdit extends AbstractUndoableEdit {
 			macroMeta.setY(macroMeta.getY() / numNodes);
 		}
 
-		// These maps keep track of input/output keys that have already been 
+		// These maps keep track of input/output keys that have already been
 		// used, so that we don't publish two with the same key
 		//
 		final Map<String, Integer> publishedInputsMap = new HashMap<String, Integer>();
 		final Map<String, Integer> publishedOutputsMap = new HashMap<String, Integer>();
+
 
 		// Given all of the incoming/outgoing links, find which are internal
 		// and which are external. If an links is external, publish the
@@ -136,9 +145,29 @@ public class CreateMacroEdit extends AbstractUndoableEdit {
 				} else {
 					publishedInputsMap.put(name, 1);
 				}
+				OpNode inputNode = inputNodeMap.get(new Pair<>(link.getSource(), link.getSourceField()));
+				if(inputNode == null) {
+					Class<?> outputType = link.getSourceField().getOutputType();
+					final ObjectNode objectNode = new ObjectNode(outputType);
+					objectNode.setName(name);
 
-				// Publish input
-				final InputField input = macro.publish(name, link.getDestination(), link.getDestinationField());
+					macro.getGraph().add(objectNode);
+
+					macro.publish(name, objectNode, objectNode.getInputFieldWithKey("obj"));
+
+					inputNodeMap.put(new Pair<>(link.getSource(), link.getSourceField()), objectNode);
+					inputNode = objectNode;
+				}
+
+				try {
+					final OpLink objectLink = new OpLink(inputNode, inputNode.getOutputFieldWithKey("obj"),
+							link.getDestination(), link.getDestinationField());
+					macro.getGraph().add(objectLink);
+				} catch (ItemMissingException | VertexNotFoundException | CycleDetectedException e) {
+					LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
+				}
+
+				final InputField input = macro.getPublishedInput(inputNode, inputNode.getInputFieldWithKey("obj"));
 				try {
 					newLinks.add(new OpLink(link.getSource(), link.getSourceField(), macro, input));
 				} catch(ItemMissingException exc) {
@@ -219,12 +248,12 @@ public class CreateMacroEdit extends AbstractUndoableEdit {
 	public void undo() throws CannotUndoException {
 		super.undo();
 
-		// Remove macro 
+		// Remove macro
 		graph.remove(macro);
 
-		// Add back original nodes and links
-		for(OpNode node : macro.getGraph().getVertices())
-			graph.add(node);
+		macro.getGraph().getVertices().stream()
+			.filter( (n) -> !inputNodeMap.containsValue(n) )
+			.forEach( graph::add );
 
 		for(OpLink link : oldLinks) {
 			try {

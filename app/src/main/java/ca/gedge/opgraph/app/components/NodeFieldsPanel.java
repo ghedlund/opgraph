@@ -2,17 +2,17 @@
  * Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
  *
  * This file is part of the OpGraph project.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -58,46 +58,46 @@ import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.BreadcrumbEventType;
 
 /**
  * A panel for displaying and editing default values for a node's input fields.
- * 
+ *
  * TODO undoable edits for defaults
  */
 public class NodeFieldsPanel extends JPanel {
-	
+
 	/** Logger */
 	private final Logger LOGGER = Logger.getLogger(NodeFieldsPanel.class.getName());
 
 	/** Graph document */
 	private GraphDocument document;
-	
+
 	/** The node currently being viewed */
 	private OpNode node;
-	
+
 	private OpGraphListener graphListener = new OpGraphListener() {
-		
+
 		@Override
 		public void nodeRemoved(OpGraph graph, OpNode node) {
-			
+
 		}
-		
+
 		@Override
 		public void nodeAdded(OpGraph graph, OpNode node) {
-			
+
 		}
-		
+
 		@Override
 		public void linkRemoved(OpGraph graph, OpLink link) {
 			if(link.getSource() == getNode() || link.getDestination() == getNode()) {
 				updatePanel();
 			}
 		}
-		
+
 		@Override
 		public void linkAdded(OpGraph graph, OpLink link) {
 			if(link.getSource() == getNode() || link.getDestination() == getNode()) {
 				updatePanel();
 			}
 		}
-		
+
 	};
 
 	/**
@@ -106,9 +106,9 @@ public class NodeFieldsPanel extends JPanel {
 	public NodeFieldsPanel(GraphDocument document) {
 		super(new GridBagLayout());
 		setNode(null);
-		
+
 		this.document = document;
-		
+
 		document.getBreadcrumb().addBreadcrumbListener( (e) -> {
 			if(e.getEventType() == BreadcrumbEventType.GOTO_STATE) {
 				document.getGraph().addGraphListener(graphListener);
@@ -116,10 +116,10 @@ public class NodeFieldsPanel extends JPanel {
 		});
 		document.getRootGraph().addGraphListener(graphListener);
 	}
-	
+
 	private void updatePanel() {
 		removeAll();
-		
+
 		final GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -127,43 +127,43 @@ public class NodeFieldsPanel extends JPanel {
 		gbc.gridheight = 1;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
-		
+
 		final OpGraph graph = document.getGraph();
 		final OpNode node = getNode();
-		
+
 		if(node != null) {
 			final NodeMetadata nodeMeta = node.getExtension(NodeMetadata.class);
 			// input fields
 			final JLabel inputFieldsLbl = new JLabel("Inputs");
 			inputFieldsLbl.setFont(inputFieldsLbl.getFont().deriveFont(Font.BOLD));
 			final JSeparator inputsSeparator = new JSeparator(SwingConstants.HORIZONTAL);
-			
+
 			gbc.weightx = 1.0;
 			gbc.gridwidth = 2;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
-			
+
 			add(inputFieldsLbl, gbc);
 			++gbc.gridy;
 			add(inputsSeparator, gbc);
-			
+
 			gbc.insets.set(2, 5, 2, 2);
-			
+
 			for(InputField inputField:node.getInputFields()) {
 				++gbc.gridy;
 				gbc.gridx = 0;
 				gbc.gridwidth = 1;
 				gbc.weightx = 0.0;
-				
+
 				final JLabel keyLbl = new JLabel(inputField.getKey());
 				keyLbl.setToolTipText(inputField.getDescription());
 				keyLbl.setFont(keyLbl.getFont().deriveFont(Font.ITALIC));
-				
+
 				add(keyLbl, gbc);
-				
+
 				++gbc.gridx;
 				gbc.weightx = 1.0;
 				gbc.fill = GridBagConstraints.HORIZONTAL;
-				
+
 				final OpLink currentLink = graph.getIncomingEdges(node)
 					.stream().filter( (l) -> l.getDestinationField() == inputField )
 					.findAny().orElse(null);
@@ -185,41 +185,41 @@ public class NodeFieldsPanel extends JPanel {
 					}
 				}
 			}
-			
+
 			++gbc.gridy;
 			gbc.gridx = 0;
 			// output fields
 			final JLabel outputFieldsLbl = new JLabel("Outputs");
 			outputFieldsLbl.setFont(outputFieldsLbl.getFont().deriveFont(Font.BOLD));
 			final JSeparator outputsSeparator = new JSeparator(SwingConstants.HORIZONTAL);
-			
+
 			gbc.weightx = 1.0;
 			gbc.gridwidth = 2;
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.insets.set(0, 0, 0, 0);
-			
+
 			add(outputFieldsLbl, gbc);
 			++gbc.gridy;
 			add(outputsSeparator, gbc);
-			
+
 			gbc.insets.set(2, 5, 2, 2);
-			
+
 			for(OutputField outputField:node.getOutputFields()) {
 				++gbc.gridy;
 				gbc.gridx = 0;
 				gbc.gridwidth = 1;
 				gbc.weightx = 0.0;
-				
+
 				final JLabel keyLbl = new JLabel(outputField.getKey());
 				keyLbl.setToolTipText(outputField.getDescription());
 				keyLbl.setFont(keyLbl.getFont().deriveFont(Font.ITALIC));
-				
+
 				add(keyLbl, gbc);
-				
+
 				++gbc.gridx;
 				gbc.weightx = 1.0;
 				gbc.fill = GridBagConstraints.HORIZONTAL;
-				
+
 				final List<OpLink> outgoingConnections =
 						graph.getOutgoingEdges(node)
 						.stream().filter( (l) -> l.getSourceField() == outputField )
@@ -236,21 +236,21 @@ public class NodeFieldsPanel extends JPanel {
 				}
 			}
 		}
-		
+
 		gbc.gridx = 0;
 		++gbc.gridy;
 		gbc.weighty = 1.0;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.gridwidth = 2;
 		add(Box.createVerticalGlue(), gbc);
-		
+
 		revalidate();
 		repaint();
 	}
 
 	/**
 	 * Gets the node this info panel is currently viewing.
-	 * 
+	 *
 	 * @return the node
 	 */
 	public OpNode getNode() {
@@ -259,7 +259,7 @@ public class NodeFieldsPanel extends JPanel {
 
 	/**
 	 * Sets the node this info panel is currently viewing.
-	 * 
+	 *
 	 * @param node  the node to display
 	 */
 	public void setNode(OpNode node) {
@@ -336,13 +336,13 @@ public class NodeFieldsPanel extends JPanel {
 
 	/**
 	 * Gets an editing component for an input field.
-	 *  
+	 *
 	 * @param field  the input field
-	 * 
+	 *
 	 * @return the editing component for the specified input field, or
 	 *         <code>null</code> if there is no editable component for
 	 *         the given input field
-	 *         
+	 *
 	 * TODO More user customization on editors for different types/validators.
 	 *      Perhaps have an interface with a function similar to below.
 	 */
@@ -428,7 +428,7 @@ public class NodeFieldsPanel extends JPanel {
 					});
 
 					ret = booleanEditable;
-				} else if(Number.class.isAssignableFrom(cls)) {
+				} else if(Number.class.isAssignableFrom(cls) || cls == int.class || cls == double.class || cls == float.class) {
 					Number initial = null;
 					if(defaultValue != null)
 						initial = (Number)defaultValue;
@@ -454,26 +454,26 @@ public class NodeFieldsPanel extends JPanel {
 
 		return ret;
 	}
-	
+
 	private class LinkLabel extends JLabel {
-		
+
 		private OpLink link;
-		
+
 		public LinkLabel(OpLink link) {
 			super();
 			setLink(link);
 		}
-		
+
 		public void setLink(OpLink link) {
 			this.link = link;
-			
+
 			if(link.getSource() == getNode()) {
 				setText("Outgoing link to " + link.getDestination().getName() + "." + link.getDestinationField().getKey());
 			} else {
 				setText("Incoming link from " + link.getSource().getName()  + "." + link.getSourceField().getKey());
 			}
 		}
-		
+
 	}
-	
+
 }

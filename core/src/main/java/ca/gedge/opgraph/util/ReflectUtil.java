@@ -11,14 +11,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class ReflectUtil {
-	
+
 	public static String parametersAsString(Method method) {
 		return parametersAsString(method, false);
 	}
 
 	/**
 	 * Get constructor signature.
-	 * 
+	 *
 	 * @param constructor
 	 * @param longTypeNames
 	 * @return
@@ -26,10 +26,10 @@ public class ReflectUtil {
 	public static String getSignature(Constructor<?> constructor, boolean longTypeNames) {
 		return "<init>(" + parametersAsString(constructor, longTypeNames) + ")";
 	}
-	
+
 	/**
 	 * Get method signature
-	 * 
+	 *
 	 * @param method
 	 * @param longTypeNames
 	 * @return
@@ -40,7 +40,7 @@ public class ReflectUtil {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param method
 	 * @param longTypeNames
 	 * @return
@@ -59,9 +59,9 @@ public class ReflectUtil {
 		}
 		return paramString.toString();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param method
 	 * @param longTypeNames
 	 * @return
@@ -80,93 +80,102 @@ public class ReflectUtil {
 		}
 		return paramString.toString();
 	}
-	
+
 	/**
 	 * Get paramters from signature
-	 * 
+	 *
 	 * @param sig
 	 * @return
-	 * @throws ClassNotFoundException 
-	 * 
+	 * @throws ClassNotFoundException
+	 *
 	 */
 	public static Class<?>[] getParametersFromSignature(String sig) throws ClassNotFoundException {
 		Class<?> retVal[] = new Class<?>[0];
-		final String paramString = 
+		final String paramString =
 				sig.substring(sig.indexOf('(')+1, sig.lastIndexOf(')')).trim();
 		if(paramString.length() > 0) {
 			final String[] paramClassNames = paramString.split(",");
 			retVal = new Class<?>[paramClassNames.length];
 			for(int i = 0; i < paramClassNames.length; i++) {
 				final String paramClassName = paramClassNames[i];
-				retVal[i] = Class.forName(paramClassName.trim());
+
+				if(paramClassName.equals("int")) {
+					retVal[i] = int.class;
+				} else if(paramClassName.equals("double")) {
+					retVal[i] = double.class;
+				} else if(paramClassName.equals("float")) {
+					retVal[i] = float.class;
+				} else {
+					retVal[i] = Class.forName(paramClassName.trim());
+				}
 			}
 		}
 		return retVal;
 	}
-	
+
 	/**
 	 * Get method name from signature
-	 * 
+	 *
 	 * @param sig
 	 * @return
 	 */
 	public static String getMethodNameFromSignature(String sig) {
 		return sig.substring(0, sig.indexOf('('));
 	}
-	
+
 	/**
 	 * Get method from signature
-	 * 
+	 *
 	 * @param clazz
 	 * @param methodSig
 	 * @return
-	 * @throws ClassNotFoundException 
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
+	 * @throws ClassNotFoundException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
 	 */
 	public static Method getMethodFromSignature(Class<?> clazz, String methodSig) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 		Method retVal = null;
-		
+
 		final String methodName = getMethodNameFromSignature(methodSig);
 		final Class<?>[] paramTypes = getParametersFromSignature(methodSig);
-		
+
 		retVal = clazz.getMethod(methodName, paramTypes);
-		
+
 		return retVal;
 	}
-	
+
 	/**
 	 * Get constructor from signature
-	 * 
+	 *
 	 * @param clazz
 	 * @param cstrSig
 	 * @return
-	 * @throws ClassNotFoundException 
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
+	 * @throws ClassNotFoundException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
 	 */
 	public static Constructor<?> getConstructorFromSignature(Class<?> clazz, String cstrSig) throws ClassNotFoundException, SecurityException, NoSuchMethodException {
 		Constructor<?> retVal = null;
-		
+
 		final String methodName = getMethodNameFromSignature(cstrSig);
 		if(!methodName.equals("<init>")) {
 			throw new IllegalArgumentException("Not a constructor signature");
 		}
-		
+
 		final Class<?>[] paramTypes = getParametersFromSignature(cstrSig);
-		
+
 		retVal = clazz.getConstructor(paramTypes);
-		
+
 		return retVal;
 	}
-	
+
 	public static String getSignature(Method method) {
 		return getSignature(method, false);
 	}
-	
+
 	/**
 	 * Get all static methods for the given class
-	 * 
+	 *
 	 * @param clazz
 	 * @return list of all static method members
 	 */
@@ -179,10 +188,10 @@ public class ReflectUtil {
 	    }
 	    return Collections.unmodifiableList(methods);
 	}
-	
+
 	/**
 	 * Get all non-static methods for the given class
-	 * 
+	 *
 	 * @param clazz
 	 * @return list of all non-static method members
 	 */
@@ -198,7 +207,7 @@ public class ReflectUtil {
 
 	/**
 	 * Get all static fields for the given class
-	 * 
+	 *
 	 * @param clazz
 	 * @return list of static field members
 	 */
@@ -211,10 +220,10 @@ public class ReflectUtil {
 		}
 		return Collections.unmodifiableList(retVal);
 	}
-	
+
 	/**
 	 * Get all non-static fields for the given class.
-	 * 
+	 *
 	 * @param clazz
 	 * @return list of non-static field members
 	 */
@@ -227,7 +236,7 @@ public class ReflectUtil {
 		}
 		return Collections.unmodifiableList(retVal);
 	}
-	
+
 	/**
 	 * Look for any {@link ParameterizedType} classes/interfaces
 	 * directly extended by the given class.
@@ -237,31 +246,31 @@ public class ReflectUtil {
 	 */
 	public static List<ParameterizedType> getParameterizedTypesForClass(Class<?> clazz) {
 		final List<ParameterizedType> retVal = new ArrayList<ParameterizedType>();
-		
+
 		final Type genericSuperclass = clazz.getGenericSuperclass();
 		if(genericSuperclass != null && genericSuperclass instanceof ParameterizedType) {
 			retVal.add((ParameterizedType)genericSuperclass);
 		}
-		
+
 		for(Type genericInterface:clazz.getGenericInterfaces()) {
 			if(genericInterface instanceof ParameterizedType) {
 				retVal.add((ParameterizedType)genericInterface);
 			}
 		}
-		
+
 		return retVal;
 	}
-	
+
 	/**
 	 * Return the wrapper type for the given primitive type.
-	 * 
+	 *
 	 * @param type
 	 * @return wrapper type or the given type if it is not
 	 *  a primitive type
 	 */
 	public static Class<?> wrapperClassForPrimitive(Class<?> primitive) {
 		Class<?> retVal = primitive;
-		
+
 		if(primitive == boolean.class) {
 			retVal = Boolean.class;
 		} else if(primitive == char.class) {
@@ -279,8 +288,8 @@ public class ReflectUtil {
 		} else if(primitive == double.class) {
 			retVal = Double.class;
 		}
-		
+
 		return retVal;
 	}
-	
+
 }

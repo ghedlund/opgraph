@@ -20,28 +20,28 @@ import ca.gedge.opgraph.exceptions.ProcessingException;
 import ca.gedge.opgraph.util.ReflectUtil;
 
 public class MethodNode extends AbstractReflectNode {
-	
+
 	private static final Logger LOGGER = Logger
 			.getLogger(MethodNode.class.getName());
-	
+
 	// internal method
 	private Method method;
-	
+
 	private InputField objField;
-	
+
 	private OutputField outputField;
-	
+
 	private List<InputField> argumentInputs = new ArrayList<InputField>();
-	
+
 	public MethodNode() {
 		super();
 	}
-	
+
 	public MethodNode(Method method) {
 		super();
 		setClassMember(method);
 	}
-	
+
 	@Override
 	public void setClassMember(Member classMember) {
 		if(classMember instanceof Method) {
@@ -59,17 +59,20 @@ public class MethodNode extends AbstractReflectNode {
 		objField = new InputField("obj", "The object instance", inputObjType);
 		objField.setOptional(false);
 		putField(objField);
-		
+
 		// setup parameters as inputs
 		argumentInputs.clear();
 		final Class<?> paramTypes[] = method.getParameterTypes();
 		for(int i = 0; i < paramTypes.length; i++) {
+			if(paramTypes[i].isPrimitive()) {
+				paramTypes[i] = ReflectUtil.wrapperClassForPrimitive(paramTypes[i]);
+			}
 			final InputField inputField = new InputField("arg" + (i+1), "", paramTypes[i]);
 			inputField.setOptional(true);
 			putField(inputField);
 			argumentInputs.add(inputField);
 		}
-		
+
 		if(method.getReturnType() != null && method.getReturnType() != void.class) {
 			Class<?> returnType = method.getReturnType();
 			if(returnType.isPrimitive()) {
@@ -88,7 +91,7 @@ public class MethodNode extends AbstractReflectNode {
 			final Object val = context.get(argumentInput);
 			args[i] = val;
 		}
-		
+
 		try {
 			final Object retVal = invokeMethod(context.get(objField), args);
 			context.put(outputField, retVal);
@@ -100,7 +103,7 @@ public class MethodNode extends AbstractReflectNode {
 			throw new ProcessingException(null, e);
 		}
 	}
-	
+
 	protected Object invokeMethod(Object instance, Object[] args)
 			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException  {
 			final Object retVal = method.invoke(instance, args);

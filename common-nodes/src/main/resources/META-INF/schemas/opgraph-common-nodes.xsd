@@ -51,6 +51,23 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	
+	<xs:complexType name="LinkedMacroType">
+		<xs:annotation>
+			<xs:documentation>
+				Type definition for the linked macro element.  Linked macros
+				used a shared macro node.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="og:AbstractNodeType">
+				<xs:sequence maxOccurs="1">
+					<xs:element ref="uri" minOccurs="1" maxOccurs="1"/>
+					<xs:element ref="og:extensions" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 
 	<!-- Definition of a published input/output field of a macro -->
 
@@ -105,4 +122,7 @@
 
 	<xs:element name="published_input" type="PublishedFieldType"/>
 	<xs:element name="published_output" type="PublishedFieldType"/>
+
+	<xs:element name="linked_macro" type="LinkedMacroType" substitutionGroup="og:abstract_node"/>
+	<xs:element name="uri" type="xs:anyURI"/>
 </xs:schema>

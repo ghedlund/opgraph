@@ -1,2 +1,3 @@
 ca.gedge.opgraph.nodes.xml.MacroNodeXMLSerializer
 ca.gedge.opgraph.nodes.xml.PublishedFieldXMLSerializer
+ca.gedge.opgraph.nodes.xml.LinkedMacroNodeXMLSerializer

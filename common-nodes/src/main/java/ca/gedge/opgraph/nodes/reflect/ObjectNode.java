@@ -1,21 +1,14 @@
 package ca.gedge.opgraph.nodes.reflect;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.awt.*;
+import java.lang.reflect.*;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpContext;
-import ca.gedge.opgraph.OpNodeInfo;
-import ca.gedge.opgraph.OutputField;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
@@ -139,15 +132,17 @@ public class ObjectNode extends AbstractReflectNode {
 		}
 		
 		for(ObjectNodePropertyOutputField classOutput:classOutputs) {
-			try {
-				final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
-				context.put(classOutput, val);
-			} catch (IllegalArgumentException e) {
-				throw new ProcessingException(null, e);
-			} catch (IllegalAccessException e) {
-				throw new ProcessingException(null, e);
-			} catch (InvocationTargetException e) {
-				throw new ProcessingException(null, e);
+			if(context.isActive(classOutput)) {
+				try {
+					final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
+					context.put(classOutput, val);
+				} catch (IllegalArgumentException e) {
+					throw new ProcessingException(null, e);
+				} catch (IllegalAccessException e) {
+					throw new ProcessingException(null, e);
+				} catch (InvocationTargetException e) {
+					throw new ProcessingException(null, e);
+				}
 			}
 		}
 		

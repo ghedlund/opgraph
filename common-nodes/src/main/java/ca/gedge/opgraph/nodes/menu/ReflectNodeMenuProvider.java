@@ -1,16 +1,12 @@
 package ca.gedge.opgraph.nodes.menu;
 
 import java.awt.event.MouseEvent;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
 import javax.swing.JMenu;
 
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.MenuProvider;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
-import ca.gedge.opgraph.nodes.reflect.AbstractReflectNode;
 import ca.gedge.opgraph.nodes.reflect.ReflectNode;
 
 public class ReflectNodeMenuProvider implements MenuProvider {
@@ -22,27 +18,27 @@ public class ReflectNodeMenuProvider implements MenuProvider {
 	@Override
 	public void installPopupItems(Object context, MouseEvent event,
 			GraphDocument doc, PathAddressableMenu menu) {
-		final AddObjectCommand addObject = new AddObjectCommand(event.getPoint());
+		final AddObjectCommand addObject = new AddObjectCommand(doc, event.getPoint());
 		addObject.putValue(AddObjectCommand.NAME, "Add object...");
 		menu.addMenuItem("add_object", addObject);
 		
-		final AddClassCommand addClass = new AddClassCommand(event.getPoint());
+		final AddClassCommand addClass = new AddClassCommand(doc, event.getPoint());
 		addClass.putValue(AddClassCommand.NAME, "Add class...");
 		menu.addMenuItem("add_class", addClass);
 		
-		final AddStaticFieldCommand addStaticField = new AddStaticFieldCommand(event.getPoint());
+		final AddStaticFieldCommand addStaticField = new AddStaticFieldCommand(doc, event.getPoint());
 		addStaticField.putValue(AddStaticFieldCommand.NAME, "Add static field...");
 		menu.addMenuItem("add_static_field", addStaticField);
 		
-		final AddStaticMethodCommand addStaticMethod = new AddStaticMethodCommand(event.getPoint());
+		final AddStaticMethodCommand addStaticMethod = new AddStaticMethodCommand(doc, event.getPoint());
 		addStaticMethod.putValue(AddStaticMethodCommand.NAME, "Add static method...");
 		menu.addMenuItem("add_static_method", addStaticMethod);
 		
-		final AddInstanceMethodCommand addInstanceMethod = new AddInstanceMethodCommand(event.getPoint());
+		final AddInstanceMethodCommand addInstanceMethod = new AddInstanceMethodCommand(doc, event.getPoint());
 		addInstanceMethod.putValue(AddStaticMethodCommand.NAME, "Add instance method...");
 		menu.addMenuItem("add_instance_method", addInstanceMethod);
 		
-		final AddCastCommand addCastNode = new AddCastCommand(event.getPoint());
+		final AddCastCommand addCastNode = new AddCastCommand(doc, event.getPoint());
 		addCastNode.putValue(AddCastCommand.NAME, "Add cast...");
 		menu.addMenuItem("add_cast", addCastNode);
 		

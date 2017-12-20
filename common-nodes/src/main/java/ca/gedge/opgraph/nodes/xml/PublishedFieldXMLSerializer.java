@@ -23,20 +23,12 @@ import java.io.IOException;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OutputField;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.extensions.Extendable;
-import ca.gedge.opgraph.extensions.Publishable.PublishedInput;
-import ca.gedge.opgraph.extensions.Publishable.PublishedOutput;
-import ca.gedge.opgraph.io.xml.XMLSerializer;
-import ca.gedge.opgraph.io.xml.XMLSerializerFactory;
+import ca.gedge.opgraph.extensions.Publishable.*;
+import ca.gedge.opgraph.io.xml.*;
 import ca.gedge.opgraph.nodes.general.MacroNode;
 
 /**
@@ -159,23 +151,25 @@ public class PublishedFieldXMLSerializer implements XMLSerializer {
 			final OpNode sourceNode = macro.getGraph().getNodeById(sourceNodeId, true);
 			final OutputField sourceField = sourceNode.getOutputFieldWithKey(sourceFieldKey);
 
-			// Create
-			final OutputField published = macro.publish(key, sourceNode, sourceField);
-
-			// Read children
-			final NodeList children = elem.getChildNodes();
-			for(int childIndex = 0; childIndex < children.getLength(); ++childIndex) {
-				final Node node = children.item(childIndex);
-				if(node instanceof Element) {
-					final Element childElem = (Element)node;
-					final QName name = XMLSerializerFactory.getQName(childElem);
-
-					// Get a handler for the element
-					final XMLSerializer serializer = serializerFactory.getHandler(name);
-					if(serializer == null)
-						throw new IOException("Could not get handler for element: " + name);
-
-					serializer.read(serializerFactory, graph, published, doc, childElem);
+			if(sourceNode != null && sourceField != null) {
+				// Create
+				final OutputField published = macro.publish(key, sourceNode, sourceField);
+				
+				// Read children
+				final NodeList children = elem.getChildNodes();
+				for(int childIndex = 0; childIndex < children.getLength(); ++childIndex) {
+					final Node node = children.item(childIndex);
+					if(node instanceof Element) {
+						final Element childElem = (Element)node;
+						final QName name = XMLSerializerFactory.getQName(childElem);
+						
+						// Get a handler for the element
+						final XMLSerializer serializer = serializerFactory.getHandler(name);
+						if(serializer == null)
+							throw new IOException("Could not get handler for element: " + name);
+						
+						serializer.read(serializerFactory, graph, published, doc, childElem);
+					}
 				}
 			}
 		}

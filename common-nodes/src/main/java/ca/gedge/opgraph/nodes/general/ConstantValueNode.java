@@ -18,10 +18,7 @@
  */
 package ca.gedge.opgraph.nodes.general;
 
-import ca.gedge.opgraph.OpContext;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OpNodeInfo;
-import ca.gedge.opgraph.OutputField;
+import ca.gedge.opgraph.*;
 
 /**
  * A node that outputs a constant value. 
@@ -29,7 +26,7 @@ import ca.gedge.opgraph.OutputField;
 @OpNodeInfo(
 	name="Constant Value",
 	description="Outputs a constant value.",
-	category="Data Generation"
+	category="Objects"
 )
 public class ConstantValueNode extends OpNode {
 	/** Output field for the constant value */
@@ -52,7 +49,7 @@ public class ConstantValueNode extends OpNode {
 	 */
 	public ConstantValueNode(Object value) {
 		putField(VALUE_OUTPUT_FIELD);
-		this.value = value;
+		setValue(value);
 	}
 
 	/**
@@ -64,13 +61,18 @@ public class ConstantValueNode extends OpNode {
 		this.value = value;
 		VALUE_OUTPUT_FIELD.setOutputType(value == null ? Object.class : value.getClass());
 	}
+	
+	public Object getValue() {
+		return value;
+	}
 
 	//
 	// Overrides
 	//
-
 	@Override
 	public void operate(OpContext context) {
-		context.put(VALUE_OUTPUT_FIELD, value);
+		if(context.isActive(VALUE_OUTPUT_FIELD))
+			context.put(VALUE_OUTPUT_FIELD, getValue());
 	}
+	
 }

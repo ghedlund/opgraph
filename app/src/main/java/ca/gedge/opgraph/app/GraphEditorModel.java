@@ -21,36 +21,14 @@
  */
 package ca.gedge.opgraph.app;
 
-import java.awt.Component;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.beans.*;
+import java.util.*;
 import java.util.logging.Logger;
 
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
-import javax.swing.event.MouseInputAdapter;
-
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.Processor;
-import ca.gedge.opgraph.app.components.ConsolePanel;
-import ca.gedge.opgraph.app.components.ContextViewerPanel;
-import ca.gedge.opgraph.app.components.GraphOutline;
-import ca.gedge.opgraph.app.components.NodeFieldsPanel;
-import ca.gedge.opgraph.app.components.NodeSettingsPanel;
-import ca.gedge.opgraph.app.components.PathAddressableMenuImpl;
-import ca.gedge.opgraph.app.components.canvas.CanvasNode;
-import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
-import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionListener;
+import ca.gedge.opgraph.*;
+import ca.gedge.opgraph.app.components.*;
+import ca.gedge.opgraph.app.components.canvas.*;
 import ca.gedge.opgraph.app.components.library.NodeLibraryViewer;
-import ca.gedge.opgraph.app.extensions.NoteComponent;
-import ca.gedge.opgraph.app.util.GUIHelper;
 import ca.gedge.opgraph.util.ServiceDiscovery;
 import ca.phon.ui.jbreadcrumb.JBreadcrumb;
 
@@ -147,9 +125,9 @@ public class GraphEditorModel {
 			public void propertyChange(PropertyChangeEvent evt) {
 				final Processor context = (Processor)evt.getNewValue();
 				
-				if(canvas != null)
-					// Let canvas redraw itself based on the given context
-					canvas.updateDebugState(context);
+//				if(canvas != null)
+//					// Let canvas redraw itself based on the given context
+//					canvas.updateDebugState(context);
 				
 				// Update debug panel information
 				if(debugPanel != null) {

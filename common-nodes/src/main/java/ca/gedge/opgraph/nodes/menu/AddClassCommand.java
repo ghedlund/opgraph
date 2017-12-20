@@ -1,24 +1,14 @@
 package ca.gedge.opgraph.nodes.menu;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.lang.reflect.Constructor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.logging.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.nodes.reflect.ClassNode;
-import ca.gedge.opgraph.nodes.reflect.ConstructorNode;
 
 public class AddClassCommand extends AbstractAction {
 	
@@ -27,10 +17,13 @@ public class AddClassCommand extends AbstractAction {
 
 	private static final long serialVersionUID = -2443166989357102209L;
 
+	private GraphDocument document;
+	
 	private final Point point;
 	
-	public AddClassCommand(Point p) {
+	public AddClassCommand(GraphDocument doc, Point p) {
 		super();
+		this.document = doc;
 		this.point = p;
 		putValue(ACCELERATOR_KEY, 
 				KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | KeyEvent.VK_ALT));
@@ -41,7 +34,6 @@ public class AddClassCommand extends AbstractAction {
 		if(GraphicsEnvironment.isHeadless())
 			return;
 		
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			// request a class name
 			// TODO create a better UI for this
@@ -56,6 +48,7 @@ public class AddClassCommand extends AbstractAction {
 						final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), node, point.x, point.y);
 						document.getUndoSupport().postEdit(edit);
 					} catch (ClassNotFoundException e) {
+						Toolkit.getDefaultToolkit().beep();
 						LOGGER.log(Level.SEVERE, e.getLocalizedMessage(),
 								e);
 					}

@@ -18,21 +18,11 @@
  */
 package ca.gedge.opgraph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import ca.gedge.opgraph.ProcessorEvent.Type;
-import ca.gedge.opgraph.exceptions.BreakpointEncountered;
-import ca.gedge.opgraph.exceptions.InvalidTypeException;
-import ca.gedge.opgraph.exceptions.ProcessingException;
-import ca.gedge.opgraph.exceptions.RequiredInputException;
-import ca.gedge.opgraph.extensions.CompositeNode;
-import ca.gedge.opgraph.extensions.CustomProcessing;
-import ca.gedge.opgraph.extensions.NodeMetadata;
+import ca.gedge.opgraph.exceptions.*;
+import ca.gedge.opgraph.extensions.*;
 import ca.gedge.opgraph.extensions.CustomProcessing.CustomProcessor;
 import ca.gedge.opgraph.validators.TypeValidator;
 
@@ -323,9 +313,17 @@ public class Processor {
 		try {
 			final OpContext localContext = globalContext.getChildContext(currentNode);
 			setupInputs(currentNode, localContext);
-
+						
 			Boolean enabled = (Boolean)localContext.get(OpNode.ENABLED_FIELD);
 			if(enabled == null || enabled) {
+				localContext.clearActiveOutputs();
+				final Set<OpLink> outgoingEdges = graph.getOutgoingEdges(currentNode);
+				final Set<OutputField> activeOutputs = new HashSet<>();
+				for(OpLink link:outgoingEdges) {
+					activeOutputs.add(link.getSourceField());
+				}
+				localContext.setActiveOutputs(activeOutputs);
+				
 				fireBeginNodeEvent();
 				currentNode.operate(localContext);
 				fireEndNodeEvent();

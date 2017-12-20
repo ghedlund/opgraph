@@ -1,6 +1,10 @@
 ca.gedge.opgraph.nodes.general.MacroNode
 ca.gedge.opgraph.nodes.general.PassThroughNode
 ca.gedge.opgraph.nodes.general.RangeNode
+ca.gedge.opgraph.nodes.general.ArrayNode
+ca.gedge.opgraph.nodes.general.BooleanNode
+ca.gedge.opgraph.nodes.general.NumberNode
+ca.gedge.opgraph.nodes.general.TextNode
 
 ca.gedge.opgraph.nodes.logic.LogicalAndNode
 ca.gedge.opgraph.nodes.logic.LogicalNotNode

@@ -1,16 +1,12 @@
 package ca.gedge.opgraph.nodes.menu;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.nodes.reflect.ObjectCastNode;
 
@@ -25,10 +21,13 @@ public class AddCastCommand extends AbstractAction {
 	private static final Logger LOGGER = Logger
 			.getLogger(AddCastCommand.class.getName());
 	
+	private GraphDocument document;
+	
 	private final Point point;
 	
-	public AddCastCommand(Point p) {
+	public AddCastCommand(GraphDocument doc, Point p) {
 		super();
+		this.document = doc;
 		this.point = p;
 	}
 	
@@ -37,7 +36,6 @@ public class AddCastCommand extends AbstractAction {
 		if(GraphicsEnvironment.isHeadless())
 			return;
 		
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			// request a class name
 			// TODO create a better UI for this

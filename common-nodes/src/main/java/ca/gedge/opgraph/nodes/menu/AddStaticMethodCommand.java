@@ -1,24 +1,14 @@
 package ca.gedge.opgraph.nodes.menu;
 
-import java.awt.Component;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.ListCellRenderer;
+import javax.swing.*;
 
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.nodes.reflect.StaticMethodNode;
 import ca.gedge.opgraph.util.ReflectUtil;
@@ -30,10 +20,13 @@ public class AddStaticMethodCommand extends AbstractAction {
 
 	private static final long serialVersionUID = 4549741302418406320L;
 
+	private GraphDocument document;
+	
 	private final Point point;
 	
-	public AddStaticMethodCommand(Point p) {
+	public AddStaticMethodCommand(GraphDocument doc, Point p) {
 		super();
+		this.document = doc;
 		this.point = p;
 	}
 	
@@ -42,7 +35,6 @@ public class AddStaticMethodCommand extends AbstractAction {
 		if(GraphicsEnvironment.isHeadless())
 			return;
 		
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			// request a class name
 			// TODO create a better UI for this
@@ -52,7 +44,7 @@ public class AddStaticMethodCommand extends AbstractAction {
 					final Class<?> clazz = Class.forName(className);
 					final List<Method> staticMethods = ReflectUtil.getStaticMethods(clazz);
 					
-					final JComboBox comboBox = new JComboBox(staticMethods.toArray(new Method[0]));
+					final JComboBox<Method> comboBox = new JComboBox<>(staticMethods.toArray(new Method[0]));
 					comboBox.setRenderer(new DefaultListCellRenderer() {
 						
 						@Override

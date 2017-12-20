@@ -20,11 +20,7 @@ package ca.gedge.opgraph.nodes.general;
 
 import java.util.List;
 
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpContext;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OpNodeInfo;
-import ca.gedge.opgraph.OutputField;
+import ca.gedge.opgraph.*;
 
 /**
  * A node that outputs a constant value. 
@@ -32,7 +28,7 @@ import ca.gedge.opgraph.OutputField;
 @OpNodeInfo(
 	name="Range",
 	description="Outputs a range of integers.",
-	category="Data Generation"
+	category="Objects"
 )
 public class RangeNode extends OpNode {
 	/** Input field for the start of the output range */

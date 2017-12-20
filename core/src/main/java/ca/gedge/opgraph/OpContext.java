@@ -18,14 +18,7 @@
  */
 package ca.gedge.opgraph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 
 /**
  * A working context for {@link OpGraph}s. A context can have a parent
@@ -37,8 +30,11 @@ public final class OpContext extends HashMap<String, Object> {
 
 	/** The child contexts */
 	private WeakHashMap<OpNode, OpContext> childContexts;
-	
+		
 	private boolean debug = false;
+	
+	/** When executing a node, which outputs are actually used */
+	private Set<OutputField> activeOutputs = new HashSet<>();
 
 	/**
 	 * Constructs a global context (i.e., no parent context).
@@ -235,6 +231,22 @@ public final class OpContext extends HashMap<String, Object> {
 	
 	public boolean isLocal(String key) {
 		return super.containsKey(key);
+	}
+	
+	public void setActiveOutputs(Set<OutputField> activeOutputs) {
+		this.activeOutputs = activeOutputs;
+	}
+	
+	public Set<OutputField> getActiveOutputs() {
+		return this.activeOutputs;
+	}
+	
+	public void clearActiveOutputs() {
+		this.activeOutputs = new HashSet<>();
+	}
+	
+	public boolean isActive(OutputField field) {
+		return this.activeOutputs.contains(field);
 	}
 
 	//

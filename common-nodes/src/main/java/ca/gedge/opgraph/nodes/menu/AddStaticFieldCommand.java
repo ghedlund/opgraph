@@ -1,27 +1,16 @@
 package ca.gedge.opgraph.nodes.menu;
 
-import java.awt.Component;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.nodes.reflect.StaticFieldNode;
-import ca.gedge.opgraph.nodes.reflect.StaticMethodNode;
 import ca.gedge.opgraph.util.ReflectUtil;
 
 public class AddStaticFieldCommand extends AbstractAction {
@@ -31,10 +20,13 @@ public class AddStaticFieldCommand extends AbstractAction {
 	private static final Logger LOGGER = Logger
 			.getLogger(AddStaticMethodCommand.class.getName());
 
+	private GraphDocument document;
+	
 	private final Point point;
 	
-	public AddStaticFieldCommand(Point p) {
+	public AddStaticFieldCommand(GraphDocument doc, Point p) {
 		super();
+		this.document = doc;
 		this.point = p;
 	}
 	
@@ -43,7 +35,6 @@ public class AddStaticFieldCommand extends AbstractAction {
 		if(GraphicsEnvironment.isHeadless())
 			return;
 		
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			// request a class name
 			// TODO create a better UI for this
@@ -53,7 +44,7 @@ public class AddStaticFieldCommand extends AbstractAction {
 					final Class<?> clazz = Class.forName(className);
 					final List<Field> staticFields = ReflectUtil.getStaticFields(clazz);
 					
-					final JComboBox comboBox = new JComboBox(staticFields.toArray(new Field[0]));
+					final JComboBox<Field> comboBox = new JComboBox<>(staticFields.toArray(new Field[0]));
 					comboBox.setRenderer(new DefaultListCellRenderer() {
 						
 						@Override

@@ -1,71 +1,29 @@
 package ca.gedge.opgraph.app.components.canvas;
 
-import java.awt.AWTEvent;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDragEvent;
-import java.awt.dnd.DropTargetDropEvent;
-import java.awt.event.AWTEventListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
+import java.awt.event.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.JPopupMenu;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
-import ca.gedge.opgraph.ContextualItem;
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpLink;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OutputField;
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.MenuManager;
-import ca.gedge.opgraph.app.MenuProvider;
-import ca.gedge.opgraph.app.components.ErrorDialog;
-import ca.gedge.opgraph.app.components.NullLayout;
-import ca.gedge.opgraph.app.components.PathAddressableMenuImpl;
-import ca.gedge.opgraph.app.components.ResizeGrip;
-import ca.gedge.opgraph.app.edits.graph.AddLinkEdit;
-import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
-import ca.gedge.opgraph.app.edits.graph.MoveNodesEdit;
-import ca.gedge.opgraph.app.edits.graph.RemoveLinkEdit;
+import ca.gedge.opgraph.*;
+import ca.gedge.opgraph.app.*;
+import ca.gedge.opgraph.app.components.*;
+import ca.gedge.opgraph.app.edits.graph.*;
 import ca.gedge.opgraph.app.edits.notes.MoveNoteEdit;
-import ca.gedge.opgraph.app.extensions.Note;
-import ca.gedge.opgraph.app.extensions.NoteComponent;
+import ca.gedge.opgraph.app.extensions.*;
 import ca.gedge.opgraph.app.util.GUIHelper;
-import ca.gedge.opgraph.dag.CycleDetectedException;
-import ca.gedge.opgraph.dag.VertexNotFoundException;
+import ca.gedge.opgraph.dag.*;
 import ca.gedge.opgraph.exceptions.ItemMissingException;
-import ca.gedge.opgraph.extensions.CompositeNode;
-import ca.gedge.opgraph.extensions.Publishable;
+import ca.gedge.opgraph.extensions.*;
 import ca.gedge.opgraph.library.NodeData;
-import ca.gedge.opgraph.util.Pair;
-import ca.gedge.opgraph.util.ServiceDiscovery;
+import ca.gedge.opgraph.util.*;
 
 public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	
@@ -491,7 +449,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 						}
 						document.getUndoSupport().postEdit(new RemoveLinkEdit(graph, currentlyDraggedLink));
 					} else {
-						// call abaondoned link handlers
+						// call abandoned link handlers
 						final List<Class<? extends AbandonedLinkHandler>> handlers = ServiceDiscovery.getInstance().findProviders(AbandonedLinkHandler.class);
 						for(Class<? extends AbandonedLinkHandler> handler:handlers) {
 							try {

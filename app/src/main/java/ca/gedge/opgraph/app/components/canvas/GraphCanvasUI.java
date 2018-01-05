@@ -1,7 +1,6 @@
 package ca.gedge.opgraph.app.components.canvas;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 
 import javax.swing.plaf.ComponentUI;
 
@@ -23,9 +22,13 @@ public abstract class GraphCanvasUI extends ComponentUI {
 	public static final Integer NODES_LAYER = 200;
 	public static final Integer OVERLAY_LAYER = 10000;
 	public static final Integer DEBUG_OVERLAY_LAYER = 10001;
+	
+	public static final Integer MINIMAP_LAYER = 20000;
 
 	@SuppressWarnings("unused")
 	public static final Integer FOREGROUND_LAYER = Integer.MAX_VALUE;
+	
+	public abstract CanvasMinimapLayer getMinimapLayer();
 	
 	/**
 	 * @return grid layer
@@ -84,6 +87,16 @@ public abstract class GraphCanvasUI extends ComponentUI {
 	 *         currently no selection rectangle
 	 */
 	public abstract Rectangle getSelectionRect();
+	
+	/**
+	 * Get the bounding rectangle for the entire graph.
+	 * The top-left coord will always be (0,0) and the bottom-right
+	 * coord will be the bottom-right coord of the bottom-right
+	 * node/note.
+	 * 
+	 * @return the bounding rectangle for the graph
+	 */
+	public abstract Rectangle getGraphBoundingRect();
 	
 	/**
 	 * Start a drag operation for a given field.

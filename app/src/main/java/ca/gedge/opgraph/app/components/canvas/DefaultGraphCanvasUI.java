@@ -31,6 +31,8 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	
 	private GraphCanvas canvas;
 	
+	private CanvasMinimapLayer minimapLayer;
+	
 	/** The layer that displays a grid */
 	private GridLayer gridLayer;
 
@@ -92,13 +94,14 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 		this.linksLayer = new LinksLayer(canvas);
 		this.canvasOverlay = new CanvasOverlay(canvas);
 		this.canvasDebugOverlay = new DebugOverlay(canvas);
-
+		this.minimapLayer = new CanvasMinimapLayer(canvas);
+		
 		// Initialize component
 		canvas.setDoubleBuffered(true);
 		canvas.setLayout(new NullLayout());
 		canvas.setFocusable(true);
-		canvas.setOpaque(true);
-		canvas.setBackground(Color.white);
+		canvas.setOpaque(false);
+//		canvas.setBackground(Color.white);
 		canvas.setFocusCycleRoot(true);
 		
 		installListeners();
@@ -109,6 +112,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 		canvas.add(linksLayer, LINKS_LAYER);
 		canvas.add(canvasOverlay, OVERLAY_LAYER);
 		canvas.add(canvasDebugOverlay, DEBUG_OVERLAY_LAYER);
+		canvas.add(minimapLayer, MINIMAP_LAYER);
 	}
 	
 	private void installListeners() {
@@ -175,6 +179,11 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				canvas.cut();
 			}
 		});
+	}
+	
+	@Override
+	public CanvasMinimapLayer getMinimapLayer() {
+		return minimapLayer;
 	}
 	
 	/**
@@ -249,6 +258,42 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	@Override
 	public boolean isDragLinkValid() {
 		return dragLinkIsValid;
+	}
+	
+	@Override
+	public Rectangle getGraphBoundingRect() {
+		Rectangle retVal = new Rectangle(0, 0, 1, 1);
+		int x = 1;
+		int y = 1;
+		
+		final OpGraph graph = canvas.getDocument().getGraph();
+		for(OpNode node:graph.getVertices()) {
+			final CanvasNode cn = canvas.getNode(node);
+			if(cn != null) {
+				x = Math.max(x, cn.getX() + cn.getWidth());
+				y = Math.max(y, cn.getY() + cn.getHeight());
+			}
+		}
+		final Notes notes = graph.getExtension(Notes.class);
+		if(notes != null) {
+			for(Note note:notes) {
+				final JComponent noteComp = note.getExtension(JComponent.class);
+				if(noteComp != null) {
+					x = Math.max(x, noteComp.getX() + noteComp.getWidth());
+					y = Math.max(y, noteComp.getY() + noteComp.getHeight());
+				}
+			}
+		}
+		
+		if(canvas.isVisible()) {
+			x = Math.max(x, canvas.getVisibleRect().x + canvas.getVisibleRect().width);
+			y = Math.max(y, canvas.getVisibleRect().y + canvas.getVisibleRect().height);
+		}
+		
+		retVal.width = x;
+		retVal.height = y;
+		
+		return retVal;
 	}
 	
 	/**

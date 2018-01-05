@@ -18,68 +18,31 @@
  */
 package ca.gedge.opgraph.app.components.canvas;
 
-import java.awt.Dimension;
-import java.awt.LayoutManager;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.event.*;
+import java.beans.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
-import javax.swing.JComponent;
-import javax.swing.JLayeredPane;
-import javax.swing.Scrollable;
+import javax.swing.*;
 import javax.swing.undo.CompoundEdit;
 
-import ca.gedge.opgraph.ContextualItem;
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpGraphListener;
-import ca.gedge.opgraph.OpLink;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OpNodeListener;
-import ca.gedge.opgraph.OutputField;
-import ca.gedge.opgraph.Processor;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.components.NullLayout;
-import ca.gedge.opgraph.app.components.ResizeGrip;
+import ca.gedge.opgraph.app.components.*;
 import ca.gedge.opgraph.app.components.canvas.CanvasNodeField.AnchorFillState;
-import ca.gedge.opgraph.app.edits.graph.AddLinkEdit;
-import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
-import ca.gedge.opgraph.app.edits.graph.DeleteNodesEdit;
+import ca.gedge.opgraph.app.edits.graph.*;
 import ca.gedge.opgraph.app.edits.notes.ResizeNoteEdit;
-import ca.gedge.opgraph.app.extensions.Note;
-import ca.gedge.opgraph.app.extensions.NoteComponent;
-import ca.gedge.opgraph.app.extensions.Notes;
-import ca.gedge.opgraph.app.util.CollectionListener;
-import ca.gedge.opgraph.app.util.GraphUtils;
-import ca.gedge.opgraph.dag.CycleDetectedException;
-import ca.gedge.opgraph.dag.VertexNotFoundException;
+import ca.gedge.opgraph.app.extensions.*;
+import ca.gedge.opgraph.app.util.*;
+import ca.gedge.opgraph.dag.*;
 import ca.gedge.opgraph.exceptions.ItemMissingException;
-import ca.gedge.opgraph.extensions.NodeMetadata;
-import ca.gedge.opgraph.extensions.Publishable;
-import ca.gedge.opgraph.extensions.Publishable.PublishedInput;
-import ca.gedge.opgraph.extensions.Publishable.PublishedOutput;
-import ca.gedge.opgraph.util.Pair;
-import ca.phon.ui.jbreadcrumb.Breadcrumb;
-import ca.phon.ui.jbreadcrumb.BreadcrumbEvent;
+import ca.gedge.opgraph.extensions.*;
+import ca.gedge.opgraph.extensions.Publishable.*;
+import ca.phon.ui.jbreadcrumb.*;
 import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.BreadcrumbEventType;
-import ca.phon.ui.jbreadcrumb.BreadcrumbListener;
 
 /**
  * A canvas for creating/modifying an {@link OpGraph}.
@@ -105,6 +68,11 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 
 	/** The mapping of nodes to node components */
 	private HashMap<OpNode, CanvasNode> nodes;
+	
+	/**
+	 * Minimap component
+	 */
+	private CanvasMinimap minimap;
 	
 	//
 	// Listener objects
@@ -148,6 +116,9 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 		this.document.getBreadcrumb().addBreadcrumbListener(breadcrumbListener);
 		this.document.getSelectionModel().addSelectionListener(canvasSelectionListener);
 		this.document.addPropertyChangeListener("anchorFillStates", (e) -> updateAnchorFillStates((OpNode)e.getNewValue()) );
+		this.document.getUndoSupport().addUndoableEditListener( (e) -> 
+			SwingUtilities.invokeLater( () -> getUI().getMinimapLayer().update() ));
+		
 		changeGraph(null, this.document.getGraph());
 	}
 	
@@ -383,6 +354,8 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 
 		revalidate();
 		repaint();
+		
+		SwingUtilities.invokeLater( () -> getUI().getMinimapLayer().update() );
 	}
 
 	public void selectAll() {

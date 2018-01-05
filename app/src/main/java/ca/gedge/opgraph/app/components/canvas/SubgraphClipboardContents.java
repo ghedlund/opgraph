@@ -21,36 +21,18 @@
  */
 package ca.gedge.opgraph.app.components.canvas;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.*;
+import java.awt.datatransfer.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-import javax.swing.JComponent;
-
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpNode;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.util.GraphUtils;
-import ca.gedge.opgraph.io.OpGraphSerializer;
-import ca.gedge.opgraph.io.OpGraphSerializerFactory;
-import ca.gedge.opgraph.util.Pair;
+import ca.gedge.opgraph.io.*;
 
 /**
  * Inner class for handling OpGraph clipboard content.

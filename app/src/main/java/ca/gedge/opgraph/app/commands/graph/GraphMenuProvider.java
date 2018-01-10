@@ -22,22 +22,15 @@
 package ca.gedge.opgraph.app.commands.graph;
 
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.beans.*;
 import java.util.Collection;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
 import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.MenuProvider;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
-import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionListener;
-import ca.gedge.opgraph.app.components.canvas.GridLayer;
+import ca.gedge.opgraph.app.components.canvas.*;
 
 /**
  * Menu provider for core functions.
@@ -47,12 +40,12 @@ public class GraphMenuProvider implements MenuProvider {
 	public void installItems(final GraphEditorModel model, PathAddressableMenu menu) {
 		final JMenu graph = menu.addMenu("graph", "Graph");
 
-		final JMenuItem move1 = menu.addMenuItem("graph/move down", new MoveNodeCommand(0, GridLayer.DEFAULT_GRID_SPACING / 2));
-		final JMenuItem move2 = menu.addMenuItem("graph/move up", new MoveNodeCommand(0, -GridLayer.DEFAULT_GRID_SPACING / 2));
-		final JMenuItem move3 = menu.addMenuItem("graph/move right", new MoveNodeCommand(GridLayer.DEFAULT_GRID_SPACING / 2, 0));
-		final JMenuItem move4 = menu.addMenuItem("graph/move left", new MoveNodeCommand(-GridLayer.DEFAULT_GRID_SPACING / 2, 0));
+		final JMenuItem move1 = menu.addMenuItem("graph/move down", new MoveNodeCommand(model.getDocument(), 0, GridLayer.DEFAULT_GRID_SPACING / 2));
+		final JMenuItem move2 = menu.addMenuItem("graph/move up", new MoveNodeCommand(model.getDocument(), 0, -GridLayer.DEFAULT_GRID_SPACING / 2));
+		final JMenuItem move3 = menu.addMenuItem("graph/move right", new MoveNodeCommand(model.getDocument(), GridLayer.DEFAULT_GRID_SPACING / 2, 0));
+		final JMenuItem move4 = menu.addMenuItem("graph/move left", new MoveNodeCommand(model.getDocument(), -GridLayer.DEFAULT_GRID_SPACING / 2, 0));
 		menu.addSeparator("graph");
-		menu.addMenuItem("graph/auto layout", new AutoLayoutCommand());
+		menu.addMenuItem("graph/auto layout", new AutoLayoutCommand(model.getDocument()));
 
 		move1.setEnabled(false);
 		move2.setEnabled(false);

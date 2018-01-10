@@ -1,62 +1,26 @@
 package ca.gedge.opgraph.app.components;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
-import javax.swing.event.EventListenerList;
-import javax.swing.event.MenuListener;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeSelectionModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.tree.*;
 import javax.swing.undo.UndoableEdit;
 
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpLink;
-import ca.gedge.opgraph.OpNode;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
-import ca.gedge.opgraph.app.components.canvas.NodeStyle;
-import ca.gedge.opgraph.app.components.canvas.SubgraphClipboardContents;
+import ca.gedge.opgraph.app.components.canvas.*;
 import ca.gedge.opgraph.app.edits.graph.MoveNodesEdit;
-import ca.gedge.opgraph.app.edits.node.ChangeNodeNameEdit;
-import ca.gedge.opgraph.dag.CycleDetectedException;
-import ca.gedge.opgraph.dag.VertexNotFoundException;
+import ca.gedge.opgraph.dag.*;
 import ca.gedge.opgraph.extensions.CompositeNode;
 import ca.phon.ui.jbreadcrumb.BreadcrumbEvent;
-import ca.phon.ui.jbreadcrumb.BreadcrumbListener;
 
 /**
  * Provides an outline component for {@link OpGraph}s.  The outline
@@ -80,8 +44,11 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 	
 	private final GraphDocument graphDocument;
 	
-	public GraphOutline(GraphDocument graphDocument) {
+	private final GraphCanvas canvas;
+	
+	public GraphOutline(GraphDocument graphDocument, GraphCanvas canvas) {
 		this.graphDocument = graphDocument;
+		this.canvas = canvas;
 		
 		init();
 	}
@@ -220,7 +187,7 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 		if(tree.getSelectionCount() == 1 && tree.getSelectionRows()[0] == 0) {
 			// create transferable object
 			final SubgraphClipboardContents clipboardContents = 
-					new SubgraphClipboardContents(GraphEditorModel.getActiveEditorModel().getCanvas(), graphDocument.getRootGraph());
+					new SubgraphClipboardContents(canvas, graphDocument.getRootGraph());
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboardContents, this);
 		} else {
 			// create a new graph with the selected nodes
@@ -260,7 +227,7 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 				
 				// create transferable object
 				final SubgraphClipboardContents clipboardContents = 
-						new SubgraphClipboardContents(GraphEditorModel.getActiveEditorModel().getCanvas(), graph);
+						new SubgraphClipboardContents(canvas, graph);
 				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboardContents, this);
 			}
 		}

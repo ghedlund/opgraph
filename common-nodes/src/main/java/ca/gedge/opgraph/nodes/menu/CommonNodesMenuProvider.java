@@ -22,19 +22,15 @@
 package ca.gedge.opgraph.nodes.menu;
 
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.*;
 import java.util.Collection;
 
 import javax.swing.JMenuItem;
 
 import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.MenuProvider;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
-import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionListener;
-import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionModel;
+import ca.gedge.opgraph.app.components.canvas.*;
 import ca.gedge.opgraph.nodes.general.MacroNode;
 
 /**
@@ -45,8 +41,8 @@ public class CommonNodesMenuProvider implements MenuProvider {
 	public void installItems(final GraphEditorModel model, PathAddressableMenu menu) {
 		menu.addSeparator("graph");
 
-		final JMenuItem create = menu.addMenuItem("graph/create macro", new CreateMacroCommand());
-		final JMenuItem explode = menu.addMenuItem("graph/explode macro", new ExplodeMacroCommand());
+		final JMenuItem create = menu.addMenuItem("graph/create macro", new CreateMacroCommand(model.getDocument()));
+		final JMenuItem explode = menu.addMenuItem("graph/explode macro", new ExplodeMacroCommand(model.getDocument()));
 
 		create.setEnabled(false);
 		explode.setEnabled(false);

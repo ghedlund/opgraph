@@ -21,45 +21,26 @@
  */
 package ca.gedge.opgraph.nodes.math;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.*;
+import java.beans.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
 
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SpinnerModel;
+import javax.swing.*;
 import javax.swing.JFormattedTextField.AbstractFormatter;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import javax.swing.event.*;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.*;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpContext;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OpNodeInfo;
-import ca.gedge.opgraph.OutputField;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.edits.node.NodeSettingsEdit;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
-import ca.gedge.opgraph.nodes.math.parser.MathExpressionEval;
-import ca.gedge.opgraph.nodes.math.parser.MathExpressionLexer;
-import ca.gedge.opgraph.nodes.math.parser.MathExpressionParser;
+import ca.gedge.opgraph.nodes.math.parser.*;
 
 /**
  * A node that computes a value from a mathematical expression.
@@ -295,13 +276,18 @@ public class MathExpressionNode
 	 * Constructs a math expression settings for the given node.
 	 */
 	public static class MathExpressionSettings extends JPanel {
+		
+		private GraphDocument document;
+		
 		/**
 		 * Constructs this component for a given math expression node .
 		 * 
 		 * @param node  the math expression node
 		 */
-		public MathExpressionSettings(final MathExpressionNode node) {
+		public MathExpressionSettings(final MathExpressionNode node, final GraphDocument document) {
 			super(new GridBagLayout());
+			
+			this.document = document;
 
 			// A text field for the mathematical expression
 			final JLabel expressionLabel = new JLabel("Expression: ");
@@ -312,7 +298,6 @@ public class MathExpressionNode
 			expressionText.addPropertyChangeListener("value", new PropertyChangeListener() {
 				@Override
 				public void propertyChange(PropertyChangeEvent e) {
-					final GraphDocument document = GraphEditorModel.getActiveDocument();
 					if(document != null) {
 						final Properties settings = new Properties();
 						settings.put(EXPRESSION_KEY, e.getNewValue().toString());
@@ -330,7 +315,6 @@ public class MathExpressionNode
 			significantDigitsSpinner.addChangeListener(new ChangeListener() {
 				@Override
 				public void stateChanged(ChangeEvent e) {
-					final GraphDocument document = GraphEditorModel.getActiveDocument();
 					if(document != null) {
 						final Properties settings = new Properties();
 						settings.put(EXPRESSION_KEY, spinnerModel.getValue());
@@ -377,7 +361,7 @@ public class MathExpressionNode
 
 	@Override
 	public Component getComponent(GraphDocument document) {
-		return new MathExpressionSettings(this);
+		return new MathExpressionSettings(this, document);
 	}
 
 	@Override

@@ -21,29 +21,18 @@
  */
 package ca.gedge.opgraph.app.commands.edit;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Transferable;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.*;
+import java.beans.*;
 import java.util.Collection;
 
-import javax.swing.InputMap;
-import javax.swing.JComponent;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.MenuProvider;
+import ca.gedge.opgraph.*;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
-import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionListener;
-import ca.gedge.opgraph.app.components.canvas.SubgraphClipboardContents;
+import ca.gedge.opgraph.app.components.canvas.*;
 
 /**
  * Menu provider for core functions.
@@ -56,9 +45,9 @@ public class EditMenuProvider implements MenuProvider {
 		final UndoCommand undo = new UndoCommand(model.getDocument().getUndoManager());
 		final RedoCommand redo = new RedoCommand(model.getDocument().getUndoManager());
 
-		final CopyCommand copy = new CopyCommand();
+		final CopyCommand copy = new CopyCommand(model.getDocument(), model.getCanvas());
 		final PasteCommand paste = new PasteCommand(model.getDocument());
-		final DuplicateCommand duplicate = new DuplicateCommand();
+		final DuplicateCommand duplicate = new DuplicateCommand(model.getDocument());
 
 		menu.addMenuItem("edit/copy", copy);
 		menu.addMenuItem("edit/paste", paste);
@@ -68,8 +57,8 @@ public class EditMenuProvider implements MenuProvider {
 		menu.addMenuItem("edit/undo", undo);
 		menu.addMenuItem("edit/redo", redo);
 		menu.addSeparator("edit");
-		final JMenuItem delete = menu.addMenuItem("edit/delete", new DeleteCommand());
-		menu.addMenuItem("edit/select all", new SelectAllCommand());
+		final JMenuItem delete = menu.addMenuItem("edit/delete", new DeleteCommand(model.getDocument()));
+		menu.addMenuItem("edit/select all", new SelectAllCommand(model.getDocument()));
 
 		// Setup backspace keybinding for delete
 		final KeyStroke bsKs = KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0);
@@ -108,8 +97,8 @@ public class EditMenuProvider implements MenuProvider {
 		// Add copy and paste commands for nodes
 		if(context != null && (context instanceof OpNode || context instanceof OpGraph)) {
 			// Add copy command if selection is available
-			if(doc.getSelectionModel().getSelectedNodes().size() > 0)
-				menu.addMenuItem("copy", new CopyCommand());
+			if(doc.getSelectionModel().getSelectedNodes().size() > 0 && event.getSource() instanceof GraphCanvas)
+				menu.addMenuItem("copy", new CopyCommand(doc, (GraphCanvas)event.getSource()));
 
 			// Check clipboard
 			if(!GraphicsEnvironment.isHeadless()) {
@@ -122,7 +111,7 @@ public class EditMenuProvider implements MenuProvider {
 
 			// Add duplicate command if selection is available
 			if(doc.getSelectionModel().getSelectedNodes().size() > 0)
-				menu.addMenuItem("duplicate", new DuplicateCommand());
+				menu.addMenuItem("duplicate", new DuplicateCommand(doc));
 		}
 	}
 }

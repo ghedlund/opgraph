@@ -19,26 +19,25 @@
 package ca.gedge.opgraph.app.commands.edit;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 
 /**
  * Selects all nodes in the active document's {@link GraphCanvas}.
  */
-public class SelectAllCommand extends HookableCommand {
+public class SelectAllCommand extends GraphCommand {
+	
 	/**
 	 * Default constructor.
 	 */
-	public SelectAllCommand() {
-		super("Select All");
+	public SelectAllCommand(GraphDocument document) {
+		super("Select All", document);
+		
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 
@@ -48,7 +47,6 @@ public class SelectAllCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null)
 			document.getSelectionModel().setSelectedNodes(document.getGraph().getVertices());
 	}

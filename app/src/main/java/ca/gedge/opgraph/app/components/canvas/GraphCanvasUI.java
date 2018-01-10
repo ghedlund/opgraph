@@ -17,9 +17,9 @@ public abstract class GraphCanvasUI extends ComponentUI {
 	@SuppressWarnings("unused")
 	public static final Integer BACKGROUND_LAYER = 2;
 
-	public static final Integer NOTES_LAYER = 10;
-	public static final Integer LINKS_LAYER = 100;
-	public static final Integer NODES_LAYER = 200;
+	public static final Integer NOTES_LAYER = 100;
+	public static final Integer LINKS_LAYER = 200;
+	public static final Integer NODES_LAYER = 300;
 	public static final Integer OVERLAY_LAYER = 10000;
 	public static final Integer DEBUG_OVERLAY_LAYER = 10001;
 	

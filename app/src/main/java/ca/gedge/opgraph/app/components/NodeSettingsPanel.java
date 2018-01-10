@@ -18,17 +18,13 @@
  */
 package ca.gedge.opgraph.app.components;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Font;
+import java.awt.*;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.app.GraphEditorModel;
+import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
 
 /**
@@ -40,12 +36,17 @@ import ca.gedge.opgraph.app.extensions.NodeSettings;
 public class NodeSettingsPanel extends JPanel {
 	/** The node currently being viewed */
 	private OpNode node;
+	
+	private GraphDocument document;
 
 	/**
 	 * Default constructor.
 	 */
-	public NodeSettingsPanel() {
+	public NodeSettingsPanel(GraphDocument doc) {
 		super(new BorderLayout());
+		
+		this.document = doc;
+		
 		setNode(null);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 	}
@@ -80,7 +81,7 @@ public class NodeSettingsPanel extends JPanel {
 			} else {
 				final NodeSettings settings = node.getExtension(NodeSettings.class);
 				if(settings != null)
-					settingsComp = settings.getComponent(GraphEditorModel.getActiveDocument());
+					settingsComp = settings.getComponent(document);
 
 				if(settingsComp == null) {
 					final JLabel label = new JLabel("No settings available", SwingConstants.CENTER);

@@ -57,7 +57,7 @@ public class ReflectNodeMenuProvider implements MenuProvider {
 							(!methodName.startsWith("get") && !methodName.equals("get")) 
 							&& !methodName.startsWith("is")
 							&& !m.getName().startsWith("set"))) {
-						final AddMethodCommand methodMenuItem = new AddMethodCommand(m, event.getPoint());
+						final AddMethodCommand methodMenuItem = new AddMethodCommand(doc, m, event.getPoint());
 						methodMenu.add(methodMenuItem);
 					}
 				}

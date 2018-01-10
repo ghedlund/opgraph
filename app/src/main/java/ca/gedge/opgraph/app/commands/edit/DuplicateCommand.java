@@ -18,48 +18,36 @@
  */
 package ca.gedge.opgraph.app.commands.edit;
 
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.event.*;
+import java.util.*;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 import javax.swing.undo.CompoundEdit;
 
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpLink;
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OutputField;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
-import ca.gedge.opgraph.app.edits.graph.AddLinkEdit;
-import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
+import ca.gedge.opgraph.app.commands.GraphCommand;
+import ca.gedge.opgraph.app.edits.graph.*;
 import ca.gedge.opgraph.app.util.GraphUtils;
-import ca.gedge.opgraph.dag.CycleDetectedException;
-import ca.gedge.opgraph.dag.VertexNotFoundException;
+import ca.gedge.opgraph.dag.*;
 import ca.gedge.opgraph.exceptions.ItemMissingException;
 import ca.gedge.opgraph.extensions.NodeMetadata;
 
 /**
  * Duplicate selected nodes within a graph.
  */
-public class DuplicateCommand extends HookableCommand {
+public class DuplicateCommand extends GraphCommand {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(DuplicateCommand.class.getName());
 
 	/**
 	 * Default constructor.
 	 */
-	public DuplicateCommand() {
-		super("Duplicate");
+	public DuplicateCommand(GraphDocument document) {
+		super("Duplicate", document);
+		
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 
@@ -69,7 +57,6 @@ public class DuplicateCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent ae) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			// Check to make sure the clipboard has something we can paste
 			final Collection<OpNode> selectedNodes = document.getSelectionModel().getSelectedNodes();

@@ -22,14 +22,11 @@
 package ca.gedge.opgraph.app.commands.core;
 
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.*;
 
 import javax.swing.JMenuItem;
 
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.MenuProvider;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
 
 /**
@@ -40,10 +37,10 @@ public class CoreMenuProvider implements MenuProvider {
 	public void installItems(final GraphEditorModel model, PathAddressableMenu menu) {
 		menu.addMenu("file", "File");
 
-		menu.addMenuItem("file/new", new NewCommand());
-		menu.addMenuItem("file/open", new OpenCommand());
-		final JMenuItem save = menu.addMenuItem("file/save", new SaveCommand(false));
-		menu.addMenuItem("file/save as", new SaveCommand(true));
+		menu.addMenuItem("file/new", new NewCommand(model.getDocument()));
+		menu.addMenuItem("file/open", new OpenCommand(model.getDocument()));
+		final JMenuItem save = menu.addMenuItem("file/save", new SaveCommand(model.getDocument(), false));
+		menu.addMenuItem("file/save as", new SaveCommand(model.getDocument(), true));
 		menu.addSeparator("file");
 		menu.addMenuItem("file/quit", new QuitCommand());
 

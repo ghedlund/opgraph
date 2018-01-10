@@ -19,26 +19,22 @@
 package ca.gedge.opgraph.app.commands.core;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 
 /**
  * A command which resets the editor state to an empty graph.
  */
-public class NewCommand extends HookableCommand {
+public class NewCommand extends GraphCommand {
 	/**
 	 * Constructs a new command.
 	 */
-	public NewCommand() {
-		super("New");
+	public NewCommand(GraphDocument doc) {
+		super("New", doc);
 
 		final int CTRL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, CTRL));
@@ -46,7 +42,6 @@ public class NewCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null)
 			document.reset(null, null);
 	}

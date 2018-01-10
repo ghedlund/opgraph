@@ -22,23 +22,17 @@
 package ca.gedge.opgraph.app.components.library;
 
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
-import java.util.List;
-import java.util.Map;
+import java.awt.event.*;
+import java.util.*;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.JMenu;
+import javax.swing.*;
+
 import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.MenuProvider;
-import ca.gedge.opgraph.app.components.ErrorDialog;
-import ca.gedge.opgraph.app.components.PathAddressableMenu;
+import ca.gedge.opgraph.app.*;
+import ca.gedge.opgraph.app.components.*;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
-import ca.gedge.opgraph.library.NodeData;
-import ca.gedge.opgraph.library.NodeLibrary;
+import ca.gedge.opgraph.library.*;
 
 /**
  * Implementation of {@link MenuProvider} for {@link NodeLibrary}. Provides
@@ -97,7 +91,7 @@ public class NodeLibraryMenuProvider implements MenuProvider {
 	@Override
 	public void installPopupItems(Object context, MouseEvent event, GraphDocument doc, PathAddressableMenu menu) {
 		// add a new menu item for adding a new 'object'
-		final NodeLibrary library = new NodeLibraryViewer().getLibrary();
+		final NodeLibrary library = new NodeLibraryViewer(doc).getLibrary();
 		final JMenu addNodeMenu = menu.addMenu("add_node", "Add");
 		addMenuItems(addNodeMenu, doc, library, event.getPoint());
 	}

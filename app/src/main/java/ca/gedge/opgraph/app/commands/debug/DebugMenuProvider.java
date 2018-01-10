@@ -22,14 +22,11 @@
 package ca.gedge.opgraph.app.commands.debug;
 
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.*;
 
 import javax.swing.JMenuItem;
 
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.MenuProvider;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
 
 /**
@@ -40,13 +37,13 @@ public class DebugMenuProvider implements MenuProvider {
 	public void installItems(final GraphEditorModel model, PathAddressableMenu menu) {
 		menu.addMenu("debug", "Debug");
 
-		menu.addMenuItem("debug/run", new RunCommand());
-		final JMenuItem stop = menu.addMenuItem("debug/stop", new StopCommand());
+		menu.addMenuItem("debug/run", new RunCommand(model.getDocument()));
+		final JMenuItem stop = menu.addMenuItem("debug/stop", new StopCommand(model.getDocument()));
 		menu.addSeparator("debug");
-		menu.addMenuItem("debug/step", new StepCommand());
-		menu.addMenuItem("debug/step level", new StepLevelCommand());
-		menu.addMenuItem("debug/step into", new StepIntoCommand());
-		menu.addMenuItem("debug/step out of", new StepOutOfCommand());
+		menu.addMenuItem("debug/step", new StepCommand(model.getDocument()));
+		menu.addMenuItem("debug/step level", new StepLevelCommand(model.getDocument()));
+		menu.addMenuItem("debug/step into", new StepIntoCommand(model.getDocument()));
+		menu.addMenuItem("debug/step out of", new StepOutOfCommand(model.getDocument()));
 
 		stop.setEnabled(false);
 

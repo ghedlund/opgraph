@@ -2,7 +2,7 @@ package ca.gedge.opgraph.app.components.canvas;
 
 import java.awt.*;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 public class CanvasMinimapLayer extends JComponent {
 	
@@ -28,6 +28,7 @@ public class CanvasMinimapLayer extends JComponent {
 	private void init() {
 		setLayout(null);
 		
+		this.minimap.setBorder(BorderFactory.createEtchedBorder());
 		this.minimap.setBounds(getVisibleRect().x + getVisibleRect().width - CanvasMinimap.MAX_LENGTH, getVisibleRect().y,
 				CanvasMinimap.MAX_LENGTH, CanvasMinimap.MAX_LENGTH);
 		

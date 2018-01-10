@@ -19,38 +19,22 @@
 package ca.gedge.opgraph.app.commands.core;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
+import java.awt.event.*;
+import java.io.*;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 import ca.gedge.opgraph.app.components.ErrorDialog;
-import ca.gedge.opgraph.io.OpGraphSerializer;
-import ca.gedge.opgraph.io.OpGraphSerializerFactory;
-import ca.gedge.opgraph.io.OpGraphSerializerInfo;
-import ca.gedge.opgraph.util.DefaultServiceDiscovery;
+import ca.gedge.opgraph.io.*;
 
 /**
  * A command that saves the active graph and saves it to disk.
  */
-public class SaveCommand extends HookableCommand {
+public class SaveCommand extends GraphCommand {
 	private static final Logger LOGGER = Logger.getLogger(SaveCommand.class.getName());
 
 	/** Whether or not to force the save dialog */
@@ -59,8 +43,8 @@ public class SaveCommand extends HookableCommand {
 	/**
 	 * Constructs a save command that does not force the dialog.
 	 */
-	public SaveCommand() {
-		this(false);
+	public SaveCommand(GraphDocument doc) {
+		this(doc, false);
 	}
 
 	/**
@@ -70,8 +54,8 @@ public class SaveCommand extends HookableCommand {
 	 *                     shown. If <code>false</code>, a save dialog is shown
 	 *                     only if the file is currently not saved to disk.
 	 */
-	public SaveCommand(boolean forceDialog) {
-		super(forceDialog ? "Save As..." : "Save");
+	public SaveCommand(GraphDocument doc, boolean forceDialog) {
+		super(forceDialog ? "Save As..." : "Save", doc);
 
 		this.forceDialog = forceDialog;
 
@@ -84,7 +68,6 @@ public class SaveCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			File saveFile = document.getSource();
 			if(forceDialog)

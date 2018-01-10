@@ -20,19 +20,15 @@ package ca.gedge.opgraph.app.commands.notes;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 import ca.gedge.opgraph.app.edits.notes.RemoveNoteEdit;
-import ca.gedge.opgraph.app.extensions.Note;
-import ca.gedge.opgraph.app.extensions.Notes;
+import ca.gedge.opgraph.app.extensions.*;
 
 /**
  * A command for removing a note from the active model.
  */
-public class RemoveNoteCommand extends HookableCommand {
+public class RemoveNoteCommand extends GraphCommand {
 	/** The note to remove */
 	private final Note note;
 
@@ -41,8 +37,8 @@ public class RemoveNoteCommand extends HookableCommand {
 	 * 
 	 * @param note  the note to remove
 	 */
-	public RemoveNoteCommand(Note note) {
-		super("Remove Note");
+	public RemoveNoteCommand(GraphDocument doc, Note note) {
+		super("Remove Note", doc);
 		this.note = note;
 	}
 
@@ -52,7 +48,6 @@ public class RemoveNoteCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null && document.getGraph() != null) {
 			final Notes notes = document.getGraph().getExtension(Notes.class);
 			if(notes != null)

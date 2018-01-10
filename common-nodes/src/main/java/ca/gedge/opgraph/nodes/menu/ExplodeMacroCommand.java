@@ -19,14 +19,12 @@
 package ca.gedge.opgraph.nodes.menu;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
+import java.awt.event.*;
+
+import javax.swing.*;
 
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionModel;
 import ca.gedge.opgraph.nodes.general.MacroNode;
 import ca.gedge.opgraph.nodes.menu.edits.ExplodeMacroEdit;
@@ -36,12 +34,17 @@ import ca.gedge.opgraph.nodes.menu.edits.ExplodeMacroEdit;
  * from published fields to the appropriate internal nodes.
  */
 public class ExplodeMacroCommand extends AbstractAction {
+	
+	private GraphDocument document;
+	
 	/**
 	 * Constructs a macro-explosion command that explodes the selected
 	 * macro in the active editor's canvas.
 	 */
-	public ExplodeMacroCommand() {
+	public ExplodeMacroCommand(GraphDocument doc) {
 		super("Explode Selected Macro");
+		
+		this.document = doc;
 
 		final int CTRL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_E, CTRL));
@@ -53,7 +56,6 @@ public class ExplodeMacroCommand extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			final GraphCanvasSelectionModel selectionModel = document.getSelectionModel();
 			final OpNode selected = selectionModel.getSelectedNode();

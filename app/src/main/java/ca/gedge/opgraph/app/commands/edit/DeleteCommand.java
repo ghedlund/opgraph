@@ -21,25 +21,25 @@ package ca.gedge.opgraph.app.commands.edit;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 import ca.gedge.opgraph.app.edits.graph.DeleteNodesEdit;
 
 /**
  * Deletes selected nodes in a {@link GraphCanvas}.
  */
-public class DeleteCommand extends HookableCommand {
+public class DeleteCommand extends GraphCommand {
+	
 	/**
 	 * Default constructor.
 	 */
-	public DeleteCommand() {
-		super("Delete");
+	public DeleteCommand(GraphDocument document) {
+		super("Delete", document);
+		
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke("DELETE"));
 	}
 
@@ -49,7 +49,6 @@ public class DeleteCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			final Collection<OpNode> nodes = document.getSelectionModel().getSelectedNodes();
 			document.getUndoSupport().postEdit(new DeleteNodesEdit(document.getGraph(), nodes));

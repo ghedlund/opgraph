@@ -19,28 +19,23 @@
 package ca.gedge.opgraph.app.commands.debug;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.IconLibrary;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.IconLibrary.IconType;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 
 /**
  * A command that runs the operation of the graph in the active editor.
  */
-public class StopCommand extends HookableCommand {
+public class StopCommand extends GraphCommand {
 	/**
 	 * Constructs a run command.
 	 */
-	public StopCommand() {
-		super("Stop");
+	public StopCommand(GraphDocument doc) {
+		super("Stop", doc);
 
 		final int CTRL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_R, CTRL | InputEvent.ALT_MASK));
@@ -53,7 +48,6 @@ public class StopCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null)
 			document.setProcessingContext(null);
 	}

@@ -19,30 +19,25 @@
 package ca.gedge.opgraph.app.commands.debug;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import ca.gedge.opgraph.Processor;
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.IconLibrary;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.IconLibrary.IconType;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 
 /**
  * A command that steps the processing context of the active editor. If the
  * active editor has no context, one is created.
  */
-public class StepLevelCommand extends HookableCommand {
+public class StepLevelCommand extends GraphCommand {
 	/**
 	 * Constructs a step command.
 	 */
-	public StepLevelCommand() {
-		super("Step To Next Level");
+	public StepLevelCommand(GraphDocument doc) {
+		super("Step To Next Level", doc);
 
 		final int CTRL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		final int SHIFT = InputEvent.SHIFT_MASK;
@@ -56,7 +51,6 @@ public class StepLevelCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			Processor context = document.getProcessingContext();
 			if(context == null) {

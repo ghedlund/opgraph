@@ -39,42 +39,42 @@ public class GraphEditorModel {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(GraphEditorModel.class.getName());
 
-	/** The active editor model */
-	private static GraphEditorModel activeModel;
-
-	/**
-	 * Gets the {@link GraphEditorModel} that is currently active.
-	 * 
-	 * @return  the active editor model, or <code>null</code> if no model active
-	 * 
-	 * @deprecated
-	 */
-	public static GraphEditorModel getActiveEditorModel() {
-		return activeModel;
-	}
-
-	/**
-	 * Sets a given model as the active model for the application.
-	 * 
-	 * @param model  the new model
-	 * 
-	 * @deprecated
-	 */
-	public static void setActiveEditorModel(GraphEditorModel model) {
-		activeModel = model;
-	}
-
-	/**
-	 * Gets the {@link GraphDocument} that is currently active.
-	 * 
-	 * @return  the active document, or <code>null</code> if no document active
-	 * 
-	 * @deprecated
-	 */
-	public static GraphDocument getActiveDocument() {
-		final GraphEditorModel model = getActiveEditorModel();
-		return (model == null ? null : model.getDocument());
-	}
+//	/** The active editor model */
+//	private static GraphEditorModel activeModel;
+//
+//	/**
+//	 * Gets the {@link GraphEditorModel} that is currently active.
+//	 * 
+//	 * @return  the active editor model, or <code>null</code> if no model active
+//	 * 
+//	 * @deprecated
+//	 */
+//	public static GraphEditorModel getActiveEditorModel() {
+//		return activeModel;
+//	}
+//
+//	/**
+//	 * Sets a given model as the active model for the application.
+//	 * 
+//	 * @param model  the new model
+//	 * 
+//	 * @deprecated
+//	 */
+//	public static void setActiveEditorModel(GraphEditorModel model) {
+//		activeModel = model;
+//	}
+//
+//	/**
+//	 * Gets the {@link GraphDocument} that is currently active.
+//	 * 
+//	 * @return  the active document, or <code>null</code> if no document active
+//	 * 
+//	 * @deprecated
+//	 */
+//	public static GraphDocument getActiveDocument() {
+//		final GraphEditorModel model = getActiveEditorModel();
+//		return (model == null ? null : model.getDocument());
+//	}
 	
 	/** The document */
 	private GraphDocument document;
@@ -223,7 +223,7 @@ public class GraphEditorModel {
 	 */
 	public NodeLibraryViewer getNodeLibrary() {
 		if(nodeLibrary == null) {
-			nodeLibrary = new NodeLibraryViewer();
+			nodeLibrary = new NodeLibraryViewer(getDocument());
 		}
 		return nodeLibrary;
 	}
@@ -233,14 +233,14 @@ public class GraphEditorModel {
 	 */
 	public NodeSettingsPanel getNodeSettings() {
 		if(nodeSettings == null) {
-			nodeSettings = new NodeSettingsPanel();
+			nodeSettings = new NodeSettingsPanel(getDocument());
 		}
 		return nodeSettings;
 	}
 	
 	public GraphOutline getGraphOutline() {
 		if(graphOutline == null) {
-			graphOutline = new GraphOutline(getDocument());
+			graphOutline = new GraphOutline(getDocument(), getCanvas());
 		}
 		return graphOutline;
 	}

@@ -19,31 +19,23 @@
 package ca.gedge.opgraph.app.commands.core;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.awt.event.*;
+import java.io.*;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFileChooser;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 import ca.gedge.opgraph.app.components.ErrorDialog;
-import ca.gedge.opgraph.io.OpGraphSerializer;
-import ca.gedge.opgraph.io.OpGraphSerializerFactory;
-import ca.gedge.opgraph.io.OpGraphSerializerInfo;
+import ca.gedge.opgraph.io.*;
 
 /**
  * A command which loads a graph from file.
  */
-public class OpenCommand extends HookableCommand {
+public class OpenCommand extends GraphCommand {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(OpenCommand.class.getName());
 
@@ -53,8 +45,8 @@ public class OpenCommand extends HookableCommand {
 	/**
 	 * Constructs an open command.
 	 */
-	public OpenCommand() {
-		super("Open...");
+	public OpenCommand(GraphDocument doc) {
+		super("Open...", doc);
 
 		final int CTRL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, CTRL));
@@ -82,7 +74,6 @@ public class OpenCommand extends HookableCommand {
 		}
 
 		// Save the graph
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			chooser.setAcceptAllFileFilterUsed(false);
 			chooser.setFileFilter(new FileNameExtensionFilter(description, extension));

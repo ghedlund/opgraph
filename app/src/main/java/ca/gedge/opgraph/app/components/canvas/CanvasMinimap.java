@@ -16,6 +16,10 @@ public class CanvasMinimap extends JComponent {
 	public final static int MAX_LENGTH = 200;
 	
 	private JLabel minimapLabel;
+	
+	private Rectangle cursorRect = null;
+	
+	private final Color cursorColor = new Color(255, 255, 0, 100);
 
 	public CanvasMinimap(GraphCanvas canvas) {
 		super();
@@ -30,7 +34,8 @@ public class CanvasMinimap extends JComponent {
 		setLayout(new BorderLayout());
 		
 		minimapLabel = new JLabel();
-		minimapLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		minimapLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		minimapLabel.setVerticalAlignment(SwingConstants.TOP);
 		minimapLabel.setOpaque(false);
 		
 		getCanvas().addComponentListener(new ComponentListener() {
@@ -54,18 +59,55 @@ public class CanvasMinimap extends JComponent {
 			public void componentHidden(ComponentEvent e) {
 				
 			}
+			
 		});
 		
-		minimapLabel.addMouseListener(new MouseInputAdapter() {
+		final MouseInputAdapter adapter = new MouseInputAdapter() {
 			
 			@Override
 			public void mousePressed(MouseEvent me) {
-				System.out.println(me.getPoint());
+				if(cursorRect != null) {
+					final Rectangle cRect = cursorRect;
+					
+					final Point topLeft = minimapToGraph(new Point(cRect.x, cRect.y));
+					final Point dim = minimapToGraph(new Point(cRect.width, cRect.height));
+					
+					getCanvas().scrollRectToVisible(new Rectangle(topLeft.x, topLeft.y, dim.x, dim.y));
+				}
 			}
 			
-		});
+			@Override
+			public void mouseMoved(MouseEvent me) {
+				final Point p = me.getPoint();
+				final Rectangle rect = getMinimapViewRect();
+				rect.translate(p.x - (rect.width/2), p.y - (rect.height/2));
+				
+				cursorRect = rect;
+				repaint();
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent me) {
+				cursorRect = null;
+				repaint();
+			}
+			
+		};
+		
+		minimapLabel.addMouseListener(adapter);
+		minimapLabel.addMouseMotionListener(adapter);
 		
 		add(minimapLabel, BorderLayout.CENTER);
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		
+		if(cursorRect != null) {
+			g.setColor(cursorColor);
+			g.fillRect(cursorRect.x, cursorRect.y, cursorRect.width, cursorRect.height);
+		}
 	}
 	
 	@Override
@@ -96,6 +138,36 @@ public class CanvasMinimap extends JComponent {
 		return new Dimension(w, h);
 	}
 	
+	public Point graphToMinimap(Point p) {
+		final Rectangle graphBounds = getCanvas().getUI().getGraphBoundingRect();
+		final Dimension minimapSize = getMinimapSize(graphBounds);
+		
+		final double sx = minimapSize.getWidth() / graphBounds.getWidth();
+		final double sy = minimapSize.getHeight() / graphBounds.getHeight();
+		
+		return new Point((int)(p.x * sx), (int)(p.y * sy));
+	}
+	
+	public Point minimapToGraph(Point p) {
+		final Rectangle graphBounds = getCanvas().getUI().getGraphBoundingRect();
+		final Dimension minimapSize = getMinimapSize(graphBounds);
+		
+		final double sx = graphBounds.getWidth() / minimapSize.getWidth();
+		final double sy = graphBounds.getHeight() / minimapSize.getHeight();
+		
+		return new Point((int)(p.x * sx), (int)(p.y * sy));
+	}
+	
+	public Rectangle getMinimapViewRect() {
+		final Rectangle viewRect = getCanvas().getVisibleRect();
+		final Rectangle graphBounds = getCanvas().getUI().getGraphBoundingRect();
+		final Dimension minimapSize = getMinimapSize(graphBounds);
+		final double sx = minimapSize.getWidth() / graphBounds.getWidth();
+		final double sy = minimapSize.getHeight() / graphBounds.getHeight();
+		
+		return new Rectangle(0, 0, (int)(viewRect.width * sx), (int)(viewRect.height * sy));	
+	}
+	
 	public BufferedImage createMinimapImage() {
 		final Rectangle graphBounds = getCanvas().getUI().getGraphBoundingRect();
 		final Dimension minimapSize = getMinimapSize(graphBounds);
@@ -119,9 +191,9 @@ public class CanvasMinimap extends JComponent {
 		getCanvas().getUI().getMinimapLayer().setVisible(true);
 		getCanvas().getUI().getGridLayer().setVisible(true);
 		
-		// paint view rect
+		// paint current view rect
 		final Rectangle viewRect = getCanvas().getVisibleRect();
-		g.setColor(new Color(200, 200, 200, 150));
+		g.setColor(new Color(255, 255, 255, 100));
 		g.fillRect(viewRect.x, viewRect.y, viewRect.width, viewRect.height);
 		
 		return img;

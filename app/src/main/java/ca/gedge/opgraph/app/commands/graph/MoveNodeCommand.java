@@ -21,20 +21,18 @@ package ca.gedge.opgraph.app.commands.graph;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
 import ca.gedge.opgraph.app.edits.graph.MoveNodesEdit;
 
 /**
  * Moves selected nodes in the active {@link GraphCanvas}.
  */
-public class MoveNodeCommand extends HookableCommand {
+public class MoveNodeCommand extends GraphCommand {
 	/**
 	 * Get a textual representation of the given deltas. More specifically:
 	 * <ul>
@@ -105,7 +103,9 @@ public class MoveNodeCommand extends HookableCommand {
 	 * @param deltaX  the x-axis delta
 	 * @param deltaY  the y-axis delta
 	 */
-	public MoveNodeCommand(int deltaX, int deltaY) {
+	public MoveNodeCommand(GraphDocument doc, int deltaX, int deltaY) {
+		super(doc);
+		
 		this.deltaX = deltaX;
 		this.deltaY = deltaY;
 
@@ -123,7 +123,6 @@ public class MoveNodeCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			final Collection<OpNode> nodes = document.getSelectionModel().getSelectedNodes();
 			document.getUndoSupport().postEdit( new MoveNodesEdit(nodes, deltaX, deltaY) );

@@ -18,51 +18,24 @@
  */
 package ca.gedge.opgraph.nodes.general;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import javax.swing.JComboBox;
-import javax.swing.JEditorPane;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
+import javax.script.*;
+import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.text.BadLocationException;
 
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpContext;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OpNodeInfo;
-import ca.gedge.opgraph.OutputField;
-import ca.gedge.opgraph.Processor;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.edits.node.NodeSettingsEdit;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
 import ca.gedge.opgraph.exceptions.ProcessingException;
-import ca.gedge.opgraph.nodes.general.script.InputFields;
-import ca.gedge.opgraph.nodes.general.script.LoggingHelper;
-import ca.gedge.opgraph.nodes.general.script.OutputFields;
+import ca.gedge.opgraph.nodes.general.script.*;
 
 /**
  * A node that runs a script. 
@@ -242,13 +215,18 @@ public class ScriptNode
 	 * Constructs a math expression settings for the given node.
 	 */
 	public static class ScriptNodeSettings extends JPanel {
+		
+		private GraphDocument document;
+		
 		/**
 		 * Constructs a component for editing a {@link ScriptNode}'s settings.
 		 * 
 		 * @param node  the {@link ScriptNode}
 		 */
-		public ScriptNodeSettings(final ScriptNode node) {
+		public ScriptNodeSettings(final ScriptNode node, final GraphDocument document) {
 			super(new GridBagLayout());
+			
+			this.document = document;
 
 			// Script source components
 			final JEditorPane sourceEditor = new JEditorPane() {
@@ -290,7 +268,6 @@ public class ScriptNode
 				@Override
 				public void focusLost(FocusEvent e) {
 					// Post an undoable edit
-					final GraphDocument document = GraphEditorModel.getActiveDocument();
 					if(document != null) {
 						final Properties settings = new Properties();
 						settings.put(SCRIPT_KEY, sourceEditor.getText());
@@ -326,7 +303,6 @@ public class ScriptNode
 				public void actionPerformed(ActionEvent e) {
 					// Post an undoable edit
 					final ScriptEngineFactory factory = factories.get(languageBox.getSelectedIndex());
-					final GraphDocument document = GraphEditorModel.getActiveDocument();
 					if(document != null) {
 						final Properties settings = new Properties();
 						settings.put(LANGUAGE_KEY, factory == null ? "" : factory.getLanguageName());
@@ -389,7 +365,7 @@ public class ScriptNode
 
 	@Override
 	public Component getComponent(GraphDocument document) {
-		return new ScriptNodeSettings(this);
+		return new ScriptNodeSettings(this, document);
 	}
 
 	@Override

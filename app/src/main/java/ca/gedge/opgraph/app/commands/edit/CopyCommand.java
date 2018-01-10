@@ -18,38 +18,36 @@
  */
 package ca.gedge.opgraph.app.commands.edit;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
-import ca.gedge.opgraph.OpLink;
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpNode;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
-import ca.gedge.opgraph.app.components.canvas.SubgraphClipboardContents;
-import ca.gedge.opgraph.dag.CycleDetectedException;
-import ca.gedge.opgraph.dag.VertexNotFoundException;
+import ca.gedge.opgraph.app.commands.GraphCommand;
+import ca.gedge.opgraph.app.components.canvas.*;
+import ca.gedge.opgraph.dag.*;
 
 /**
  * Copy selected nodes to system clipboard.
  */
-public class CopyCommand extends HookableCommand {
+public class CopyCommand extends GraphCommand {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(CopyCommand.class.getName());
-
+	
+	private GraphCanvas canvas;
+	
 	/**
 	 * Default constructor.
 	 */
-	public CopyCommand() {
-		super("Copy");
+	public CopyCommand(GraphDocument document, GraphCanvas canvas) {
+		super("Copy", document);
+		
+		this.canvas = canvas;
+		
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 	}
 
@@ -58,7 +56,6 @@ public class CopyCommand extends HookableCommand {
 		if(GraphicsEnvironment.isHeadless())
 			return;
 
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			// If a selection exists, create a copy of the selection
 			final Collection<OpNode> selectedNodes = document.getSelectionModel().getSelectedNodes();
@@ -88,7 +85,7 @@ public class CopyCommand extends HookableCommand {
 
 				// Add to system clipboard
 				final SubgraphClipboardContents clipboardContents = new SubgraphClipboardContents(
-						GraphEditorModel.getActiveEditorModel().getCanvas(), selectedGraph);
+						canvas, selectedGraph);
 				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(clipboardContents, null);
 			}
 		}

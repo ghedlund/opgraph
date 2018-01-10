@@ -21,15 +21,13 @@
  */
 package ca.gedge.opgraph.app.commands.notes;
 
-import java.awt.Color;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.MouseEvent;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+
+import javax.swing.*;
+
 import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.MenuProvider;
+import ca.gedge.opgraph.app.*;
 import ca.gedge.opgraph.app.components.PathAddressableMenu;
 import ca.gedge.opgraph.app.extensions.Note;
 
@@ -51,7 +49,7 @@ public class NotesMenuProvider implements MenuProvider {
 			final Point loc = event.getPoint();
 			if(loc != null) {
 				menu.addSeparator("");
-				menu.addMenuItem("add_note", new AddNoteCommand(loc.x, loc.y));
+				menu.addMenuItem("add_note", new AddNoteCommand(doc, loc.x, loc.y));
 			}
 		} 
 
@@ -68,14 +66,14 @@ public class NotesMenuProvider implements MenuProvider {
 				new Color(200, 200, 200), "Gray"
 			};
 
-			menu.addMenuItem("remove_note", new RemoveNoteCommand(note));
+			menu.addMenuItem("remove_note", new RemoveNoteCommand(doc, note));
 			menu.addSeparator("");
 
 			final JMenu colorsMenu = menu.addMenu("colors", "Colors");
 			for(int index = 0; index < colors.length; index += 2) {
 				final Color color = (Color)colors[index];
 				final String name = (String)colors[index + 1];
-				colorsMenu.add(new JMenuItem(new SetNoteColorCommand(note, color, name)));  
+				colorsMenu.add(new JMenuItem(new SetNoteColorCommand(doc, note, color, name)));  
 			}
 		}
 	}

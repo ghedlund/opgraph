@@ -21,13 +21,11 @@
  */
 package ca.gedge.opgraph.app.extensions;
 
-import java.awt.Color;
 import java.util.Collection;
 
 import javax.swing.JComponent;
 
-import ca.gedge.opgraph.extensions.Extendable;
-import ca.gedge.opgraph.extensions.ExtendableSupport;
+import ca.gedge.opgraph.extensions.*;
 
 /**
  * A note, containing a textual title and body. Also contains display info
@@ -49,6 +47,7 @@ public class Note implements Extendable {
 	public Note(String title, String body) {
 		this.title = title;
 		this.body = body;
+		
 		this.extendableSupport.putExtension(JComponent.class, new NoteComponent(this));
 	}
 

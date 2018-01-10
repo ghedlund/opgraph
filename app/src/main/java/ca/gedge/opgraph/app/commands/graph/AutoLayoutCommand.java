@@ -19,28 +19,23 @@
 package ca.gedge.opgraph.app.commands.graph;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
-import ca.gedge.opgraph.app.AutoLayoutManager;
-import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
-import ca.gedge.opgraph.app.components.canvas.GraphCanvas;
+import ca.gedge.opgraph.app.*;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 
 /**
  * A command for performing automatic layout of the active canvas' nodes.
  */
-public class AutoLayoutCommand extends HookableCommand {
+public class AutoLayoutCommand extends GraphCommand {
 	/**
 	 * Constructs a move command that moves the current node selection in the
 	 * given graph canvas, with this edit posted in the given undo manager.
 	 */
-	public AutoLayoutCommand() {
-		super("Auto Layout");
+	public AutoLayoutCommand(GraphDocument document) {
+		super("Auto Layout", document);
 
 		final int CTRL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_L, CTRL));
@@ -52,7 +47,6 @@ public class AutoLayoutCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			final AutoLayoutManager layoutManager = new AutoLayoutManager();
 			layoutManager.layoutGraph(document.getGraph());

@@ -21,25 +21,14 @@
  */
 package ca.gedge.opgraph.app.extensions;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.*;
+import java.beans.*;
 import java.lang.ref.WeakReference;
 
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
+import javax.swing.*;
+import javax.swing.border.*;
 
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.components.DoubleClickableTextField;
-import ca.gedge.opgraph.app.components.ResizeGrip;
+import ca.gedge.opgraph.app.components.*;
 import ca.gedge.opgraph.app.edits.notes.SetNoteTextEdit;
 
 /**
@@ -196,7 +185,8 @@ public class NoteComponent extends JPanel {
 			}
 
 			final SetNoteTextEdit edit = new SetNoteTextEdit(note, title, body);
-			GraphEditorModel.getActiveDocument().getUndoSupport().postEdit(edit);
+			// TODO fix this
+//			document.postEdit(edit);
 		}
 	};
 }

@@ -18,25 +18,21 @@
  */
 package ca.gedge.opgraph.app.commands.notes;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.commands.HookableCommand;
+import ca.gedge.opgraph.app.commands.GraphCommand;
 import ca.gedge.opgraph.app.edits.notes.SetNoteColorEdit;
 import ca.gedge.opgraph.app.extensions.Note;
 
 /**
  * Sets the color of a note.
  */
-public class SetNoteColorCommand extends HookableCommand {
+public class SetNoteColorCommand extends GraphCommand {
 	/** The initial x-coordinate for the note */
 	private Note note;
 
@@ -50,8 +46,8 @@ public class SetNoteColorCommand extends HookableCommand {
 	 * @param color  the color
 	 * @param name  the name of this command
 	 */
-	public SetNoteColorCommand(Note note, Color color, String name) {
-		super(name);
+	public SetNoteColorCommand(GraphDocument doc, Note note, Color color, String name) {
+		super(name, doc);
 
 		this.note = note;
 		this.color = color;
@@ -79,7 +75,6 @@ public class SetNoteColorCommand extends HookableCommand {
 
 	@Override
 	public void hookableActionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null)
 			document.getUndoSupport().postEdit(new SetNoteColorEdit(note, color));
 	}

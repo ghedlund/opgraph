@@ -111,7 +111,9 @@ public class SubgraphClipboardContents implements Transferable {
 
 					document.getSelectionModel().setSelectedNodes(null);
 					canvas.getUI().getGridLayer().setVisible(false);
+					canvas.getUI().getMinimapLayer().setVisible(false);
 					canvas.paint(g);
+					canvas.getUI().getMinimapLayer().setVisible(true);
 					canvas.getUI().getGridLayer().setVisible(true);
 					document.getSelectionModel().setSelectedNodes(currentSelection);
 

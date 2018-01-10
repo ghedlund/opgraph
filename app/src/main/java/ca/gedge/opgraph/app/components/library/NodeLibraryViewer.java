@@ -18,61 +18,28 @@
  */
 package ca.gedge.opgraph.app.components.library;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
+import java.awt.*;
+import java.awt.dnd.*;
+import java.awt.event.*;
+import java.awt.font.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JEditorPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeSelectionModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.event.*;
+import javax.swing.text.html.*;
+import javax.swing.tree.*;
 
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpNode;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
-import ca.gedge.opgraph.app.components.ErrorDialog;
-import ca.gedge.opgraph.app.components.SearchField;
+import ca.gedge.opgraph.app.components.*;
 import ca.gedge.opgraph.app.edits.graph.AddNodeEdit;
 import ca.gedge.opgraph.app.util.ObjectSelection;
-import ca.gedge.opgraph.library.NodeData;
-import ca.gedge.opgraph.library.NodeLibrary;
+import ca.gedge.opgraph.library.*;
 import ca.gedge.opgraph.library.handlers.ClassHandler;
 import ca.gedge.opgraph.util.ServiceDiscovery;
 
@@ -158,14 +125,18 @@ public class NodeLibraryViewer extends JPanel {
 	/** */
 	private UpdateFilterAction updateFilterAction = new UpdateFilterAction(); 
 
+	private GraphDocument document;
+	
 	/**
 	 * Constructs a viewer for the node library.
 	 */
-	public NodeLibraryViewer() {
+	public NodeLibraryViewer(GraphDocument document) {
 		// Grab all OpNode providers and add to library
 		final NodeLibrary library = new NodeLibrary();
 		library.addURIHandler(new ClassHandler());
-
+		
+		this.document = document;
+		
 		final List<Class<? extends OpNode>> providers = ServiceDiscovery.getInstance().findProviders(OpNode.class);
 		for(Class<? extends OpNode> provider : providers) {
 			try {
@@ -184,8 +155,9 @@ public class NodeLibraryViewer extends JPanel {
 	 * 
 	 * @param library  the library to view
 	 */
-	public NodeLibraryViewer(NodeLibrary library) {
+	public NodeLibraryViewer(GraphDocument document, NodeLibrary library) {
 		initializeComponents(library);
+		this.document = document;
 	}
 
 	private void initializeComponents(NodeLibrary library) {
@@ -252,7 +224,6 @@ public class NodeLibraryViewer extends JPanel {
 						final Object selectedObject = selectedNode.getUserObject();
 						if(selectedObject != null && selectedObject instanceof NodeData) {
 							final NodeData info = (NodeData)selectedObject;
-							final GraphDocument document = GraphEditorModel.getActiveDocument();
 							if(document != null) {
 								try {
 									final OpGraph graph = document.getGraph();

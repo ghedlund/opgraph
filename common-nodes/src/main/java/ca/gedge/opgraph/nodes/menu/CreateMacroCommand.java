@@ -19,16 +19,13 @@
 package ca.gedge.opgraph.nodes.menu;
 
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.Collection;
 
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.app.GraphDocument;
-import ca.gedge.opgraph.app.GraphEditorModel;
 import ca.gedge.opgraph.app.components.canvas.GraphCanvasSelectionModel;
 import ca.gedge.opgraph.nodes.menu.edits.CreateMacroEdit;
 
@@ -36,13 +33,18 @@ import ca.gedge.opgraph.nodes.menu.edits.CreateMacroEdit;
  * A command for creating a macro from the selected nodes in the active editor's canvas.
  */
 public class CreateMacroCommand extends AbstractAction {
+	
+	private GraphDocument document;
+	
 	/**
 	 * Constructs a create macro command that automatically creates a macro
 	 * from the selected nodes in the active editor's canvas.
 	 */
-	public CreateMacroCommand() {
+	public CreateMacroCommand(GraphDocument doc) {
 		super("Create Macro From Selected Nodes");
 
+		this.document = doc;
+		
 		final int CTRL = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_M, CTRL));
 	}
@@ -53,7 +55,6 @@ public class CreateMacroCommand extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final GraphDocument document = GraphEditorModel.getActiveDocument();
 		if(document != null) {
 			final GraphCanvasSelectionModel selectionModel = document.getSelectionModel();
 			final Collection<OpNode> selectedNodes = selectionModel.getSelectedNodes();

@@ -18,41 +18,29 @@
  */
 package ca.gedge.opgraph.app.components;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.*;
+import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.logging.*;
 import java.util.stream.Collectors;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.undo.CompoundEdit;
 
-import ca.gedge.opgraph.InputField;
-import ca.gedge.opgraph.OpGraph;
-import ca.gedge.opgraph.OpGraphListener;
-import ca.gedge.opgraph.OpLink;
-import ca.gedge.opgraph.OpNode;
-import ca.gedge.opgraph.OutputField;
-import ca.gedge.opgraph.SimpleItem;
+import ca.gedge.opgraph.*;
 import ca.gedge.opgraph.app.GraphDocument;
+import ca.gedge.opgraph.app.components.canvas.NodeStyle;
+import ca.gedge.opgraph.app.edits.graph.*;
+import ca.gedge.opgraph.dag.*;
+import ca.gedge.opgraph.exceptions.ItemMissingException;
 import ca.gedge.opgraph.extensions.NodeMetadata;
+import ca.gedge.opgraph.util.Pair;
 import ca.gedge.opgraph.validators.ClassValidator;
 import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.BreadcrumbEventType;
 
@@ -62,6 +50,15 @@ import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.BreadcrumbEventType;
  * TODO undoable edits for defaults
  */
 public class NodeFieldsPanel extends JPanel {
+	
+	private static ImageIcon REMOVE_LINK_ICON;
+	static {
+		try {
+			REMOVE_LINK_ICON = new ImageIcon(ImageIO.read(NodeStyle.class.getClassLoader().getResourceAsStream("data/icons/16x16/opgraph/remove.png")));
+		} catch (IOException e) {
+			Logger.getAnonymousLogger().log(Level.WARNING, e.getLocalizedMessage(), e);
+		}
+	}
 
 	/** Logger */
 	private final Logger LOGGER = Logger.getLogger(NodeFieldsPanel.class.getName());
@@ -116,7 +113,23 @@ public class NodeFieldsPanel extends JPanel {
 		});
 		document.getRootGraph().addGraphListener(graphListener);
 	}
-
+	
+	private List<Pair<OpNode, OutputField>> getOutputsCompatibleWithInput(OpNode node, InputField inputField) {
+		List<Pair<OpNode, OutputField>> retVal = new ArrayList<>();
+		
+		for(OpNode currentNode:document.getGraph()) {
+			if(currentNode == node) continue;
+			
+			for(OutputField outputField:currentNode.getOutputFields()) {
+				if(inputField.getValidator() == null || inputField.getValidator().isAcceptable(outputField.getOutputType())) {
+					retVal.add(new Pair<>(currentNode, outputField));
+				}
+			}
+		}
+		
+		return retVal;
+	}
+	
 	private void updatePanel() {
 		removeAll();
 
@@ -163,17 +176,66 @@ public class NodeFieldsPanel extends JPanel {
 				++gbc.gridx;
 				gbc.weightx = 1.0;
 				gbc.fill = GridBagConstraints.HORIZONTAL;
-
+				
 				final OpLink currentLink = graph.getIncomingEdges(node)
 					.stream().filter( (l) -> l.getDestinationField() == inputField )
 					.findAny().orElse(null);
+
+				final List<Pair<OpNode, OutputField>> compatibleOutputs = getOutputsCompatibleWithInput(node, inputField);
+				@SuppressWarnings("unchecked")
+				final Pair<OpNode, OutputField>[] outputArray = compatibleOutputs.toArray(new Pair[0]);
+					
+				final JComboBox<Pair<OpNode, OutputField>> connectionBox = new JComboBox<>(outputArray);
 				if(currentLink != null) {
-					final LinkLabel linkLbl = new LinkLabel(currentLink);
-					add(linkLbl, gbc);
+					connectionBox.setSelectedItem(new Pair<>(currentLink.getSource(), currentLink.getSourceField()));
 				} else {
-					final JLabel noLinkLbl = new JLabel("No connection");
-					add(noLinkLbl, gbc);
+					connectionBox.setSelectedItem(null);
 				}
+					
+				final JPanel linkPanel = new JPanel(new BorderLayout());
+				
+				final JButton removeLinkButton = new JButton();
+				removeLinkButton.setIcon(REMOVE_LINK_ICON);
+				removeLinkButton.setToolTipText("Clear connection");
+				removeLinkButton.setEnabled(currentLink != null);
+				removeLinkButton.addActionListener( (e) -> {
+					final OpLink link = graph.getIncomingEdges(node)
+						.stream().filter( (l) -> l.getDestinationField() == inputField )
+						.findAny().orElse(null);
+					final RemoveLinkEdit edit = new RemoveLinkEdit(document.getGraph(), link);
+					document.getUndoSupport().postEdit(edit);
+				});
+				connectionBox.setRenderer(new LinkChoiceRenderer());
+				connectionBox.addItemListener( (e) -> {
+					if(e.getStateChange() == ItemEvent.SELECTED) {
+						final int selectedIdx = connectionBox.getSelectedIndex();
+						final Pair<OpNode, OutputField> selectedLink = connectionBox.getModel().getElementAt(selectedIdx);
+						
+						final CompoundEdit edit = new CompoundEdit();
+						if(currentLink != null) {
+							final RemoveLinkEdit rmLinkEdit = new RemoveLinkEdit(graph, currentLink);
+							edit.addEdit(rmLinkEdit);
+						}
+						try {
+							final AddLinkEdit addLinkEdit = new AddLinkEdit(graph, new OpLink(selectedLink.getFirst(), selectedLink.getSecond(),
+									node, inputField));
+							edit.addEdit(addLinkEdit);
+							
+							removeLinkButton.setEnabled(true);
+							edit.end();
+							
+							document.getUndoSupport().postEdit(edit);
+						} catch (VertexNotFoundException | CycleDetectedException | ItemMissingException e1) {
+							LOGGER.log(Level.WARNING, e1.getLocalizedMessage(), e1);
+							connectionBox.setSelectedItem(null);
+						}
+					}
+				});
+				
+				linkPanel.add(removeLinkButton, BorderLayout.WEST);
+				linkPanel.add(connectionBox, BorderLayout.CENTER);
+				add(linkPanel, gbc);
+
 				if(inputField.isOptional() && nodeMeta != null) {
 					final JComponent editorComp = getEditComponentForField(inputField, nodeMeta.getDefault(inputField));
 					if(editorComp != null) {
@@ -225,9 +287,22 @@ public class NodeFieldsPanel extends JPanel {
 						.stream().filter( (l) -> l.getSourceField() == outputField )
 						.collect( Collectors.toList() );
 				if(outgoingConnections.size() > 0) {
-					for(OpLink link:outgoingConnections) {
-						final LinkLabel lbl = new LinkLabel(link);
-						add(lbl, gbc);
+					for(final OpLink link:outgoingConnections) {
+						final JButton removeLinkButton = new JButton();
+						removeLinkButton.setIcon(REMOVE_LINK_ICON);
+						removeLinkButton.setToolTipText("Clear connection");
+						removeLinkButton.setEnabled(true);
+						removeLinkButton.addActionListener( (e) -> {
+							final RemoveLinkEdit edit = new RemoveLinkEdit(document.getGraph(), link);
+							document.getUndoSupport().postEdit(edit);
+						});
+						
+						final JLabel lbl = new JLabel(link.getDestination().getName() + "." + link.getDestinationField().getKey());
+						
+						final JPanel linkPanel = new JPanel(new BorderLayout());
+						linkPanel.add(removeLinkButton, BorderLayout.WEST);
+						linkPanel.add(lbl, BorderLayout.CENTER);
+						add(linkPanel, gbc);
 						++gbc.gridy;
 					}
 				} else {
@@ -454,26 +529,27 @@ public class NodeFieldsPanel extends JPanel {
 
 		return ret;
 	}
+	
+	private class LinkChoiceRenderer extends DefaultListCellRenderer {
 
-	private class LinkLabel extends JLabel {
-
-		private OpLink link;
-
-		public LinkLabel(OpLink link) {
-			super();
-			setLink(link);
-		}
-
-		public void setLink(OpLink link) {
-			this.link = link;
-
-			if(link.getSource() == getNode()) {
-				setText("Outgoing link to " + link.getDestination().getName() + "." + link.getDestinationField().getKey());
+		@Override
+		public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+				boolean cellHasFocus) {
+			final JLabel retVal = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+		
+			if(value != null) {
+				@SuppressWarnings("unchecked")
+				final Pair<OpNode, OutputField> pair = (Pair<OpNode, OutputField>)value;
+				retVal.setText(pair.getFirst().getName() + "." + pair.getSecond().getKey());
 			} else {
-				setText("Incoming link from " + link.getSource().getName()  + "." + link.getSourceField().getKey());
+				retVal.setText("No connection");
 			}
+			
+			return retVal;
 		}
-
+		
+		
+		
 	}
-
+	
 }

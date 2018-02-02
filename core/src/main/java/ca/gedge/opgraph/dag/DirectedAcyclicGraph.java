@@ -2,17 +2,17 @@
  * Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
  *
  * This file is part of the OpGraph project.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -34,8 +34,8 @@ import java.util.stream.Collectors;
 /**
  * A generic implementation of a directed acyclic graph (DAG). Topological
  * ordering is enforced on the vertices of this graph (see
- * <a href="http://en.wikipedia.org/wiki/Topological_sorting">Wikipedia Entry</a>). 
- * 
+ * <a href="http://en.wikipedia.org/wiki/Topological_sorting">Wikipedia Entry</a>).
+ *
  * @param <V>  the vertex type, which implements {@link Vertex}
  * @param <E>  the edge type, which implements {@link DirectedEdge}
  */
@@ -50,14 +50,14 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/**
 	 * A mapping from vertex to its level.
-	 * 
+	 *
 	 * @see #getLevel(Object)
 	 */
 	private Map<V, Integer> vertexLevels;
 
 	/** Whether or not the topological sorting needs to be performed */
 	private boolean shouldSort;
-	
+
 	/** Comparator for ordering of nodes within a level (default by toString()) */
 	private final Comparator<V> defaultVertexComparator = (v1, v2) -> {
 		final String name1 = v1.toString();
@@ -65,7 +65,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		return name1.compareTo(name2);
 	};
 	private Comparator<V> vertexComparator = defaultVertexComparator;
-	
+
 	/**
 	 * Default constructor.
 	 */
@@ -78,7 +78,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/**
 	 * Adds a vertex to this DAG.
-	 * 
+	 *
 	 * @param vertex  the vertex to add
 	 */
 	public void add(V vertex) {
@@ -91,32 +91,31 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	/**
 	 * Removes a vertex from this DAG. Any {@link DirectedEdge}s in this DAG that
 	 * reference this vertex will also be removed.
-	 * 
+	 *
 	 * @param vertex  the vertex to remove
-	 * 
+	 *
 	 * @return <code>true</code> if this graph contained the given vertex,
 	 *         <code>false</code> otherwise
 	 */
 	public boolean remove(V vertex) {
+		// Remove edges which reference this vertex
+		final ArrayList<E> edgesCopy = new ArrayList<E>(edges);
+		for(E edge : edgesCopy) {
+			if(edge.getSource() == vertex || edge.getDestination() == vertex)
+				remove(edge);
+		}
 		final boolean removed = vertices.remove(vertex);
 		if(removed) {
 			shouldSort = true;
-
-			// Remove edges which reference this vertex
-			final ArrayList<E> edgesCopy = new ArrayList<E>(edges);
-			for(E edge : edgesCopy) {
-				if(edge.getSource() == vertex || edge.getDestination() == vertex)
-					remove(edge);
-			}
 		}
 		return removed;
 	}
 
 	/**
 	 * Gets whether or not this graph contains a specified vertex.
-	 * 
+	 *
 	 * @param vertex  the vertex
-	 * 
+	 *
 	 * @return <code>true</code> if this graph contains the specified vertex,
 	 *         <code>false</code> otherwise
 	 */
@@ -126,9 +125,9 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/**
 	 * Gets whether or not this graph contains a specified edge.
-	 * 
+	 *
 	 * @param edge  the edge
-	 * 
+	 *
 	 * @return <code>true</code> if this graph contains the specified edge,
 	 *         <code>false</code> otherwise
 	 */
@@ -138,13 +137,13 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/**
 	 * Adds an edge to this DAG.
-	 * 
+	 *
 	 * @param edge  the edge to add
-	 * 
+	 *
 	 * @throws VertexNotFoundException  if <code>edge</code> contains vertices
 	 *                                  that are not contained within this graph.
-	 *               
-	 * @throws CycleDetectedException  if adding <code>edge</code> will induce a cycle 
+	 *
+	 * @throws CycleDetectedException  if adding <code>edge</code> will induce a cycle
 	 */
 	public void add(E edge) throws VertexNotFoundException, CycleDetectedException {
 		if(!vertices.contains(edge.getSource()))
@@ -168,9 +167,9 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	/**
 	 * Gets whether or not an edge can be added to this graph without raising
 	 * any exception defined in {@link #add(DirectedEdge)}.
-	 * 
+	 *
 	 * @param edge  the edge to check
-	 * 
+	 *
 	 * @return <code>true</code> if the edge can be added without inducing a
 	 *         cycle, <code>false</code> otherwise
 	 */
@@ -179,7 +178,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		if(vertices.contains(edge.getSource()) && vertices.contains(edge.getDestination())) {
 			final Set<E> testEdges = new HashSet<>(this.edges);
 			testEdges.add(edge);
-			
+
 			// Test for cycle
 			final TopologicalSort<V, E> sorter = new TopologicalSort<>(getVertexComparator());
 			try {
@@ -194,9 +193,9 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/**
 	 * Removes an edge from this DAG.
-	 * 
+	 *
 	 * @param edge  the edge to remove
-	 * 
+	 *
 	 * @return <code>true</code> if this graph contained the given vertex,
 	 *         <code>false</code> otherwise
 	 */
@@ -213,7 +212,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	/**
 	 * Gets the set of vertices in this DAG. The list of vertices will be
 	 * ordered according to their topological ordering.
-	 * 
+	 *
 	 * @return An immutable {@link Set} of vertices.
 	 */
 	public List<V> getVertices() {
@@ -223,7 +222,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/**
 	 * Gets the set of edges in this DAG.
-	 * 
+	 *
 	 * @return An immutable {@link Set} of edges.
 	 */
 	public Set<E> getEdges() {
@@ -237,9 +236,9 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 *   <li>0, if <code>getIncomingEdges(v) == 0</code></li>
 	 *   <li><code>min(level of u) for u in getIncomingEdges(v).getSource()</code></li>
 	 * </ul>
-	 * 
+	 *
 	 * @param vertex  the vertex
-	 * 
+	 *
 	 * @return the level of the vertex, or -1 if the vertex is not in this graph
 	 */
 	public int getLevel(V vertex) {
@@ -256,9 +255,9 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/**
 	 * Gets the incoming {@link DirectedEdge}s for a {@link Vertex}.
-	 * 
+	 *
 	 * @param vertex  the vertex
-	 * 
+	 *
 	 * @return a {@link Set} of {@link DirectedEdge}s in this graph whose destination
 	 *         is <code>vertex</code>
 	 */
@@ -267,42 +266,42 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 			return new LinkedHashSet<E>();
 
 		return edges.parallelStream()
-			.filter( (l) -> l.getDestination() == vertex ) 
+			.filter( (l) -> l.getDestination() == vertex )
 			.sorted( (l1, l2) -> getVertexComparator().compare(l1.getSource(), l2.getSource()) )
 			.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	/**
 	 * Gets the outgoing {@link DirectedEdge}s for a {@link Vertex}.
-	 * 
+	 *
 	 * @param vertex  the vertex
-	 * 
+	 *
 	 * @return a {@link Set} of {@link DirectedEdge}s in this graph whose source is
-	 *         the <code>vertex</code>  
+	 *         the <code>vertex</code>
 	 */
 	public Set<E> getOutgoingEdges(V vertex) {
 		if(!vertices.contains(vertex))
 			return new LinkedHashSet<E>();
-		
+
 		return edges.parallelStream()
 			.filter( (l) -> l.getSource() == vertex )
 			.sorted( (l1, l2) -> getVertexComparator().compare(l1.getDestination(), l2.getDestination()) )
 			.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
-	
+
 	/**
 	 * Set vertex comparator used during topologicalSort.  This comparator
 	 * is used to determine ordering of vertices which are in the same level.
-	 * 
+	 *
 	 * @param comparator
 	 */
 	public void setVertexComparator(Comparator<V> comparator) {
 		this.vertexComparator = comparator;
 	}
-	
+
 	/**
 	 * Get vertex comparator.
-	 * 
+	 *
 	 * @return comparator
 	 */
 	public Comparator<V> getVertexComparator() {
@@ -333,7 +332,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 			}
 		};
 	}
-	
+
 	public void invalidateSort() {
 		this.shouldSort = true;
 	}
@@ -346,16 +345,16 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 *
 	 * @return <code>true</code> if sorting was successful, <code>false</code>
 	 *         otherwise (because a cycle exists).
-	 *  
+	 *
 	 * @see <a href="http://en.wikipedia.org/wiki/Topological_sorting">Wikipedia Article</a>
 	 */
 	public boolean topologicalSort() {
 		boolean ret = true;
-		
+
 		final TopologicalSort<V, E> sorter = new TopologicalSort<V, E>(getVertexComparator());
 		try {
 			sorter.sort(this);
-			
+
 			this.vertices = new ArrayList<>(sorter.getVertexOrder());
 			this.vertexLevels = new WeakHashMap<>(sorter.getVertexLevels());
 			shouldSort = false;
@@ -365,5 +364,5 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 		return ret;
 	}
-	
+
 }

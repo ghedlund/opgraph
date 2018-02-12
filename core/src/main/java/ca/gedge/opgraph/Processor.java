@@ -2,17 +2,17 @@
  * Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
  *
  * This file is part of the OpGraph project.
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -54,15 +54,15 @@ public class Processor {
 
 	/** If we stepped into a macro, the processing context for that macro */
 	private Processor currentMacro;
-	
-	/** 
+
+	/**
 	 * If stopped at a breakpoint during the {{@link #step()} method this will
 	 * point to the breakpoint node.
 	 */
 	private OpNode breakpointNode = null;
-	
+
 	private volatile boolean shutdown = false;
-	
+
 	/**
 	 * Processor listener
 	 */
@@ -71,9 +71,9 @@ public class Processor {
 
 	/**
 	 * Constructs a processing context for a given graph.
-	 * 
+	 *
 	 * @param graph  the graph
-	 * 
+	 *
 	 * @throws NullPointerException  if the specified graph is <code>null</code>
 	 */
 	public Processor(OpGraph graph) {
@@ -82,11 +82,11 @@ public class Processor {
 
 	/**
 	 * Constructs a processing context for a given graph and a preset operating context.
-	 * 
+	 *
 	 * @param graph  the graph
 	 * @param context  the initial global context, or <code>null</code> to
 	 *                 use an empty global context
-	 * 
+	 *
 	 * @throws NullPointerException  if the specified graph is <code>null</code>
 	 */
 	public Processor(OpGraph graph, OpContext context) {
@@ -95,13 +95,13 @@ public class Processor {
 
 	/**
 	 * Constructs a processing context for a given graph.
-	 * 
+	 *
 	 * @param graph  the graph
 	 * @param customProcessor  a custom processing instance, or <code>null</code>
 	 *                         if no custom processing required
 	 * @param context  the initial global context, or <code>null</code> to
 	 *                 use an empty global context
-	 * 
+	 *
 	 * @throws NullPointerException  if the specified graph is <code>null</code>
 	 */
 	public Processor(OpGraph graph, CustomProcessor customProcessor, OpContext context) {
@@ -111,7 +111,7 @@ public class Processor {
 		this.graph = graph;
 		this.graph.invalidateSort();
 		this.graph.topologicalSort();
-		
+
 		this.customProcessor = customProcessor;
 
 		reset(context);
@@ -128,7 +128,7 @@ public class Processor {
 	/**
 	 * Resets this context so that further processing will start from the
 	 * beginning.
-	 * 
+	 *
 	 * @param context  the global context that should be used for processing,
 	 *                 or <code>null</code> if a default one should be used
 	 */
@@ -155,13 +155,13 @@ public class Processor {
 
 		if(customProcessor != null)
 			customProcessor.initialize(globalContext);
-		
+
 		installNodeDefaults(getGraph(), globalContext);
 	}
 
 	/**
 	 * Gets the graph that is currently being operated on.
-	 * 
+	 *
 	 * @return  the graph
 	 */
 	public OpGraph getGraph() {
@@ -172,7 +172,7 @@ public class Processor {
 
 	/**
 	 * Gets the graph this processing context is operating on.
-	 * 
+	 *
 	 * @return  the graph
 	 */
 	public OpGraph getGraphOfContext() {
@@ -180,8 +180,8 @@ public class Processor {
 	}
 
 	/**
-	 * Gets the context used for processing. 
-	 * 
+	 * Gets the context used for processing.
+	 *
 	 * @return the context
 	 */
 	public OpContext getContext() {
@@ -190,7 +190,7 @@ public class Processor {
 
 	/**
 	 * Gets the error that was thrown since the last reset.
-	 * 
+	 *
 	 * @return the error, or <code>null</code> if no error was thrown
 	 */
 	public ProcessingException getError() {
@@ -202,7 +202,7 @@ public class Processor {
 
 	/**
 	 * Gets the context that spawned the error returned by {@link #getError()}.
-	 * 
+	 *
 	 * @return the error-spawning context, or <code>null</code> if
 	 *         <code>{@link #getError()} == null</code>
 	 */
@@ -214,7 +214,7 @@ public class Processor {
 
 	/**
 	 * Gets the node that was most recently processed.
-	 * 
+	 *
 	 * @return the node, or <code>null</code> if processing has yet to
 	 *         start or no more nodes to process.
 	 */
@@ -226,7 +226,7 @@ public class Processor {
 
 	/**
 	 * Gets the node that was most recently processed in this context.
-	 * 
+	 *
 	 * @return the node, or <code>null</code> if processing has yet to
 	 *         start or no more nodes to process.
 	 */
@@ -236,7 +236,7 @@ public class Processor {
 
 	/**
 	 * Gets the processing context for the last macro that was stepped into.
-	 * 
+	 *
 	 * @return the processing context, or <code>null</code> if no macro was
 	 *         stepped into
 	 */
@@ -246,7 +246,7 @@ public class Processor {
 
 	/**
 	 * Gets whether or not there are any more nodes to process.
-	 * 
+	 *
 	 * @return  <code>true</code> if there are more nodes to process,
 	 *          <code>false</code> otherwise
 	 */
@@ -262,9 +262,9 @@ public class Processor {
 	 * is flagged as a breakpoint and <code>shouldBreak</code> is <code>true</code>
 	 * this method will <em>not</em> process the next node and will throw a
 	 * {@link BreakpointEncountered} exception.
-	 * 
+	 *
 	 * @param shouldBreak
-	 * 
+	 *
 	 * @throws NoSuchElementException  if there are no more nodes to process
 	 * @throws BreakpointEncountered if the next node is a breakpoint and shouldBreak is true
 	 */
@@ -283,21 +283,21 @@ public class Processor {
 		} else {
 			// Step to the next node and process
 			currentNode = nodeIter.next();
-			
+
 			if(currentNode != null && currentNode.isBreakpoint() && shouldBreak) {
 				throw new BreakpointEncountered(this, currentNode);
 			}
-			
+
 			processCurrentNode();
 		}
 	}
-	
+
 	/**
 	 * Moves the processing forward. If in a macro and the last node in that
 	 * macro was already processed, the step will step out of the macro and
 	 * back to its parent node, but processing will not move forward in the
 	 * parent until this function is called again.
-	 * 
+	 *
 	 * @throws NoSuchElementException  if there are no more nodes to process
 	 */
 	public void step() {
@@ -306,14 +306,14 @@ public class Processor {
 
 	/**
 	 * Processes the current node.
-	 * 
+	 *
 	 * @throws ProcessingException  if any errors occurred during proessing
 	 */
 	private void processCurrentNode() {
 		try {
 			final OpContext localContext = globalContext.getChildContext(currentNode);
 			setupInputs(currentNode, localContext);
-						
+
 			Boolean enabled = (Boolean)localContext.get(OpNode.ENABLED_FIELD);
 			if(enabled == null || enabled) {
 				localContext.clearActiveOutputs();
@@ -323,9 +323,11 @@ public class Processor {
 					activeOutputs.add(link.getSourceField());
 				}
 				localContext.setActiveOutputs(activeOutputs);
-				
+
 				fireBeginNodeEvent();
+				localContext.put(OpNode.COMPLETED_FIELD, Boolean.FALSE);
 				currentNode.operate(localContext);
+				localContext.put(OpNode.COMPLETED_FIELD, Boolean.TRUE);
 				fireEndNodeEvent();
 			}
 
@@ -366,28 +368,28 @@ public class Processor {
 		if(currentMacro != null) {
 			if(currentMacro.hasNext())
 				found = currentMacro.stepToNode(node);
-			
+
 			if(!found && !currentMacro.hasNext())
 				stepOutOf();
 		}
-		
+
 		if(!found) {
 			while(hasNext() && currentNode != node)
 				step(shouldBreak);
-			
+
 			found = (currentNode == node);
 		}
-		
+
 		return found;
 	}
-	
+
 	/**
 	 * Processes the graph until we hit the specified node. This method
 	 * will step through the current macro (if one was stepped into), but
 	 * will not automatically step into macros to find the specified node.
-	 * 
+	 *
 	 * @param node  the node to stop processing at
-	 * 
+	 *
 	 * @return <code>true</code> if the specified node was found,
 	 *         <code>false</code> otherwise
 	 */
@@ -398,7 +400,7 @@ public class Processor {
 	/**
 	 * Step into a macro. If the current node isn't a macro, this
 	 * function behaves exactly like {@link #step()}.
-	 * 
+	 *
 	 * @throws NoSuchElementException  if no more nodes to process
 	 */
 	public void stepInto() {
@@ -446,7 +448,7 @@ public class Processor {
 			}
 		}
 	}
-	
+
 	/**
 	 * Stop processing graph during after a call to stepAll.
 	 */
@@ -459,11 +461,11 @@ public class Processor {
 			currentMacro.stop();
 		}
 	}
-	
+
 	/**
 	 * Processes the graph to completion or
 	 * breakpoint if <code>shouldBreak</code> is <code>true</code>
-	 * 
+	 *
 	 * @param shouldBreak
 	 */
 	public void stepAll(boolean shouldBreak) throws BreakpointEncountered {
@@ -480,7 +482,7 @@ public class Processor {
 	/**
 	 * Processes the graph to completion. Ignore
 	 * breakpoints.
-	 * 
+	 *
 	 * @throws BreakpointEncountered
 	 * @throws ProcessingException
 	 */
@@ -489,12 +491,12 @@ public class Processor {
 	}
 
 	/**
-	 * Adds inputs from incoming links to a given node's context.  
-	 * 
+	 * Adds inputs from incoming links to a given node's context.
+	 *
 	 * @param node  the node to create the inputs for
 	 * @param context  the working context for this node
-	 * 
-	 * @throws ProcessingException  if the node has no working context 
+	 *
+	 * @throws ProcessingException  if the node has no working context
 	 * @throws RequiredInputException  if a value flowing into an input has an unacceptable type
 	 */
 	private void setupInputs(OpNode node, OpContext context)
@@ -513,7 +515,7 @@ public class Processor {
 			}
 		}
 	}
-	
+
 	private void installNodeDefaults(OpGraph graph, OpContext context) {
 		for(OpNode node : graph.getVertices()) {
 			// Add defaults, if any exist
@@ -534,11 +536,11 @@ public class Processor {
 	 * Check field optionalities and make sure all required fields have input.
 	 * When input exists, make sure the input is of a valid type, as determined
 	 * by the field's {@link TypeValidator}
-	 * 
+	 *
 	 * @param node  the node to create the inputs for
 	 * @param context  the working context for this node
-	 * 
-	 * @throws ProcessingException  if the node has no working context 
+	 *
+	 * @throws ProcessingException  if the node has no working context
 	 * @throws RequiredInputException  if a value flowing into an input has an unacceptable type
 	 */
 	private void checkInputs(OpNode node, OpContext context)
@@ -553,7 +555,7 @@ public class Processor {
 					if(sourceContext != null && sourceContext.containsKey(link.getSourceField())) {
 						final Object val = sourceContext.get(link.getSourceField());
 						linkFound = true;
-						
+
 						if(field.getKey().equals("enabled") && !Boolean.parseBoolean(val.toString())) {
 							// don't process any more inputs, they will be ignored
 							return;
@@ -574,7 +576,7 @@ public class Processor {
 				final boolean alreadyHasLocal = context.isLocal(field);
 				if(!field.isOptional() && !alreadyHasLocal)
 					throw new RequiredInputException(this, node, field);
-				
+
 				if(!alreadyHasLocal) {
 					// hide parent reference of local variable
 					context.put(field, null);
@@ -582,7 +584,7 @@ public class Processor {
 			}
 		}
 	}
-	
+
 	/*
 	 * Events
 	 */
@@ -590,25 +592,25 @@ public class Processor {
 		if(!listeners.contains(listener))
 			listeners.add(listener);
 	}
-	
+
 	public void removeProcessorListener(ProcessorListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	public void fireProcessorEvent(ProcessorEvent pe) {
 		for(ProcessorListener listener:listeners) {
 			listener.processorEvent(pe);
 		}
 	}
-	
+
 	public void fireBeginNodeEvent() {
 		fireProcessorEvent(new ProcessorEvent(Type.BEGIN_NODE, this, currentNode));
 	}
-	
+
 	public void fireEndNodeEvent() {
 		fireProcessorEvent(new ProcessorEvent(Type.FINISH_NODE, this, currentNode));
 	}
-	
+
 	public void fireCompleteEvent() {
 		fireProcessorEvent(new ProcessorEvent(Type.COMPLETE, this, currentNode));
 	}

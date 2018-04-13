@@ -28,6 +28,7 @@ import java.util.Properties;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -103,12 +104,18 @@ public class NodeSettingsXMLSerializer implements XMLSerializer {
 					final Element propertyElem = (Element)defaultNode;
 					final String key = propertyElem.getAttribute("key");
 
-					final String value = (propertyElem.getChildNodes().getLength() == 0
-					                      ? null
-					                      : propertyElem.getTextContent());
+					if(propertyElem.hasChildNodes()) {
+						StringBuffer buffer = new StringBuffer();
+						NodeList nodeList = propertyElem.getChildNodes();
+						for(int i = 0; i < nodeList.getLength(); i++) {
+							Node n = nodeList.item(i);
+							if(n instanceof CDATASection) {
+								buffer.append(n.getTextContent());
+							}
+						}
 
-					if(value != null)
-						properties.setProperty(key, value);
+						properties.setProperty(key, buffer.toString());
+					}
 				}
 			}
 

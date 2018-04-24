@@ -20,6 +20,7 @@ import ca.gedge.opgraph.OpGraph;
 import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.Processor;
+import ca.gedge.opgraph.ProcessorListener;
 import ca.gedge.opgraph.app.GraphDocument;
 import ca.gedge.opgraph.app.components.canvas.NodeStyle;
 import ca.gedge.opgraph.app.extensions.NodeSettings;
@@ -184,7 +185,8 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 		// Process
 		if(graph != null) {
 			final Processor processor = new Processor(graph);
-			
+			for(ProcessorListener listener:getProcessorListeners())
+				processor.addProcessorListener(listener);
 			
 			final Iterable<?> iterable = (Iterable<?>)obj;
 			final Iterator<?> itr = iterable.iterator();

@@ -33,6 +33,7 @@ import ca.gedge.opgraph.OpNode;
 import ca.gedge.opgraph.OpNodeInfo;
 import ca.gedge.opgraph.OutputField;
 import ca.gedge.opgraph.Processor;
+import ca.gedge.opgraph.ProcessorListener;
 import ca.gedge.opgraph.exceptions.ProcessingException;
 import ca.gedge.opgraph.extensions.CompositeNode;
 import ca.gedge.opgraph.extensions.CustomProcessing;
@@ -61,6 +62,8 @@ public class MacroNode
 	protected List<PublishedOutput> publishedOutputs;
 	
 	private Processor currentProcessor;
+	
+	private final List<ProcessorListener> processorListeners = new ArrayList<>();
 
 	/**
 	 * The source file for this macro.
@@ -145,6 +148,25 @@ public class MacroNode
 	public File getSource() {
 		return source;
 	}
+	
+	/**
+	 * Add a processor listener which will be added to any processors
+	 * created by the macro node.
+	 * 
+	 * @param listener
+	 */
+	public void addProcessorListener(ProcessorListener listener) {
+		if(!processorListeners.contains(listener))
+			processorListeners.add(listener);
+	}
+	
+	public void removeProcessorListener(ProcessorListener listener) {
+		processorListeners.remove(listener);
+	}
+	
+	public List<ProcessorListener> getProcessorListeners() {
+		return Collections.unmodifiableList(this.processorListeners);
+	}
 
 	/**
 	 * Constructs a context mapping for this macro's published inputs. Inputs contained
@@ -185,6 +207,8 @@ public class MacroNode
 			// First set up processor
 			currentProcessor = new Processor(graph);
 			currentProcessor.reset(context);
+			for(ProcessorListener listener:getProcessorListeners())
+				currentProcessor.addProcessorListener(listener);
 
 			// The reset call above could clear out the context, so map after
 			mapInputs(context);

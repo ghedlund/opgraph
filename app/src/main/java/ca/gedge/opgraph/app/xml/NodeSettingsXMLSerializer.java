@@ -113,6 +113,9 @@ public class NodeSettingsXMLSerializer implements XMLSerializer {
 								buffer.append(n.getTextContent());
 							}
 						}
+						// if no CDATA section, use text content of element
+						if(buffer.length() == 0)
+							buffer.append(propertyElem.getTextContent());
 
 						properties.setProperty(key, buffer.toString());
 					}

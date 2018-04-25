@@ -201,27 +201,6 @@
 					</configuration>
 				</plugin>
 				
-				<!-- Additional source directories -->
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.7</version>
-					<executions>
-						<execution>
-							<id>add-source-directories</id>
-							<phase>generate-sources</phase>
-							<goals>
-								<goal>add-source</goal>
-							</goals>
-							<configuration>
-								<sources>
-									<source>src/main/tools</source>
-								</sources>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				
 				<!-- ANTLR grammar parsing -->
 				<plugin>
 					<groupId>org.antlr</groupId>

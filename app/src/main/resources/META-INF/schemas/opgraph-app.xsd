@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+	Copyright (C) 2012-2018 Gregory Hedlund <https://www.phon.ca>
 	Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
 	
 	This file is part of the OpGraph project.
@@ -19,16 +20,16 @@
 -->
 <xs:schema 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns="http://gedge.ca/ns/opgraph-app" 
-	xmlns:og="http://gedge.ca/ns/opgraph" 
-	targetNamespace="http://gedge.ca/ns/opgraph-app" 
+	xmlns="https://www.phon.ca/ns/opgraph-app" 
+	xmlns:og="https://www.phon.ca/ns/opgraph" 
+	targetNamespace="https://www.phon.ca/ns/opgraph-app" 
 	elementFormDefault="qualified">
 	
 	<xs:annotation>
 		<xs:documentation>Specification of opgraph-app extensions.</xs:documentation>
 	</xs:annotation>
 	
-	<xs:import namespace="http://gedge.ca/ns/opgraph" schemaLocation="../../../../../../xml-io/src/main/resources/META-INF/schemas/opgraph.xsd"/>
+	<xs:import namespace="https://www.phon.ca/ns/opgraph" schemaLocation="../../../../../../xml-io/src/main/resources/META-INF/schemas/opgraph.xsd"/>
 	
 	<!-- Color type, specified using hex notation -->
 	

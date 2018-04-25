@@ -1,21 +1,21 @@
-ca.gedge.opgraph.nodes.general.ConstantValueNode
-ca.gedge.opgraph.nodes.general.MacroNode
-ca.gedge.opgraph.nodes.general.PassThroughNode
-ca.gedge.opgraph.nodes.general.RangeNode
-ca.gedge.opgraph.nodes.general.ScriptNode
+ca.phon.opgraph.nodes.general.ConstantValueNode
+ca.phon.opgraph.nodes.general.MacroNode
+ca.phon.opgraph.nodes.general.PassThroughNode
+ca.phon.opgraph.nodes.general.RangeNode
+ca.phon.opgraph.nodes.general.ScriptNode
 
-ca.gedge.opgraph.nodes.iteration.CurrentIterationNode
-ca.gedge.opgraph.nodes.iteration.ForEachNode
-ca.gedge.opgraph.nodes.iteration.MaxIterationsNode
+ca.phon.opgraph.nodes.iteration.CurrentIterationNode
+ca.phon.opgraph.nodes.iteration.ForEachNode
+ca.phon.opgraph.nodes.iteration.MaxIterationsNode
 
-ca.gedge.opgraph.nodes.logic.LogicalAndNode
-ca.gedge.opgraph.nodes.logic.LogicalNotNode
-ca.gedge.opgraph.nodes.logic.LogicalOrNode
-ca.gedge.opgraph.nodes.logic.LogicalXorNode
+ca.phon.opgraph.nodes.logic.LogicalAndNode
+ca.phon.opgraph.nodes.logic.LogicalNotNode
+ca.phon.opgraph.nodes.logic.LogicalOrNode
+ca.phon.opgraph.nodes.logic.LogicalXorNode
 
-ca.gedge.opgraph.nodes.math.MathExpressionNode
+ca.phon.opgraph.nodes.math.MathExpressionNode
 
-ca.gedge.opgraph.nodes.random.RandomBooleanNode
-ca.gedge.opgraph.nodes.random.RandomDecimalNode
-ca.gedge.opgraph.nodes.random.RandomIntegerNode
-ca.gedge.opgraph.nodes.random.RandomStringNode
+ca.phon.opgraph.nodes.random.RandomBooleanNode
+ca.phon.opgraph.nodes.random.RandomDecimalNode
+ca.phon.opgraph.nodes.random.RandomIntegerNode
+ca.phon.opgraph.nodes.random.RandomStringNode

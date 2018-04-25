@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+	Copyrigth (C) 2012-2018 Gregory Hedlund <https://www.phon.ca>
 	Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
 	
 	This file is part of the OpGraph project.
@@ -19,16 +20,16 @@
 -->
 <xs:schema 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns="http://gedge.ca/ns/opgraph-common-nodes" 
-	xmlns:og="http://gedge.ca/ns/opgraph" 
-	targetNamespace="http://gedge.ca/ns/opgraph-common-nodes" 
+	xmlns="https://www.phon.ca/ns/opgraph-common-nodes" 
+	xmlns:og="https://www.phon.ca/ns/opgraph" 
+	targetNamespace="https://www.phon.ca/ns/opgraph-common-nodes" 
 	elementFormDefault="qualified">
 
 	<xs:annotation>
 		<xs:documentation>Specification of opgraph-common-nodes extensions.</xs:documentation>
 	</xs:annotation>
 
-	<xs:import namespace="http://gedge.ca/ns/opgraph"
+	<xs:import namespace="https://www.phon.ca/ns/opgraph"
 		schemaLocation="../../../../../../xml-io/src/main/resources/META-INF/schemas/opgraph.xsd"/>
 
 	<!-- Definition of a macro -->

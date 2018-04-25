@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2012-2018 Gregory Hedlund <https://www.phon.ca>
  * Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
  *
  * This file is part of the OpGraph project.

@@ -44,7 +44,7 @@ import ca.phon.opgraph.io.xml.XMLSerializerFactory;
 /**
  */
 public class NodeSettingsXMLSerializer implements XMLSerializer {
-	static final String NAMESPACE = "http://gedge.ca/ns/opgraph-app";
+	static final String NAMESPACE = "https://www.phon.ca/ns/opgraph-app";
 	static final String PREFIX = "oga";
 	static final QName SETTINGS_QNAME = new QName(NAMESPACE, "settings", PREFIX);
 

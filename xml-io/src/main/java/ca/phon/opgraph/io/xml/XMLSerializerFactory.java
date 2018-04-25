@@ -69,7 +69,7 @@ import ca.phon.opgraph.util.ServiceDiscovery;
 @OpGraphSerializerInfo(extension="xml", description="XML Files")
 public final class XMLSerializerFactory implements OpGraphSerializer {
 	/** The default namespace */
-	static final String DEFAULT_NAMESPACE = "http://gedge.ca/ns/opgraph";
+	static final String DEFAULT_NAMESPACE = "https://www.phon.ca/ns/opgraph";
 
 	/** The default prefix used for writing */
 	static final String DEFAULT_PREFIX = "og";

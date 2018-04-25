@@ -40,7 +40,7 @@ import ca.phon.opgraph.nodes.general.MacroNode;
  * {@link OutputField}s to/from XML.
  */
 public class PublishedFieldXMLSerializer implements XMLSerializer {
-	static final String NAMESPACE = "http://gedge.ca/ns/opgraph-common-nodes";
+	static final String NAMESPACE = "https://www.phon.ca/ns/opgraph-common-nodes";
 	static final String PREFIX = "ogcn";
 
 	// qualified names

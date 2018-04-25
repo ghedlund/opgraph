@@ -48,7 +48,7 @@ import ca.phon.opgraph.io.xml.XMLSerializerFactory;
 /**
  */
 public class NodeMetadataXMLSerializer implements XMLSerializer {
-	static final String NAMESPACE = "http://gedge.ca/ns/opgraph-app";
+	static final String NAMESPACE = "https://www.phon.ca/ns/opgraph-app";
 	static final String PREFIX = "oga";
 	static final QName META_QNAME = new QName(NAMESPACE, "meta", PREFIX);
 

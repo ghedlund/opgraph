@@ -45,7 +45,7 @@ import ca.phon.opgraph.nodes.iteration.ForEachNode;
  * A default serializer for reading/writing {@link OpNode} to/from XML.
  */
 public class MacroNodeXMLSerializer implements XMLSerializer {
-	static final String NAMESPACE = "http://gedge.ca/ns/opgraph-common-nodes";
+	static final String NAMESPACE = "https://www.phon.ca/ns/opgraph-common-nodes";
 	static final String PREFIX = "ogcn";
 
 	// qualified names

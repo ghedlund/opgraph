@@ -42,7 +42,7 @@ import ca.phon.opgraph.nodes.general.LinkedMacroNode;
 import ca.phon.opgraph.nodes.general.MacroNode;
 
 public class LinkedMacroNodeXMLSerializer implements XMLSerializer {
-	static final String NAMESPACE = "http://gedge.ca/ns/opgraph-common-nodes";
+	static final String NAMESPACE = "https://www.phon.ca/ns/opgraph-common-nodes";
 	static final String PREFIX = "ogcn";
 
 	// qualified names

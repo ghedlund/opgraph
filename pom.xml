@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+  Copyright (C) 2012-2018 Gregory Hedlund <https://www.phon.ca>
   Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
 
   This file is part of the OpGraph project.
@@ -24,9 +25,9 @@
 	
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>ca.gedge.opgraph</groupId>
+	<groupId>ca.phon.opgraph</groupId>
 	<artifactId>opgraph</artifactId>
-	<version>0.6-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	
 	<packaging>pom</packaging>
 	
@@ -75,18 +76,10 @@
 		</developer>
 	</developers>
 	
-	<contributors>
-		<contributor>
-			
-		</contributor>
-	</contributors>
-	
-	
-	
 	<!-- Project Management -->
 	
 	<issueManagement>
-		<url>https://github.com/thegedge/opgraph/issues</url>
+		<url>https://github.com/phon-ca/opgraph/issues</url>
 		<system>GitHub Issues</system>
 	</issueManagement>
 

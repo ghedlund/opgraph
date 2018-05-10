@@ -266,12 +266,9 @@ public class GraphEditorModel {
 			if(selected.size() == 1)
 				node = selected.iterator().next();
 
-			if(nodeFields != null)
-				nodeFields.setNode(node);
-			if(nodeSettings != null)
-				nodeSettings.setNode(node);
-			if(debugPanel != null)
-				debugPanel.setNode(node);
+			getNodeFieldsPanel().setNode(node);
+			getNodeSettings().setNode(node);
+			getDebugInfoPanel().setNode(node);
 		}
 	};
 	

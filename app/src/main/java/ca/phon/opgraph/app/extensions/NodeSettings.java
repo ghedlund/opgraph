@@ -41,7 +41,7 @@ public interface NodeSettings {
 	 * @return the component
 	 */
 	public abstract Component getComponent(GraphDocument document);
-
+	
 	/**
 	 * Gets the node settings as a properties object.
 	 * 

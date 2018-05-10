@@ -32,7 +32,6 @@ import ca.phon.opgraph.app.extensions.NodeSettings;
  * A panel for displaying and editing settings for a node. Settings are
  * available whenever the node has the {@link NodeSettings} extension. 
  * 
- * TODO undoable edits for settings
  */
 public class NodeSettingsPanel extends JPanel {
 	/** The node currently being viewed */
@@ -60,6 +59,11 @@ public class NodeSettingsPanel extends JPanel {
 	public OpNode getNode() {
 		return node;
 	}
+	
+	protected Component getNodeSettingsComponent(NodeSettings settings) {
+		final Component settingsComp = settings.getComponent(document);
+		return settingsComp;
+	}
 
 	/**
 	 * Sets the node this panel is currently viewing.
@@ -82,7 +86,7 @@ public class NodeSettingsPanel extends JPanel {
 			} else {
 				final NodeSettings settings = node.getExtension(NodeSettings.class);
 				if(settings != null)
-					settingsComp = settings.getComponent(document);
+					settingsComp = getNodeSettingsComponent(settings);
 
 				if(settingsComp == null) {
 					final JLabel label = new JLabel("No settings available", SwingConstants.CENTER);

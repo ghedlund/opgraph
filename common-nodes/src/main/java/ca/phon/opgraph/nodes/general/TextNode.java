@@ -41,7 +41,7 @@ public class TextNode extends ConstantValueNode implements NodeSettings {
 	private JTextArea textArea;
 	
 	private InputField objectsInputs = 
-			new InputField("objects", "array of objects for formatted strings", false, true, Object[].class);
+			new InputField("objects", "array of objects for formatted strings", true, true, Object[].class);
 	
 	public TextNode() {
 		this("");
@@ -75,6 +75,8 @@ public class TextNode extends ConstantValueNode implements NodeSettings {
 			
 			final String value = String.format(super.getValue().toString(), objArray);
 			context.put(VALUE_OUTPUT_FIELD, value);
+		} else {
+			context.put(VALUE_OUTPUT_FIELD, super.getValue().toString());
 		}
 	}
 	

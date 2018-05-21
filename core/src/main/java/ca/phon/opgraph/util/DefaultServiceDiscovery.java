@@ -114,7 +114,9 @@ public class DefaultServiceDiscovery extends ServiceDiscovery {
 	public List<URL> findResources(String path) {
 		final Set<ClassLoader> classloaders = new HashSet<ClassLoader>();
 		classloaders.addAll(DefaultServiceDiscovery.classloaders);
-		classloaders.add(ClassLoader.getSystemClassLoader());
+		// add classloader for this class
+		if(!classloaders.contains(getClass().getClassLoader()))
+				classloaders.add(getClass().getClassLoader());
 
 		final List<URL> resourceURLs = new ArrayList<URL>();
 		final List<DiscoveryData> dataList = getResourceURLs(classloaders, path, false);

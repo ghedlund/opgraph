@@ -56,6 +56,10 @@ public class DefaultServiceDiscovery extends ServiceDiscovery {
 
 	/** An additional set of classloaders to search through */
 	private final static Set<ClassLoader> classloaders = new HashSet<ClassLoader>();
+	
+	public DefaultServiceDiscovery() {
+		super();
+	}
 
 	/**
 	 * Adds a custom classloader to search through for service providers.
@@ -114,9 +118,9 @@ public class DefaultServiceDiscovery extends ServiceDiscovery {
 	public List<URL> findResources(String path) {
 		final Set<ClassLoader> classloaders = new HashSet<ClassLoader>();
 		classloaders.addAll(DefaultServiceDiscovery.classloaders);
-		// add classloader for this class
-		if(!classloaders.contains(getClass().getClassLoader()))
-				classloaders.add(getClass().getClassLoader());
+		if(getClass().getClassLoader() != ClassLoader.getSystemClassLoader())
+			classloaders.add(getClass().getClassLoader());
+		classloaders.add(ClassLoader.getSystemClassLoader());
 
 		final List<URL> resourceURLs = new ArrayList<URL>();
 		final List<DiscoveryData> dataList = getResourceURLs(classloaders, path, false);

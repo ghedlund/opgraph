@@ -75,7 +75,7 @@ public class InputFields extends ArrayList<InputField> {
 			boolean isOptional,
 			boolean isFixed)
 	{
-		add(key, description, isOptional, isFixed, (TypeValidator)null);
+		addWithValidator(key, description, isOptional, isFixed, (TypeValidator)null);
 	}
 	
 	public void add(
@@ -83,7 +83,7 @@ public class InputFields extends ArrayList<InputField> {
 			String description,
 			Class<?> acceptedType) 
 	{
-		add(key, description, new Class[]{acceptedType});
+		addWithTypes(key, description, new Class[]{acceptedType});
 	}
 
 	/**
@@ -94,12 +94,12 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param description  a description for the field
 	 * @param acceptedTypes  the classes that are accepted
 	 */
-	public void add(
+	public void addWithTypes(
 			String key,
 			String description,
 			Class<?>... acceptedTypes)
 	{
-		add(key, description, false, true, acceptedTypes);
+		addWithValidators(key, description, false, true, acceptedTypes);
 	}
 
 	/**
@@ -111,12 +111,12 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param validators  a {@link List} of {@link TypeValidator}s to use
 	 *                    for validating incoming values
 	 */
-	public void add(
+	public void addWithValidators(
 			String key,
 			String description,
 			TypeValidator... validators)
 	{
-		add(key, description, false, false, validators.length == 1 ? validators[0] : new CompositeValidator(validators));
+		addWithValidator(key, description, false, false, validators.length == 1 ? validators[0] : new CompositeValidator(validators));
 	}
 
 	/**
@@ -128,14 +128,14 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param isFixed  whether or not this field is fixed
 	 * @param acceptedTypes  the classes that are accepted
 	 */
-	public void add(
+	public void addWithValidators(
 			String key, 
 			String description, 
 			boolean isOptional, 
 			boolean isFixed, 
 			Class<?>... acceptedTypes)
 	{
-		add(key, description, isOptional, isFixed, new ClassValidator(acceptedTypes));
+		addWithValidator(key, description, isOptional, isFixed, new ClassValidator(acceptedTypes));
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param validators  a {@link List} of {@link TypeValidator}s to use
 	 *                    for validating incoming values
 	 */
-	public void add(
+	public void addWithValidator(
 			String key,
 			String description,
 			boolean isOptional,

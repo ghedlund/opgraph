@@ -24,9 +24,9 @@ import javax.swing.*;
 
 import ca.phon.opgraph.app.GraphDocument;
 import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
-import ca.phon.opgraph.nodes.reflect.ClassNode;
+import ca.phon.opgraph.nodes.reflect.ObjectNode;
 
-public class AddClassCommand extends AbstractAction {
+public class AddObjectReferenceCommand extends AbstractAction {
 	
 	private static final Logger LOGGER = Logger
 			.getLogger(AddObjectReferenceCommand.class.getName());
@@ -37,7 +37,7 @@ public class AddClassCommand extends AbstractAction {
 	
 	private final Point point;
 	
-	public AddClassCommand(GraphDocument doc, Point p) {
+	public AddObjectReferenceCommand(GraphDocument doc, Point p) {
 		super();
 		this.document = doc;
 		this.point = p;
@@ -52,15 +52,13 @@ public class AddClassCommand extends AbstractAction {
 		
 		if(document != null) {
 			// request a class name
-			// TODO create a better UI for this
 			final String className = JOptionPane.showInputDialog("Enter a class name:");
 			if(className != null) {
 					
 					try {
 						final Class<?> clazz = Class.forName(className);
 						
-						final ClassNode node = new ClassNode(clazz);
-						node.setName(clazz.getSimpleName());
+						final ObjectNode node = new ObjectNode(clazz);
 						final AddNodeEdit edit = new AddNodeEdit(document.getGraph(), node, point.x, point.y);
 						document.getUndoSupport().postEdit(edit);
 					} catch (ClassNotFoundException e) {

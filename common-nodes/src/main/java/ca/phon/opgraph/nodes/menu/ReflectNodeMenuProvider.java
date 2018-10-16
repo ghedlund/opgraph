@@ -38,6 +38,10 @@ public class ReflectNodeMenuProvider implements MenuProvider {
 		addObject.putValue(AddObjectCommand.NAME, "Add object...");
 		menu.addMenuItem("add_object", addObject);
 		
+		final AddObjectReferenceCommand addObjectRef = new AddObjectReferenceCommand(doc, event.getPoint());
+		addObjectRef.putValue(AddObjectReferenceCommand.NAME, "Add object reference...");
+		menu.addMenuItem("add_object_ref", addObjectRef);
+		
 		final AddClassCommand addClass = new AddClassCommand(doc, event.getPoint());
 		addClass.putValue(AddClassCommand.NAME, "Add class...");
 		menu.addMenuItem("add_class", addClass);

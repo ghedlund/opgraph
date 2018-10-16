@@ -185,6 +185,10 @@ public class ReflectUtil {
 		return retVal;
 	}
 
+	public static String getSignature(Constructor<?> cstr) {
+		return getSignature(cstr, false);
+	}
+	
 	public static String getSignature(Method method) {
 		return getSignature(method, false);
 	}

@@ -41,8 +41,6 @@ public class AddObjectReferenceCommand extends AbstractAction {
 		super();
 		this.document = doc;
 		this.point = p;
-		putValue(ACCELERATOR_KEY, 
-				KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | KeyEvent.VK_ALT));
 	}
 	
 	@Override

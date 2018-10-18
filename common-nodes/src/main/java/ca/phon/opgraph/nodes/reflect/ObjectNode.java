@@ -128,40 +128,38 @@ public class ObjectNode extends AbstractReflectNode {
 			obj = context.get(getContextKey());
 		}
 		
-		if(obj == null)
-			throw new ProcessingException(null, new NullPointerException(inputValueField.getKey()));
-		
-		for(ObjectNodePropertyInputField classInput:classInputs) {
-			final Object val = context.get(classInput);
-			if(val != null) {
-				final Method setMethod = classInput.setMethod;
-				try {
-					setMethod.invoke(obj, val);
-				} catch (IllegalArgumentException e) {
-					throw new ProcessingException(null, e);
-				} catch (IllegalAccessException e) {
-					throw new ProcessingException(null, e);
-				} catch (InvocationTargetException e) {
-					throw new ProcessingException(null, e);
+		if(obj != null) {
+			for(ObjectNodePropertyInputField classInput:classInputs) {
+				final Object val = context.get(classInput);
+				if(val != null) {
+					final Method setMethod = classInput.setMethod;
+					try {
+						setMethod.invoke(obj, val);
+					} catch (IllegalArgumentException e) {
+						throw new ProcessingException(null, e);
+					} catch (IllegalAccessException e) {
+						throw new ProcessingException(null, e);
+					} catch (InvocationTargetException e) {
+						throw new ProcessingException(null, e);
+					}
+				}
+			}
+			
+			for(ObjectNodePropertyOutputField classOutput:classOutputs) {
+				if(context.isActive(classOutput)) {
+					try {
+						final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
+						context.put(classOutput, val);
+					} catch (IllegalArgumentException e) {
+						throw new ProcessingException(null, e);
+					} catch (IllegalAccessException e) {
+						throw new ProcessingException(null, e);
+					} catch (InvocationTargetException e) {
+						throw new ProcessingException(null, e);
+					}
 				}
 			}
 		}
-		
-		for(ObjectNodePropertyOutputField classOutput:classOutputs) {
-			if(context.isActive(classOutput)) {
-				try {
-					final Object val = classOutput.getMethod.invoke(obj, new Object[0]);
-					context.put(classOutput, val);
-				} catch (IllegalArgumentException e) {
-					throw new ProcessingException(null, e);
-				} catch (IllegalAccessException e) {
-					throw new ProcessingException(null, e);
-				} catch (InvocationTargetException e) {
-					throw new ProcessingException(null, e);
-				}
-			}
-		}
-		
 		context.put(outputValueField, obj);
 	}
 

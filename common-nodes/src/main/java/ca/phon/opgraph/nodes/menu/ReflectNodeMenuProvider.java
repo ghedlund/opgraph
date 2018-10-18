@@ -35,7 +35,7 @@ public class ReflectNodeMenuProvider implements MenuProvider {
 	public void installPopupItems(Object context, MouseEvent event,
 			GraphDocument doc, PathAddressableMenu menu) {
 		final AddObjectCommand addObject = new AddObjectCommand(doc, event.getPoint());
-		addObject.putValue(AddObjectCommand.NAME, "Add object...");
+		addObject.putValue(AddObjectCommand.NAME, "New object...");
 		menu.addMenuItem("add_object", addObject);
 		
 		final AddObjectReferenceCommand addObjectRef = new AddObjectReferenceCommand(doc, event.getPoint());

@@ -67,6 +67,14 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 	/** The mapping of nodes to node components */
 	private HashMap<OpNode, CanvasNode> nodes;
 	
+	private final static float DEFAULT_ZOOM_LEVEL = 1.0f;
+	private final static float MINIMUM_ZOOM_LEVEL = 0.2f;
+	private final static float MAXIMUM_ZOOM_LEVEL = 2.0f;
+	/**
+	 * Zoom level
+	 */
+	private float zoomLevel = DEFAULT_ZOOM_LEVEL;
+	
 	/**
 	 * Minimap component
 	 */
@@ -142,6 +150,29 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 		setUI(new DefaultGraphCanvasUI(this));
 	}
 
+	/**
+	 * Get the zoom level for the canvas
+	 */
+	public float getZoomLevel() {
+		return this.zoomLevel;
+	}
+	
+	/**
+	 * Set the zoom level for the canvas. The
+	 * input value is constrained to the allowed range.
+	 * 
+	 * @param zoomLevel
+	 */
+	public void setZoomLevel(float zoomLevel) {
+		float oldVal = this.zoomLevel;
+		this.zoomLevel = zoomLevel;
+		if(this.zoomLevel < MINIMUM_ZOOM_LEVEL)
+			this.zoomLevel = MINIMUM_ZOOM_LEVEL;
+		if(this.zoomLevel > MAXIMUM_ZOOM_LEVEL)
+			this.zoomLevel = MAXIMUM_ZOOM_LEVEL;
+		firePropertyChange("zoomLevel", oldVal, this.zoomLevel);
+	}
+	
 	/**
 	 * Gets the selection model this canvas is using.
 	 * 
@@ -473,6 +504,13 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 	public void cut() {
 		copy();
 		getDocument().getUndoSupport().postEdit(new DeleteNodesEdit(document.getGraph(), getSelectionModel().getSelectedNodes()));
+	}
+	
+	@Override
+	public void paintComponent(Graphics g) {
+		Graphics2D g2 = (Graphics2D)g;
+		g2.scale(getZoomLevel(), getZoomLevel());
+		super.paintComponent(g2);
 	}
 
 	//

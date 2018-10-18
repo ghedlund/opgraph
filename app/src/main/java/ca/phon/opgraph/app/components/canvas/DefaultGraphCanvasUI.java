@@ -20,6 +20,9 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -694,6 +697,45 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			if(!SwingUtilities.isDescendingFrom(source, canvas))
 				return;
 			
+			if(canvas.getZoomLevel() != 1.0f && !(me instanceof CustomMouseEvent)) {
+				final AffineTransform at = new AffineTransform();
+				at.scale(canvas.getZoomLevel(), canvas.getZoomLevel());
+				
+				// location in source coords
+				final Point mp = me.getPoint();
+				// location in canvas coords
+				final Point canvasPt = SwingUtilities.convertPoint(source, mp, canvas);
+				
+				// zoomed canvas coords
+				Point2D toConvert = new Point2D.Double(canvasPt.getX(), canvasPt.getY());
+				Point2D zoomedCoords = toConvert;
+				try {
+					zoomedCoords = at.inverseTransform(toConvert, null);
+				} catch (NoninvertibleTransformException e1) {
+				}
+				final Point zoomedPt = new Point((int)Math.round(zoomedCoords.getX()), (int)Math.round(zoomedCoords.getY()));
+				
+				Component newSrc = canvas;
+				Point newPt = zoomedPt;
+				for(Component c:canvas.getComponentsInLayer(NODES_LAYER)) {
+					if(c.getBounds().contains(zoomedPt)) {
+						final CanvasNode cn = (CanvasNode)c;
+						
+						// convert zoomedPt to canvas node coords
+						Point canvasNodePt = SwingUtilities.convertPoint(canvas, zoomedPt, cn);
+						// find deepest component at canvasNodePt
+						newSrc = SwingUtilities.getDeepestComponentAt(cn, canvasNodePt.x, canvasNodePt.y);
+						// location in srcCmp coords
+						newPt = SwingUtilities.convertPoint(cn, canvasNodePt, newSrc);
+					}
+				}
+				final CustomMouseEvent newMe = new CustomMouseEvent(newSrc, me.getID(), System.currentTimeMillis(), me.getModifiersEx(), 
+						newPt.x, newPt.y, me.getClickCount(), me.isPopupTrigger(), me.getButton());
+				newSrc.dispatchEvent(newMe);
+				me.consume();
+				return;
+			}
+			
 			if(e.getID() == MouseEvent.MOUSE_PRESSED) {
 				// If the mouse is pressed, update the selection. If pressed
 				// on the canvas area, clear the selection. If on a node, and
@@ -897,6 +939,27 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			canvas.repaint();
 		}
 	};
+	
+	private class CustomMouseEvent extends MouseEvent {
+
+		
+		
+		public CustomMouseEvent(Component source, int id, long when, int modifiers, int x, int y, int clickCount,
+				boolean popupTrigger, int button) {
+			super(source, id, when, modifiers, x, y, clickCount, popupTrigger, button);
+		}
+
+		public CustomMouseEvent(Component source, int id, long when, int modifiers, int x, int y, int clickCount,
+				boolean popupTrigger) {
+			super(source, id, when, modifiers, x, y, clickCount, popupTrigger);
+		}
+
+		public CustomMouseEvent(Component source, int id, long when, int modifiers, int x, int y, int xAbs, int yAbs,
+				int clickCount, boolean popupTrigger, int button) {
+			super(source, id, when, modifiers, x, y, xAbs, yAbs, clickCount, popupTrigger, button);
+		}
+		
+	}
 
 	//
 	// MouseMotionListener

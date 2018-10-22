@@ -121,19 +121,19 @@ public abstract class GraphCanvasUI extends ComponentUI {
 	 */
 	public abstract void startLinkDrag(CanvasNodeField fieldComponent);
 	
-	/**
-	 * Called to update link dragging status.
-	 * 
-	 * @param p  the current point of the drag, in the coordinate system of this component
-	 */
-	public abstract void updateLinkDrag(Point p);
-	
-	/**
-	 * Called when link dragging should end.
-	 * 
-	 * @param p  the end point of the drag, in the coordinate system of this component
-	 */
-	public abstract void endLinkDrag(Point p);
+//	/**
+//	 * Called to update link dragging status.
+//	 * 
+//	 * @param p  the current point of the drag, in the coordinate system of this component
+//	 */
+//	public abstract void updateLinkDrag(Point p);
+//	
+//	/**
+//	 * Called when link dragging should end.
+//	 * 
+//	 * @param p  the end point of the drag, in the coordinate system of this component
+//	 */
+//	public abstract void endLinkDrag(Point p);
 	
 
 }

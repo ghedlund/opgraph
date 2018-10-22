@@ -109,7 +109,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 		this.canvas = (GraphCanvas)c;
 		
 		// Components
-		this.gridLayer = new GridLayer();
+		this.gridLayer = new GridLayer(canvas);
 		this.linksLayer = new LinksLayer(canvas);
 		this.canvasOverlay = new CanvasOverlay(canvas);
 		this.canvasDebugOverlay = new DebugOverlay(canvas);
@@ -358,7 +358,20 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 		currentlyDraggedLink = null;
 		currentlyDraggedLinkInputField = null;
 		currentDragLinkLocation = canvas.getMousePosition();
-
+		
+		if(canvas.getZoomLevel() != 1.0f) {
+			final AffineTransform at = new AffineTransform();
+			at.scale(canvas.getZoomLevel(), canvas.getZoomLevel());
+			// convert mouse position to logical coords
+			Point2D mousePt = new Point2D.Double(currentDragLinkLocation.getX(), currentDragLinkLocation.getY());
+			Point2D zoomedPt = mousePt;
+			try {
+				zoomedPt = at.inverseTransform(mousePt, null);
+			} catch (NoninvertibleTransformException e1) {
+			}
+			currentDragLinkLocation = new Point((int)Math.round(zoomedPt.getX()), (int)Math.round(zoomedPt.getY()));
+		}
+		
 		CanvasNode node = (CanvasNode)SwingUtilities.getAncestorOfClass(CanvasNode.class, fieldComponent);
 		if(node != null) {
 			ContextualItem field = fieldComponent.getField();
@@ -395,7 +408,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	 * 
 	 * @param p  the current point of the drag, in the coordinate system of this component
 	 */
-	public void updateLinkDrag(Point p) {
+	public void updateLinkDrag(MouseEvent me) {
 		if(!canvas.isEnabled()) return;
 
 		if(currentlyDraggedLinkInputField == null) {
@@ -403,6 +416,12 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			return;
 		}
 
+		// convert me.getPoint() to canvas coord space
+		Point p = me.getPoint();
+		if(me.getSource() != canvas) {
+			p = SwingUtilities.convertPoint((Component)me.getSource(), me.getPoint(), canvas);
+		}
+		
 		currentDragLinkLocation = p;
 		dragLinkIsValid = true;
 
@@ -414,7 +433,8 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 		// Find the destination node
 		for(Component comp : canvas.getComponentsInLayer(NODES_LAYER)) {
 			final CanvasNode dest = (CanvasNode)comp;
-			final Point nodeP = SwingUtilities.convertPoint(canvas, p, dest);
+			Point nodeP = SwingUtilities.convertPoint(canvas, p, dest);
+			
 			if(dest.contains(nodeP)) {
 				// See if we're hovering over a field
 				CanvasNodeField field = dest.getFieldAt(nodeP);
@@ -445,10 +465,16 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	 * 
 	 * @param p  the end point of the drag, in the coordinate system of this component
 	 */
-	public void endLinkDrag(Point p) {
+	public void endLinkDrag(MouseEvent me) {
 		if(!canvas.isEnabled()) return; 
-
-		updateLinkDrag(p);
+		
+		updateLinkDrag(me);
+		
+		// convert me.getPoint() to canvas coord space
+		Point p = me.getPoint();
+		if(me.getSource() != canvas) {
+			p = SwingUtilities.convertPoint((Component)me.getSource(), me.getPoint(), canvas);
+		}
 		
 		final GraphDocument document = canvas.getDocument();
 		final OpGraph graph = document.getGraph();
@@ -690,13 +716,19 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			// Only registered for mouse events
 			if(!(e instanceof MouseEvent))
 				return;
-
+			
 			final Component source = (Component)e.getSource();
 			final MouseEvent me = (MouseEvent)e;
-
+						
 			if(!SwingUtilities.isDescendingFrom(source, canvas))
 				return;
 			
+			if(me.isPopupTrigger()) {
+				showContextMenu(me);
+				return;
+			}
+			
+			// re-dispatch events with zoomed coords if necessary
 			if(canvas.getZoomLevel() != 1.0f && !(me instanceof CustomMouseEvent)) {
 				final AffineTransform at = new AffineTransform();
 				at.scale(canvas.getZoomLevel(), canvas.getZoomLevel());
@@ -717,21 +749,32 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				
 				Component newSrc = canvas;
 				Point newPt = zoomedPt;
-				for(Component c:canvas.getComponentsInLayer(NODES_LAYER)) {
-					if(c.getBounds().contains(zoomedPt)) {
-						final CanvasNode cn = (CanvasNode)c;
-						
-						// convert zoomedPt to canvas node coords
-						Point canvasNodePt = SwingUtilities.convertPoint(canvas, zoomedPt, cn);
-						// find deepest component at canvasNodePt
-						newSrc = SwingUtilities.getDeepestComponentAt(cn, canvasNodePt.x, canvasNodePt.y);
-						// location in srcCmp coords
-						newPt = SwingUtilities.convertPoint(cn, canvasNodePt, newSrc);
+			
+				if(e.getID() == MouseEvent.MOUSE_DRAGGED) {
+					newSrc = source;
+					newPt = SwingUtilities.convertPoint(canvas, zoomedPt, newSrc);
+				} else {
+					if(getMinimapLayer().getMinimap().getBounds().contains(zoomedPt)) {
+						newSrc = source;
+						newPt = SwingUtilities.convertPoint(canvas, zoomedPt, newSrc);
+					} else {
+						for(Component c:canvas.getComponentsInLayer(NODES_LAYER)) {
+							if(c.getBounds().contains(zoomedPt)) {
+								final CanvasNode cn = (CanvasNode)c;
+								
+								// convert zoomedPt to canvas node coords
+								Point canvasNodePt = SwingUtilities.convertPoint(canvas, zoomedPt, cn);
+								// find deepest component at canvasNodePt
+								newSrc = SwingUtilities.getDeepestComponentAt(cn, canvasNodePt.x, canvasNodePt.y);
+								// location in srcCmp coords
+								newPt = SwingUtilities.convertPoint(cn, canvasNodePt, newSrc);
+							}
+						}
 					}
 				}
 				final CustomMouseEvent newMe = new CustomMouseEvent(newSrc, me.getID(), System.currentTimeMillis(), me.getModifiersEx(), 
 						newPt.x, newPt.y, me.getClickCount(), me.isPopupTrigger(), me.getButton());
-				newSrc.dispatchEvent(newMe);
+				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(newMe);
 				me.consume();
 				return;
 			}
@@ -759,53 +802,50 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 								== Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
 
 				// No CanvasNode parent? Select nothing, otherwise select its node
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						final CanvasNode canvasNode = GUIHelper.getAncestorOrSelfOfClass(CanvasNode.class, source);
-						if(canvasNode == null) {
-							if(!addToSelection)
-								canvas.getSelectionModel().setSelectedNode(null);
+				final CanvasNode canvasNode = GUIHelper.getAncestorOrSelfOfClass(CanvasNode.class, source);
+				if(canvasNode == null) {
+					if(!addToSelection)
+						canvas.getSelectionModel().setSelectedNode(null);
 
-							final NoteComponent note = GUIHelper.getAncestorOrSelfOfClass(NoteComponent.class, source);
-							if(note != null) {
-								canvas.moveToFront(note);
+					final NoteComponent note = GUIHelper.getAncestorOrSelfOfClass(NoteComponent.class, source);
+					if(note != null) {
+						canvas.moveToFront(note);
 
-								final Component comp = (source instanceof ResizeGrip) ? source : note;
-								final Point initialLocation = comp.getLocation();
-								componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
-							}
-						} else {
-							// If it's not already selected, then select it
-							if(!canvas.getSelectionModel().getSelectedNodes().contains(canvasNode.getNode())) {
-								if(addToSelection)
-									canvas.getSelectionModel().addNodeToSelection(canvasNode.getNode());
-								else
-									canvas.getSelectionModel().setSelectedNode(canvasNode.getNode());
-							} else {
-								// remove from selection if control is down
-								if(addToSelection)
-									canvas.getSelectionModel().removeNodeFromSelection(canvasNode.getNode());
-							}
+						final Component comp = (source instanceof ResizeGrip) ? source : note;
+						final Point initialLocation = comp.getLocation();
+						componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
+					}
+					
+					selectionRect = new Rectangle(me.getPoint());
+				} else {
+					// If it's not already selected, then select it
+					if(!canvas.getSelectionModel().getSelectedNodes().contains(canvasNode.getNode())) {
+						if(addToSelection)
+							canvas.getSelectionModel().addNodeToSelection(canvasNode.getNode());
+						else
+							canvas.getSelectionModel().setSelectedNode(canvasNode.getNode());
+					} else {
+						// remove from selection if control is down
+						if(addToSelection)
+							canvas.getSelectionModel().removeNodeFromSelection(canvasNode.getNode());
+					}
 
-							// Bring it to the top of the nodes layer
-							canvas.moveToFront(canvasNode);
+					// Bring it to the top of the nodes layer
+					canvas.moveToFront(canvasNode);
 
-							// Set the selected nodes as the components to move on drag
-							for(OpNode node : canvas.getSelectionModel().getSelectedNodes()) {
-								final JComponent comp = node.getExtension(JComponent.class);
-								if(comp != null) {
-									final Point initialLocation = comp.getLocation();
-									componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
-								}
-							}
-						}
-						
-						if(me.isPopupTrigger()) {
-							showContextMenu(me);
+					// Set the selected nodes as the components to move on drag
+					for(OpNode node : canvas.getSelectionModel().getSelectedNodes()) {
+						final JComponent comp = node.getExtension(JComponent.class);
+						if(comp != null) {
+							final Point initialLocation = comp.getLocation();
+							componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
 						}
 					}
-				});
+				}
+					
+				if(source instanceof CanvasNodeField) {
+					startLinkDrag((CanvasNodeField)source);
+				}
 			} else if(e.getID() == MouseEvent.MOUSE_CLICKED && ((MouseEvent)e).getClickCount() == 2) {
 				// If double clicked, we'll descend into a composite node
 				boolean shouldDescend = true;
@@ -836,7 +876,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			// All other events won't be processed if the canvas is disabled 
 			if(!canvas.isEnabled())
 				return;
-
+			
 			if(e.getID() == MouseEvent.MOUSE_DRAGGED) {
 				// Move the selected nodes, if not creating a link
 				if(clickLocation != null && currentlyDraggedLinkInputField == null && selectionRect == null) {
@@ -860,6 +900,15 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 							comp.setLocation(initialLoc.x + deltaX, initialLoc.y + deltaY);
 						}
 					}
+				}
+				
+				if(selectionRect != null) {
+					final Point src = selectionRect.getLocation();
+					selectionRect.setSize(me.getPoint().x - src.x, me.getPoint().y - src.y);
+					
+					canvas.repaint();
+				} else if(currentlyDraggedLinkInputField != null) {
+					updateLinkDrag(me);
 				}
 			} else if(e.getID() == MouseEvent.MOUSE_RELEASED) {
 				// Post an undoable event for any dragging that occurred
@@ -893,6 +942,31 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 					}
 				}
 				
+				if(selectionRect != null) {
+					final Rectangle rect = getSelectionRect(); 
+					Set<OpNode> selected = new HashSet<OpNode>();
+					for(Component comp : canvas.getComponentsInLayer(NODES_LAYER)) {
+						final Rectangle compRect = comp.getBounds();
+						if((comp instanceof CanvasNode) && rect.intersects(compRect))
+							selected.add( ((CanvasNode)comp).getNode() );
+					}
+					
+					if((me.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())
+							== Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) {
+						final HashSet<OpNode> currentSelection = new HashSet<>(canvas.getSelectionModel().getSelectedNodes());
+						currentSelection.addAll(selected);
+						selected = currentSelection;
+					}
+					
+					canvas.getSelectionModel().setSelectedNodes(selected);
+				} else if (currentlyDraggedLinkInputField != null) {
+					endLinkDrag(me);
+				}
+
+				// Reset variables
+				selectionRect = null;
+				canvas.repaint();
+				
 				if(me.isPopupTrigger()) {
 					showContextMenu(me);
 				}
@@ -909,34 +983,11 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	private final MouseAdapter mouseAdapter = new MouseAdapter() {
 		@Override
 		public void mousePressed(MouseEvent e) {
-			selectionRect = new Rectangle(e.getPoint());
+			
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			// Find selected nodes, if necessary
-			if(selectionRect != null) {
-				final Rectangle rect = getSelectionRect(); 
-				Set<OpNode> selected = new HashSet<OpNode>();
-				for(Component comp : canvas.getComponentsInLayer(NODES_LAYER)) {
-					final Rectangle compRect = comp.getBounds();
-					if((comp instanceof CanvasNode) && rect.intersects(compRect))
-						selected.add( ((CanvasNode)comp).getNode() );
-				}
-				
-				if((e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())
-						== Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) {
-					final HashSet<OpNode> currentSelection = new HashSet<>(canvas.getSelectionModel().getSelectedNodes());
-					currentSelection.addAll(selected);
-					selected = currentSelection;
-				}
-				
-				canvas.getSelectionModel().setSelectedNodes(selected);
-			}
-
-			// Reset variables
-			selectionRect = null;
-			canvas.repaint();
 		}
 	};
 	
@@ -968,15 +1019,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	private final MouseMotionAdapter mouseMotionAdapter = new MouseMotionAdapter() {
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			final Point p = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(), canvas);
-			canvas.scrollRectToVisible(new Rectangle(p.x, p.y, 1, 1));
-
-			if(selectionRect != null) {
-				final Point src = selectionRect.getLocation();
-				selectionRect.setSize(p.x - src.x, p.y - src.y);
-			}
-
-			canvas.repaint();
+			
 		}
 	};
 	

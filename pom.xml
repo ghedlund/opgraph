@@ -141,12 +141,8 @@
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
-		<!-- Properties for stylus-ext-skin -->
-		<m2st-syntaxHighlighter-urlBase>syntaxhighlighter</m2st-syntaxHighlighter-urlBase>
-		<m2st-syntaxHighlighter-brushFiles>shBrushPlain.js,shBrushXml.js,shBrushJava.js</m2st-syntaxHighlighter-brushFiles>
-		<m2st-syntaxHighlighter-themeCssFile>shThemeRDark.css</m2st-syntaxHighlighter-themeCssFile>
-		<m2st-syntaxHighlighter-config>config.clipboardSwf='%ROOT%/scripts/clipboard.swf'</m2st-syntaxHighlighter-config>
+		<project.build.sourceVersion>11</project.build.sourceVersion>
+		<project.build.targetVersion>11</project.build.targetVersion>
 	</properties>
 	
 	<!-- Modules and Build -->
@@ -191,10 +187,12 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.7.0</version>
+					<version>3.8.0</version>
 					<configuration>
-						<source>10</source>
-						<target>10</target>
+						<source>${project.build.sourceVersion}</source>
+						<target>${project.build.targetVersion}</target>
+						<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+						<release>${project.build.targetVersion}</release>
 					</configuration>
 				</plugin>
 				

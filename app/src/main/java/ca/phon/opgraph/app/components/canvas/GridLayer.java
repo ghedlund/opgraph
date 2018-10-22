@@ -17,6 +17,9 @@
 package ca.phon.opgraph.app.components.canvas;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 
 import javax.swing.JComponent;
 
@@ -33,12 +36,16 @@ public class GridLayer extends JComponent {
 	/** Snap distance */
 	public static final int DEFAULT_SNAP_DISTANCE = 5;
 
+	private final GraphCanvas canvas;
+	
 	/**
 	 * Constructs a viewport for the specified canvas.
 	 */
-	public GridLayer() {
+	public GridLayer(GraphCanvas canvas) {
 		setOpaque(true);
 		setBackground(Color.DARK_GRAY);
+		
+		this.canvas = canvas;
 	}
 
 	/**
@@ -84,22 +91,37 @@ public class GridLayer extends JComponent {
 
 		super.paintComponent(g);
 
-		// Fill background
-		g.setColor(getBackground());
-		g.fill(getVisibleRect());
-
 		// Draw grid lines
 		final Rectangle view = getVisibleRect();
-		final int startx = ((view.x / DEFAULT_GRID_SPACING - 1) * DEFAULT_GRID_SPACING); 
-		final int starty = ((view.y / DEFAULT_GRID_SPACING - 1) * DEFAULT_GRID_SPACING); 
-		final int endx = view.x + view.width + 1;
-		final int endy = view.y + view.height + 1;
-
-		g.setColor(GUIHelper.highlightColor(getBackground()));
-		for(int y = starty; y < endy; y += DEFAULT_GRID_SPACING)
-			g.drawLine(view.x, y, endx, y);
-
-		for(int x = startx; x < endx; x += DEFAULT_GRID_SPACING)
-			g.drawLine(x, view.y, x, endy);
+		
+		final AffineTransform at = new AffineTransform();
+		at.scale(canvas.getZoomLevel(), canvas.getZoomLevel());
+				
+		int startx = ((view.x / DEFAULT_GRID_SPACING - 1) * DEFAULT_GRID_SPACING); 
+		int starty = ((view.y / DEFAULT_GRID_SPACING - 1) * DEFAULT_GRID_SPACING); 
+		int endx = view.x + view.width + 1;
+		int endy = view.y + view.height + 1;
+		
+		try {
+			Point2D topLeft = at.inverseTransform(new Point2D.Double(startx, starty), null);
+			Point2D btmRight = at.inverseTransform(new Point2D.Double(endx, endy), null);
+			
+			startx = (int)Math.round(topLeft.getX());
+			starty = (int)Math.round(topLeft.getY());
+			endx = (int)Math.round(btmRight.getX());
+			endy = (int)Math.round(btmRight.getY());
+			
+			// Fill background
+			g.setColor(getBackground());
+			g.fillRect(0, 0, canvas.getSize().width, canvas.getSize().height);
+			
+			g.setColor(GUIHelper.highlightColor(getBackground()));
+			for(int y = starty; y < endy; y += DEFAULT_GRID_SPACING)
+				g.drawLine(startx, y, endx, y);
+			
+			for(int x = startx; x < endx; x += DEFAULT_GRID_SPACING)
+				g.drawLine(x, starty, x, endy);
+		} catch (NoninvertibleTransformException e) {
+		}
 	}
 }

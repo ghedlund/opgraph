@@ -132,8 +132,9 @@ public class DoubleClickableTextField {
 	private final MouseAdapter mouseAdapter = new MouseAdapter() {
 		@Override
 		public void mousePressed(MouseEvent e) {
-			if(e.getClickCount() > 1 && !e.isPopupTrigger())
+			if(e.getClickCount() > 1 && !e.isPopupTrigger()) {
 				setEditing(true);
+			}
 		}
 	};
 

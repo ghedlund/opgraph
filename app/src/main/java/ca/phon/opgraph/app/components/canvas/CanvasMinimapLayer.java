@@ -41,6 +41,10 @@ public class CanvasMinimapLayer extends JComponent {
 		return null;
 	}
 	
+	public CanvasMinimap getMinimap() {
+		return this.minimap;
+	}
+	
 	private void init() {
 		setLayout(null);
 		

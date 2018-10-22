@@ -39,6 +39,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.MouseInputAdapter;
 
 import ca.phon.opgraph.ContextualItem;
 import ca.phon.opgraph.InputField;
@@ -153,8 +154,8 @@ public class CanvasNodeField extends JComponent {
 		setField(field);
 		setOpaque(false);
 
-		addMouseListener(mouseAdapter);
-		addMouseMotionListener(mouseMotionAdapter);
+//		addMouseListener(mouseAdapter);
+//		addMouseMotionListener(mouseMotionAdapter);
 
 		add(name);
 	}
@@ -319,57 +320,4 @@ public class CanvasNodeField extends JComponent {
 		}
 	}
 
-	//
-	// MouseAdapter
-	//
-
-	private final MouseAdapter mouseAdapter = new MouseAdapter() {
-		@Override
-		public void mouseExited(MouseEvent e) {
-			Component parentCanvas = SwingUtilities.getAncestorOfClass(GraphCanvas.class, CanvasNodeField.this);
-			if(parentCanvas != null)
-				parentCanvas.setCursor(null);
-		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			GraphCanvas parentCanvas = (GraphCanvas)SwingUtilities.getAncestorOfClass(GraphCanvas.class, CanvasNodeField.this);
-			if(parentCanvas != null) {
-				if(anchor.contains(e.getPoint()))
-					parentCanvas.getUI().startLinkDrag(CanvasNodeField.this);
-			}
-		}
-
-		@Override
-		public void mouseReleased(MouseEvent e) {
-			GraphCanvas parentCanvas = (GraphCanvas)SwingUtilities.getAncestorOfClass(GraphCanvas.class, CanvasNodeField.this);
-			if(parentCanvas != null)
-				parentCanvas.getUI().endLinkDrag(SwingUtilities.convertPoint(CanvasNodeField.this, e.getPoint(), parentCanvas));
-		}
-	};
-
-	//
-	// MouseMotionAdapter
-	//
-
-	private final MouseMotionAdapter mouseMotionAdapter = new MouseMotionAdapter() {
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			GraphCanvas parentCanvas = (GraphCanvas)SwingUtilities.getAncestorOfClass(GraphCanvas.class, CanvasNodeField.this);
-			if(parentCanvas != null)
-				parentCanvas.getUI().updateLinkDrag(SwingUtilities.convertPoint(CanvasNodeField.this, e.getPoint(), parentCanvas));
-		}
-
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			Component parentCanvas = SwingUtilities.getAncestorOfClass(GraphCanvas.class, CanvasNodeField.this);
-			if(parentCanvas != null) {
-				if(anchor.contains(e.getPoint())) {
-					parentCanvas.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-				} else {
-					parentCanvas.setCursor(null);
-				}
-			}
-		}
-	};
 }

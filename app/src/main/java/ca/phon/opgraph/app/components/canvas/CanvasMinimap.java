@@ -19,6 +19,8 @@ package ca.phon.opgraph.app.components.canvas;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
 
@@ -116,6 +118,10 @@ public class CanvasMinimap extends JComponent {
 		add(minimapLabel, BorderLayout.CENTER);
 	}
 	
+	public JLabel getLabel() {
+		return this.minimapLabel;
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -151,6 +157,7 @@ public class CanvasMinimap extends JComponent {
 			h = MAX_LENGTH;
 			w = (int)Math.floor((h * graphBounds.getWidth()) / graphBounds.getHeight());
 		}
+		
 		return new Dimension(w, h);
 	}
 	
@@ -178,6 +185,7 @@ public class CanvasMinimap extends JComponent {
 		final Rectangle viewRect = getCanvas().getVisibleRect();
 		final Rectangle graphBounds = getCanvas().getUI().getGraphBoundingRect();
 		final Dimension minimapSize = getMinimapSize(graphBounds);
+		
 		final double sx = minimapSize.getWidth() / graphBounds.getWidth();
 		final double sy = minimapSize.getHeight() / graphBounds.getHeight();
 		
@@ -185,8 +193,16 @@ public class CanvasMinimap extends JComponent {
 	}
 	
 	public BufferedImage createMinimapImage() {
-		final Rectangle graphBounds = getCanvas().getUI().getGraphBoundingRect();
-		final Dimension minimapSize = getMinimapSize(graphBounds);
+		final AffineTransform at = new AffineTransform();
+		at.scale(getCanvas().getZoomLevel(), getCanvas().getZoomLevel());
+		
+		Rectangle graphBounds = getCanvas().getUI().getGraphBoundingRect();
+		Dimension minimapSize = getMinimapSize(graphBounds);
+		try {
+			Point2D zoomedSize = at.inverseTransform(new Point2D.Double(minimapSize.getWidth(), minimapSize.getHeight()), null);
+			minimapSize.setSize(zoomedSize.getX(), zoomedSize.getY());
+		} catch (NoninvertibleTransformException e) {
+		}
 		
 		final double sx = minimapSize.getWidth() / graphBounds.getWidth();
 		final double sy = minimapSize.getHeight() / graphBounds.getHeight();		
@@ -203,12 +219,23 @@ public class CanvasMinimap extends JComponent {
 		
 		getCanvas().getUI().getGridLayer().setVisible(false);
 		getCanvas().getUI().getMinimapLayer().setVisible(false);
+		float zl = getCanvas().getZoomLevel();
+		getCanvas().setZoomLevel(1.0f);
 		getCanvas().paint(g);
+		getCanvas().setZoomLevel(zl);
 		getCanvas().getUI().getMinimapLayer().setVisible(true);
 		getCanvas().getUI().getGridLayer().setVisible(true);
 		
 		// paint current view rect
-		final Rectangle viewRect = getCanvas().getVisibleRect();
+		Rectangle viewRect = getCanvas().getVisibleRect();
+		try {
+			Point2D viewTopLeft = at.inverseTransform(viewRect.getLocation(), null);
+			Point2D viewDimensions = at.inverseTransform(new Point2D.Double(viewRect.getWidth(), viewRect.getHeight()), null);
+			
+			viewRect.setBounds((int)viewTopLeft.getX(), (int)viewTopLeft.getY(), (int)viewDimensions.getX(), (int)viewDimensions.getY());
+		} catch (NoninvertibleTransformException e) {
+		}
+		
 		g.setColor(new Color(255, 255, 255, 100));
 		g.fillRect(viewRect.x, viewRect.y, viewRect.width, viewRect.height);
 		

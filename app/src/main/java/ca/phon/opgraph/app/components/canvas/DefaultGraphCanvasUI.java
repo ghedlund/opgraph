@@ -719,6 +719,18 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			
 			final Component source = (Component)e.getSource();
 			final MouseEvent me = (MouseEvent)e;
+			
+//			if(me.getID() == MouseEvent.MOUSE_RELEASED
+//					&& !(e instanceof CustomMouseEvent)) {
+//				if(!canvas.contains(me.getPoint())) {
+//					// clear selection, components to move, etc.
+//					if(selectionRect != null)
+//						selectionRect = null;
+//					
+//					canvas.repaint();
+//					me.consume();
+//				}
+//			}
 						
 			if(!SwingUtilities.isDescendingFrom(source, canvas))
 				return;
@@ -751,11 +763,10 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				Point newPt = zoomedPt;
 			
 				if(e.getID() == MouseEvent.MOUSE_DRAGGED) {
-					newSrc = source;
-					newPt = SwingUtilities.convertPoint(canvas, zoomedPt, newSrc);
+					// always use canvas coords
 				} else {
 					if(getMinimapLayer().getMinimap().getBounds().contains(zoomedPt)) {
-						newSrc = source;
+						newSrc = getMinimapLayer().getMinimap().getLabel();
 						newPt = SwingUtilities.convertPoint(canvas, zoomedPt, newSrc);
 					} else {
 						for(Component c:canvas.getComponentsInLayer(NODES_LAYER)) {
@@ -900,6 +911,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 							comp.setLocation(initialLoc.x + deltaX, initialLoc.y + deltaY);
 						}
 					}
+					canvas.repaint();
 				}
 				
 				if(selectionRect != null) {

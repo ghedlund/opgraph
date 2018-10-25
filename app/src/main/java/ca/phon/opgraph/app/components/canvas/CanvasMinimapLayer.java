@@ -17,6 +17,9 @@
 package ca.phon.opgraph.app.components.canvas;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Point2D;
 
 import javax.swing.*;
 
@@ -61,14 +64,31 @@ public class CanvasMinimapLayer extends JComponent {
 		if(isVisible()) {
 			int x = this.minimap.getX();
 			int y = this.minimap.getY();
-			int newX = getVisibleRect().x + getVisibleRect().width - CanvasMinimap.MAX_LENGTH;
-			int newY = getVisibleRect().y;
 			
-			if(x != newX || y != newY) {
-				this.minimap.updateMinimap();
+			final AffineTransform at = new AffineTransform();
+			at.scale(getMinimap().getCanvas().getZoomLevel(), getMinimap().getCanvas().getZoomLevel());
+			
+			final Rectangle viewRect = getVisibleRect();
+			
+			try {
+				Point2D canvasTopLeft = at.inverseTransform(viewRect.getLocation(), null);
+				Point2D canvasDimensions = at.inverseTransform(new Point2D.Double(viewRect.width, viewRect.height), null);
+				
+				Point2D minimapDimensions = at.inverseTransform(new Point2D.Double(CanvasMinimap.MAX_LENGTH, CanvasMinimap.MAX_LENGTH), null);
+				
+				int maxX = Math.min(getMinimap().getCanvas().getWidth(), (int)(canvasTopLeft.getX() + canvasDimensions.getX()) );
+				int newX = (int)(maxX - minimapDimensions.getX());
+				int newY = (int)Math.round(canvasTopLeft.getY());
+				
+				if(x != newX || y != newY) {
+					this.minimap.updateMinimap();
+				}
+				
+				this.minimap.setBounds(newX, newY, (int)minimapDimensions.getX(), (int)minimapDimensions.getY());
+			} catch (NoninvertibleTransformException e) {
 			}
 			
-			this.minimap.setBounds(newX, newY, CanvasMinimap.MAX_LENGTH, CanvasMinimap.MAX_LENGTH);
+			
 		}
 	}
 	

@@ -19,6 +19,8 @@ package ca.phon.opgraph.app.components.canvas;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.beans.*;
 import java.io.IOException;
 import java.util.*;
@@ -67,9 +69,9 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 	/** The mapping of nodes to node components */
 	private HashMap<OpNode, CanvasNode> nodes;
 	
-	private final static float DEFAULT_ZOOM_LEVEL = 1.0f;
-	private final static float MINIMUM_ZOOM_LEVEL = 0.2f;
-	private final static float MAXIMUM_ZOOM_LEVEL = 2.0f;
+	public final static float DEFAULT_ZOOM_LEVEL = 1.0f;
+	public final static float MINIMUM_ZOOM_LEVEL = 0.2f;
+	public final static float MAXIMUM_ZOOM_LEVEL = 2.0f;
 	/**
 	 * Zoom level
 	 */

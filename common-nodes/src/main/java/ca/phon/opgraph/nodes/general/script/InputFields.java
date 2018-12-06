@@ -54,7 +54,7 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param description  a description for the field
 	 */
 	public void add(String key, String description) {
-		add(key, description, false, true);
+		add(key, description, false, false);
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class InputFields extends ArrayList<InputField> {
 			String description,
 			Class<?>... acceptedTypes)
 	{
-		addWithValidators(key, description, false, true, acceptedTypes);
+		addWithValidators(key, description, false, false, acceptedTypes);
 	}
 
 	/**

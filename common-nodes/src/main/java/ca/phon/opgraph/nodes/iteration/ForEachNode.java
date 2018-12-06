@@ -34,6 +34,7 @@ import ca.phon.opgraph.OpNodeInfo;
 import ca.phon.opgraph.OutputField;
 import ca.phon.opgraph.Processor;
 import ca.phon.opgraph.app.components.canvas.NodeStyle;
+import ca.phon.opgraph.exceptions.BreakpointEncountered;
 import ca.phon.opgraph.exceptions.ProcessingException;
 import ca.phon.opgraph.nodes.general.MacroNode;
 import ca.phon.opgraph.validators.CollectionValidator;
@@ -167,6 +168,7 @@ public class ForEachNode extends MacroNode {
 
 			context.put(MAX_ITERATIONS_KEY, maxIterations);
 			for(int iteration = 0; iteration < maxIterations; ++iteration) {
+				checkCanceled();
 				processor.reset(context);
 
 				// The reset call above could clear out the context, so map after

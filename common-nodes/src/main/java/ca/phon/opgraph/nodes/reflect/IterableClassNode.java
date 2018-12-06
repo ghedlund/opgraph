@@ -207,6 +207,7 @@ public class IterableClassNode extends MacroNode implements NodeSettings, Reflec
 			final Iterable<?> iterable = (Iterable<?>)obj;
 			final Iterator<?> itr = iterable.iterator();
 			while(itr.hasNext()) {
+				checkCanceled();
 				processor.reset(context);
 				
 				mapInputs(context);

@@ -19,10 +19,15 @@ package ca.phon.opgraph.nodes.xml;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,9 +38,14 @@ import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.OpNode;
 import ca.phon.opgraph.OutputField;
 import ca.phon.opgraph.extensions.Extendable;
+import ca.phon.opgraph.extensions.Publishable.PublishedInput;
+import ca.phon.opgraph.extensions.Publishable.PublishedOutput;
+import ca.phon.opgraph.io.xml.SerializerNotFound;
 import ca.phon.opgraph.io.xml.XMLSerializer;
 import ca.phon.opgraph.io.xml.XMLSerializerFactory;
+import ca.phon.opgraph.nodes.general.LinkedMacroNodeOverrides;
 import ca.phon.opgraph.nodes.general.MacroNode;
+import ca.phon.opgraph.nodes.general.MacroNodeCache;
 import ca.phon.opgraph.nodes.iteration.ForEachNode;
 
 /**
@@ -84,7 +94,19 @@ public class MacroNodeXMLSerializer implements XMLSerializer {
 		if(graphSerializer == null)
 			throw new IOException("No handler for graph");
 
-		graphSerializer.write(serializerFactory, doc, macroElem, macro.getGraph());
+		if(macro.isGraphEmbedded()) {
+			graphSerializer.write(serializerFactory, doc, macroElem, macro.getGraph());			
+		} else {
+			// write url
+			var graphURL = macro.getGraphURI();
+			final Element graphURLElem = doc.createElementNS(NAMESPACE, PREFIX + ":uri");
+			try {
+				graphURLElem.setTextContent(graphURL.toString());
+			} catch (DOMException e) {
+				throw new IOException(e);
+			}
+			macroElem.appendChild(graphURLElem);
+		}
 
 		// Input fields
 		for(InputField field : macro.getInputFields()) {
@@ -158,7 +180,38 @@ public class MacroNodeXMLSerializer implements XMLSerializer {
 				if(node instanceof Element) {
 					final Element childElem = (Element)node;
 					final QName name = XMLSerializerFactory.getQName(childElem);
-					if(graphSerializer.handles(name)) {
+					final QName macroURLName = new QName(NAMESPACE, "uri", PREFIX);
+					if(name.equals(macroURLName)) {					
+						MacroNodeCache macroNodeCache = graph.getExtension(MacroNodeCache.class);
+						if(macroNodeCache == null) {
+							macroNodeCache = new MacroNodeCache();
+							graph.putExtension(MacroNodeCache.class, macroNodeCache);
+						}
+						try {
+							var graphURI = new URI(childElem.getTextContent().trim());
+														
+							OpGraph macroGraph = macroNodeCache.getGraph(graphURI);
+							
+							if(macroGraph.getVertices().size() == 1 && macroGraph.getVertices().get(0) instanceof MacroNode) {
+								MacroNode origNode = (MacroNode)macroGraph.getVertices().get(0);
+								macro = new MacroNode(origNode.getGraph());
+								
+								for(PublishedInput pubInput:origNode.getPublishedInputs()) {
+									macro.publish(pubInput.getKey(), pubInput.destinationNode, pubInput.nodeInputField);
+								}
+								for(PublishedOutput pubOutput:origNode.getPublishedOutputs()) {
+									macro.publish(pubOutput.getKey(), pubOutput.sourceNode, pubOutput.nodeOutputField);
+								}
+							} else {
+								// read (or load) graph from cache
+								macro = constructor.newInstance(macroGraph);
+							}
+							macro.setGraphURI(graphURI);
+							macro.setGraphEmbedded(false);
+						} catch (MalformedURLException | DOMException | URISyntaxException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							throw new IOException(e);
+						}
+					} else if(graphSerializer.handles(name)) {
 						final Object objRead = graphSerializer.read(serializerFactory, graph, macro, doc, childElem);
 						if(objRead == null || !(objRead instanceof OpGraph))
 							throw new IOException("Could not read graph for macro");

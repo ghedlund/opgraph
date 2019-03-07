@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+
 import ca.phon.opgraph.dag.CycleDetectedException;
 import ca.phon.opgraph.dag.DirectedAcyclicGraph;
 import ca.phon.opgraph.dag.VertexNotFoundException;
@@ -49,7 +50,7 @@ public final class OpGraph
 
 	/** A mapping from node id to node */
 	private Map<String, OpNode> nodeMap;
-
+	
 	private final Comparator<OpNode> nodeComparator = (n1, n2) -> {
 		final NodeMetadata meta1 = n1.getExtension(NodeMetadata.class);
 		final NodeMetadata meta2 = n2.getExtension(NodeMetadata.class);
@@ -76,7 +77,28 @@ public final class OpGraph
 	 * Default constructor.
 	 */
 	public OpGraph() {
+		super();
+		
 		this.nodeMap = new LinkedHashMap<String, OpNode>();
+		setVertexComparator(nodeComparator);
+		setId(null);
+	}
+	
+	/**
+	 * Copy constructor.  Useful when you wish to create a new {@link OpGraph}
+	 * (new vertex, edge, and nodeMap collection objects) with the same
+	 * nodes and link objects.
+	 * 
+	 */
+	public OpGraph(OpGraph toCopy) {
+		super();
+		
+		this.nodeMap = new LinkedHashMap<>();
+		this.nodeMap.putAll(toCopy.nodeMap);
+	
+		this.vertices.addAll(toCopy.vertices);
+		this.edges.addAll(toCopy.edges);
+		
 		setVertexComparator(nodeComparator);
 		setId(null);
 	}
@@ -281,10 +303,38 @@ public final class OpGraph
 		return link;
 	}
 
+	public OpNode swap(OpNode node) throws VertexNotFoundException, CycleDetectedException, ItemMissingException {
+		OpNode toSwap = getNodeById(node.getId(), false);
+		if(toSwap == null)
+			throw new IllegalArgumentException("Node with id " + node.getId() + " not found");
+
+		List<OpLink> newEdges = new ArrayList<>();
+		for(OpLink edge:getIncomingEdges(toSwap)) {
+			OpLink newEdge = new OpLink(
+					edge.getSource(), edge.getSourceField(),
+					node, node.getInputFieldWithKey(edge.getDestinationField().getKey()) );
+			newEdges.add(newEdge);
+		}
+		for(OpLink edge:getOutgoingEdges(toSwap)) {
+			OpLink newEdge = new OpLink(
+					node, node.getOutputFieldWithKey(edge.getSourceField().getKey()),
+					edge.getDestination(), edge.getDestinationField());
+			newEdges.add(newEdge);
+		}
+		
+		remove(toSwap);
+		add(node);
+		
+		for(OpLink edge:newEdges) {
+			add(edge);
+		}
+		
+		return toSwap;
+	}
+	
 	//
 	// Overrides
 	//
-
 	@Override
 	public void add(OpNode node) {
 		if(node != null && node.getId() != null) {

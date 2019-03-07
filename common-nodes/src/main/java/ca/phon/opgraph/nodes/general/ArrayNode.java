@@ -121,5 +121,5 @@ public class ArrayNode extends OpNode implements NodeSettings {
 		
 		context.put(arrayOutput, value);
 	}
-
+	
 }

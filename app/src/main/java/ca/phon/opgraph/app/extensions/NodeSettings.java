@@ -53,4 +53,5 @@ public interface NodeSettings {
 	 * @param properties  the properties to load settings from
 	 */
 	public abstract void loadSettings(Properties properties);
+	
 }

@@ -41,10 +41,10 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	implements Iterable<V>
 {
 	/** The vertices in this DAG */
-	List<V> vertices;
+	protected List<V> vertices;
 
 	/** The edges in this DAG */
-	Set<E> edges;
+	protected Set<E> edges;
 
 	/**
 	 * A mapping from vertex to its level.

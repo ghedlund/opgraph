@@ -38,7 +38,7 @@ public interface OpGraphListener {
 	 * @param node  the node that was removed
 	 */
 	public abstract void nodeRemoved(OpGraph graph, OpNode node);
-
+	
 	/**
 	 * Called when an link was added to a graph.
 	 *  

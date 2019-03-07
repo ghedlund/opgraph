@@ -17,6 +17,8 @@
 package ca.phon.opgraph.nodes.general;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -39,7 +41,7 @@ import ca.phon.opgraph.extensions.Publishable;
 
 /**
  * A node that contains a macro operation: a collection of nodes that behave
- * as a single {@link OpNode}.
+ * as a single {@link OpNode}.  Node graphs may be linked or embedded.
  */
 @OpNodeInfo(
 	name="Macro",
@@ -50,6 +52,12 @@ public class MacroNode
 	extends OpNode
 	implements CompositeNode, CustomProcessing, Publishable
 {
+	/** The uri of the macro graph (optional) */
+	protected URI graphURI;
+	
+	/** Should the graph be embedded or linked (default: embedded) */
+	protected boolean isGraphEmbedded = true;
+	
 	/** The graph representing this macro */
 	protected OpGraph graph;
 
@@ -64,19 +72,12 @@ public class MacroNode
 	private final List<ProcessorListener> processorListeners = new ArrayList<>();
 
 	/**
-	 * The source file for this macro.
-	 * 
-	 * @see #getSource()
-	 */
-	private final File source;
-
-	/**
 	 * Constructs a new macro with no source file and a default graph.
 	 */
 	public MacroNode() {
-		this(null, null);
+		this(null, new OpGraph(), true);
 	}
-
+	
 	/**
 	 * Constructs a new macro with no source file and a specified graph.
 	 * 
@@ -85,17 +86,19 @@ public class MacroNode
 	 * @throws NullPointerException  if the graph is <code>null</code>
 	 */
 	public MacroNode(OpGraph graph) {
-		this(null, graph);
+		this(null, graph, true);
 	}
 
 	/**
-	 * Constructs a macro node from the given source file and DAG.
+	 * Constructs a new macro with source url and a specified graph.
 	 * 
-	 * @param source  the source file (see {@link #getSource()}
 	 * @param graph  the graph
+	 * 
+	 * @throws NullPointerException  if the graph is <code>null</code>
 	 */
-	public MacroNode(File source, OpGraph graph) {
-		this.source = source;
+	public MacroNode(URI graphURI, OpGraph graph, boolean isGraphEmbedded) {
+		this.graphURI = graphURI;
+		this.isGraphEmbedded = isGraphEmbedded;
 		this.graph = (graph == null ? new OpGraph() : graph);
 		this.publishedInputs = new ArrayList<PublishedInput>();
 		this.publishedOutputs = new ArrayList<PublishedOutput>();
@@ -136,17 +139,6 @@ public class MacroNode
 		putExtension(Publishable.class, this);
 	}
 
-	/**
-	 * Gets the source file for this macro.
-	 * 
-	 * @return  the source file from which this macro was constructed, or
-	 *          <code>null</code> if this macro was constructed from the
-	 *          same file as the root graph which contains this node.
-	 */
-	public File getSource() {
-		return source;
-	}
-	
 	/**
 	 * Add a processor listener which will be added to any processors
 	 * created by the macro node.
@@ -234,6 +226,22 @@ public class MacroNode
 	//
 	// CompositeNode
 	//
+	
+	public URI getGraphURI() {
+		return this.graphURI;
+	}
+	
+	public void setGraphURI(URI uri) {
+		this.graphURI = uri;
+	}
+	
+	public boolean isGraphEmbedded() {
+		return getGraphURI() == null || isGraphEmbedded;
+	}
+	
+	public void setGraphEmbedded(boolean graphEmbedded) {
+		this.isGraphEmbedded = graphEmbedded;
+	}
 
 	@Override
 	public OpGraph getGraph() {

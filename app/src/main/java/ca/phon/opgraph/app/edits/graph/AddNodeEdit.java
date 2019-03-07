@@ -74,7 +74,7 @@ public class AddNodeEdit extends AbstractUndoableEdit {
 	{
 		this.graph = graph;
 		this.info = info;
-		this.node = this.info.instantiator.newInstance(info);
+		this.node = this.info.instantiator.newInstance(info, this.graph);
 		this.node.putExtension(NodeMetadata.class, new NodeMetadata(x, y));
 		perform();
 	}

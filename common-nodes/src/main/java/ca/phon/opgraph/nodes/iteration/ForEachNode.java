@@ -20,6 +20,8 @@
 package ca.phon.opgraph.nodes.iteration;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -65,7 +67,7 @@ public class ForEachNode extends MacroNode {
 	 * Constructs a new macro with no source file and a default graph.
 	 */
 	public ForEachNode() {
-		super(null, null);
+		super(null, new OpGraph(), true);
 	}
 
 	/**
@@ -76,7 +78,7 @@ public class ForEachNode extends MacroNode {
 	 * @throws NullPointerException  if the graph is <code>null</code>
 	 */
 	public ForEachNode(OpGraph graph) {
-		super(null, graph);
+		super(null, graph, true);
 	}
 
 	/**
@@ -85,8 +87,8 @@ public class ForEachNode extends MacroNode {
 	 * @param source  the source file (see {@link #getSource()}
 	 * @param graph  the graph
 	 */
-	public ForEachNode(File source, OpGraph graph) {
-		super(source, graph);
+	public ForEachNode(URI source, OpGraph graph, boolean embedded) {
+		super(source, graph, embedded);
 	}
 
 	/**

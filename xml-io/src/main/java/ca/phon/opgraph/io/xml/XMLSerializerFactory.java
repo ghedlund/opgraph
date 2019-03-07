@@ -56,6 +56,7 @@ import org.xml.sax.SAXException;
 
 import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.extensions.Extendable;
+import ca.phon.opgraph.extensions.ExtendableSupport;
 import ca.phon.opgraph.io.OpGraphSerializer;
 import ca.phon.opgraph.io.OpGraphSerializerInfo;
 import ca.phon.opgraph.util.ServiceDiscovery;
@@ -64,7 +65,7 @@ import ca.phon.opgraph.util.ServiceDiscovery;
  * A factory that maps qualified names to serializers that handle them.
  */
 @OpGraphSerializerInfo(extension="xml", description="XML Files")
-public final class XMLSerializerFactory implements OpGraphSerializer {
+public final class XMLSerializerFactory implements Extendable, OpGraphSerializer {
 	/** The default namespace */
 	static final String DEFAULT_NAMESPACE = "https://www.phon.ca/ns/opgraph";
 
@@ -79,12 +80,15 @@ public final class XMLSerializerFactory implements OpGraphSerializer {
 
 	/** XML Validator */
 	private Validator validator;
+	
+	private final ExtendableSupport extSupport = new ExtendableSupport(XMLSerializerFactory.class);
 
 	/**
 	 * Default constructor.
 	 */
 	public XMLSerializerFactory() {
 		this.serializers = new ArrayList<XMLSerializer>();
+		
 		initialize();
 	}
 
@@ -319,4 +323,17 @@ public final class XMLSerializerFactory implements OpGraphSerializer {
 
 		return ret;
 	}
+
+	public <T> T getExtension(Class<T> type) {
+		return extSupport.getExtension(type);
+	}
+
+	public Collection<Class<?>> getExtensionClasses() {
+		return extSupport.getExtensionClasses();
+	}
+
+	public <T> T putExtension(Class<T> type, T extension) {
+		return extSupport.putExtension(type, extension);
+	}
+	
 }

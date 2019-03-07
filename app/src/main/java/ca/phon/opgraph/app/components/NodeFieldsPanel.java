@@ -81,6 +81,8 @@ public class NodeFieldsPanel extends JPanel {
 
 		@Override
 		public void linkRemoved(OpGraph graph, OpLink link) {
+			if(graph != document.getGraph()) return;
+			
 			if(link.getSource() == getNode() || link.getDestination() == getNode()) {
 				updatePanel();
 			}
@@ -88,9 +90,16 @@ public class NodeFieldsPanel extends JPanel {
 
 		@Override
 		public void linkAdded(OpGraph graph, OpLink link) {
+			if(graph != document.getGraph()) return;
+			
 			if(link.getSource() == getNode() || link.getDestination() == getNode()) {
 				updatePanel();
 			}
+		}
+
+		@Override
+		public void nodeSwapped(OpGraph graph, OpNode oldNode, OpNode newNode) {
+			// TODO Auto-generated method stub
 		}
 
 	};

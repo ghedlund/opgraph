@@ -107,6 +107,8 @@ public class MacroNode
 			
 			@Override
 			public void nodeRemoved(OpGraph graph, OpNode node) {
+				if(graph != getGraph()) return;
+				
 				// unpublish fields if node is deleted
 				for(PublishedInput pi:getPublishedInputs().toArray(new PublishedInput[0])) {
 					if(pi.destinationNode == node) {
@@ -130,6 +132,10 @@ public class MacroNode
 			
 			@Override
 			public void linkAdded(OpGraph graph, OpLink link) {
+			}
+
+			@Override
+			public void nodeSwapped(OpGraph graph, OpNode oldNode, OpNode newNode) {
 			}
 			
 		});

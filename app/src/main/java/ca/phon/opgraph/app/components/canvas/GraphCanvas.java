@@ -527,6 +527,8 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 
 		@Override
 		public void nodeAdded(final OpGraph graph, final OpNode v) {
+//			if(graph != getDocument().getGraph()) return;
+			
 			if(!nodes.containsKey(v)) {
 				final CanvasNode node = new CanvasNode(v);
 				final int cx = (int)getVisibleRect().getCenterX();
@@ -576,6 +578,8 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 
 		@Override
 		public void nodeRemoved(OpGraph graph, OpNode v) {
+//			if(graph != getDocument().getGraph()) return;
+			
 			if(nodes.containsKey(v)) {
 				remove(nodes.get(v));
 				nodes.get(v).removeUndoableEditListener(document.getUndoManager());
@@ -592,6 +596,8 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 
 		@Override
 		public void linkAdded(OpGraph graph, OpLink e) {
+//			if(graph != getDocument().getGraph()) return;
+			
 			final CanvasNode src = nodes.get(e.getSource());
 			final CanvasNode dst = nodes.get(e.getDestination());
 
@@ -608,6 +614,8 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 
 		@Override
 		public void linkRemoved(OpGraph graph, OpLink e) {
+//			if(graph != getDocument().getGraph()) return;
+			
 			final CanvasNode src = nodes.get(e.getSource());
 			final CanvasNode dst = nodes.get(e.getDestination());
 
@@ -661,6 +669,11 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 			final CanvasNode canvasNode = nodes.get(node);
 			if(canvasNode != null)
 				repaint();
+		}
+
+		@Override
+		public void nodeSwapped(OpGraph graph, OpNode oldNode, OpNode newNode) {
+			// TODO Auto-generated method stub
 		}
 	}
 

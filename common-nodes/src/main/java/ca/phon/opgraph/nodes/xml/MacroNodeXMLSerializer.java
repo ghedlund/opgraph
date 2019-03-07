@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.logging.Level;
 
 import javax.xml.XMLConstants;
@@ -37,6 +38,7 @@ import ca.phon.opgraph.InputField;
 import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.OpNode;
 import ca.phon.opgraph.OutputField;
+import ca.phon.opgraph.app.OpgraphIO;
 import ca.phon.opgraph.extensions.Extendable;
 import ca.phon.opgraph.extensions.Publishable.PublishedInput;
 import ca.phon.opgraph.extensions.Publishable.PublishedOutput;
@@ -182,15 +184,10 @@ public class MacroNodeXMLSerializer implements XMLSerializer {
 					final QName name = XMLSerializerFactory.getQName(childElem);
 					final QName macroURLName = new QName(NAMESPACE, "uri", PREFIX);
 					if(name.equals(macroURLName)) {					
-						MacroNodeCache macroNodeCache = graph.getExtension(MacroNodeCache.class);
-						if(macroNodeCache == null) {
-							macroNodeCache = new MacroNodeCache();
-							graph.putExtension(MacroNodeCache.class, macroNodeCache);
-						}
 						try {
 							var graphURI = new URI(childElem.getTextContent().trim());
 														
-							OpGraph macroGraph = macroNodeCache.getGraph(graphURI);
+							OpGraph macroGraph = OpgraphIO.read(uriToUrl(graphURI).openStream());
 							
 							if(macroGraph.getVertices().size() == 1 && macroGraph.getVertices().get(0) instanceof MacroNode) {
 								MacroNode origNode = (MacroNode)macroGraph.getVertices().get(0);
@@ -255,6 +252,21 @@ public class MacroNodeXMLSerializer implements XMLSerializer {
 		}
 
 		return macro;
+	}
+	
+	private URL uriToUrl(URI uri) {
+		switch(uri.getScheme()) {
+		case "classpath":
+			return ClassLoader.getSystemResource(uri.getSchemeSpecificPart());
+			
+		default:
+			try {
+				return uri.toURL();
+			} catch (MalformedURLException e) {
+				// log error
+			}
+		}
+		return null;
 	}
 
 	@Override

@@ -52,17 +52,7 @@ public class MacroNodeInstantiator implements Instantiator<MacroNode> {
 		// read graph document
 		try {
 			OpGraph graph = new OpGraph();
-			if(nodeData.isGraphEmbedded() || parentGraph == null) {
-				graph = OpgraphIO.read(nodeData.getGraphURL().openStream());
-			} else {
-				// load from cache
-				MacroNodeCache macroNodeCache = parentGraph.getExtension(MacroNodeCache.class);
-				if(macroNodeCache == null) {
-					macroNodeCache = new MacroNodeCache();
-					parentGraph.putExtension(MacroNodeCache.class, macroNodeCache);
-				}
-				graph = macroNodeCache.getGraph(nodeData.uri);
-			}
+			graph = OpgraphIO.read(nodeData.getGraphURL().openStream());
 			
 			// change node ids in graph if embedded to ensure multiple instances do not share ids
 			if(nodeData.isGraphEmbedded())

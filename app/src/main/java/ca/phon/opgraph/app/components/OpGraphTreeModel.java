@@ -226,6 +226,11 @@ public class OpGraphTreeModel extends DefaultTreeModel {
 			if(treeNode != null)
 				updateChildOrder(treeNode, graph);
 		}
+
+		@Override
+		public void nodeSwapped(OpGraph graph, OpNode oldNode, OpNode newNode) {
+			
+		}
 		
 	};
 

@@ -322,12 +322,13 @@ public final class OpGraph
 			newEdges.add(newEdge);
 		}
 		
-		remove(toSwap);
-		add(node);
+		_remove(toSwap);
+		_add(node);
 		
 		for(OpLink edge:newEdges) {
 			add(edge);
 		}
+		fireNodeSwapped(toSwap, node);
 		
 		return toSwap;
 	}
@@ -335,26 +336,53 @@ public final class OpGraph
 	//
 	// Overrides
 	//
-	@Override
-	public void add(OpNode node) {
+	
+	private boolean _add(OpNode node) {
 		if(node != null && node.getId() != null) {
 			if(nodeMap.containsKey(node)) {
 				// XXX What to do if node with that id already exists?
 			} else {
 				super.add(node);
 				node.addNodeListener(nodeListener);
+				
+				CompositeNode cnode = node.getExtension(CompositeNode.class);
+				if(cnode != null) {
+					cnode.getGraph().addGraphListener(graphPropogationListener);
+				}
+				
 				nodeMap.put(node.getId(), node);
-				fireNodeAdded(node);
+				return true;
 			}
 		}
+		return false;
 	}
-
+	
 	@Override
-	public boolean remove(OpNode node) {
+	public void add(OpNode node) {
+		if(_add(node)) {
+			fireNodeAdded(node);
+		}
+	}
+	
+	private boolean _remove(OpNode node) {
 		final boolean removed = super.remove(node);
 		if(removed) {
 			node.removeNodeListener(nodeListener);
+			
+			CompositeNode cnode = node.getExtension(CompositeNode.class);
+			if(cnode != null) {
+				cnode.getGraph().removeGraphListener(graphPropogationListener);
+			}
+			
 			nodeMap.remove(node.getId());
+		}
+		return removed;
+	}
+	
+	@Override
+	public boolean remove(OpNode node) {
+		final boolean removed = _remove(node);
+		if(removed) {
 			fireNodeRemoved(node);
 		}
 		return removed;
@@ -408,9 +436,34 @@ public final class OpGraph
 		return extendableSupport.putExtension(type, extension);
 	}
 
-	//
-	// OpNodeListener
-	//
+	final OpGraphListener graphPropogationListener = new OpGraphListener() {
+		
+		@Override
+		public void nodeRemoved(OpGraph graph, OpNode node) {
+			fireNodeRemoved(graph, node);
+		}
+		
+		@Override
+		public void nodeAdded(OpGraph graph, OpNode node) {
+			fireNodeAdded(graph, node);
+		}
+		
+		@Override
+		public void linkRemoved(OpGraph graph, OpLink link) {
+			fireLinkRemoved(graph, link);
+		}
+		
+		@Override
+		public void linkAdded(OpGraph graph, OpLink link) {
+			fireLinkAdded(graph, link);
+		}
+
+		@Override
+		public void nodeSwapped(OpGraph graph, OpNode oldNode, OpNode newNode) {
+			fireNodeSwapped(graph, oldNode, newNode);
+		}
+		
+	};
 
 	final OpNodeListener nodeListener = new OpNodeListener() {
 		@Override
@@ -478,30 +531,57 @@ public final class OpGraph
 	}
 
 	private void fireNodeAdded(OpNode node) {
+		fireNodeAdded(this, node);
+	}
+	
+	private void fireNodeAdded(OpGraph graph, OpNode node) {
 		synchronized(listeners) {
 			for(OpGraphListener listener : listeners)
-				listener.nodeAdded(this, node);
+				listener.nodeAdded(graph, node);
 		}
 	}
 
 	private void fireNodeRemoved(OpNode node) {
+		fireNodeRemoved(this, node);
+	}
+	
+	private void fireNodeRemoved(OpGraph graph, OpNode node) {
 		synchronized(listeners) {
 			for(OpGraphListener listener : listeners)
-				listener.nodeRemoved(this, node);
+				listener.nodeRemoved(graph, node);
+		}
+	}
+	
+	private void fireNodeSwapped(OpNode oldNode, OpNode newNode) {
+		fireNodeSwapped(this, oldNode, newNode);
+	}
+	
+	private void fireNodeSwapped(OpGraph graph, OpNode oldNode, OpNode newNode) {
+		synchronized(listeners) {
+			for(OpGraphListener listener : listeners)
+				listener.nodeSwapped(graph, oldNode, newNode);
 		}
 	}
 
 	private void fireLinkAdded(OpLink link) {
+		fireLinkAdded(this, link);
+	}
+	
+	private void fireLinkAdded(OpGraph graph, OpLink link) {
 		synchronized(listeners) {
 			for(OpGraphListener listener : listeners)
-				listener.linkAdded(this, link);
+				listener.linkAdded(graph, link);
 		}
 	}
 
 	private void fireLinkRemoved(OpLink link) {
+		fireLinkRemoved(this, link);
+	}
+	
+	private void fireLinkRemoved(OpGraph graph, OpLink link) {
 		synchronized(listeners) {
 			for(OpGraphListener listener : listeners)
-				listener.linkRemoved(this, link);
+				listener.linkRemoved(graph, link);
 		}
 	}
 }

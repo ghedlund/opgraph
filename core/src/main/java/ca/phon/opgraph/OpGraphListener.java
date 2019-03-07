@@ -40,6 +40,17 @@ public interface OpGraphListener {
 	public abstract void nodeRemoved(OpGraph graph, OpNode node);
 	
 	/**
+	 * Called when a node instance was swapped with another copy.
+	 * This event will be processed after the node removed and
+	 * node added events.
+	 *  
+	 * @param graph
+	 * @param oldNode
+	 * @param newNode
+	 */
+	public abstract void nodeSwapped(OpGraph graph, OpNode oldNode, OpNode newNode);
+
+	/**
 	 * Called when an link was added to a graph.
 	 *  
 	 * @param graph  the source graph to which the link was added
@@ -54,4 +65,5 @@ public interface OpGraphListener {
 	 * @param link  the link that was removed
 	 */
 	public abstract void linkRemoved(OpGraph graph, OpLink link);
+	
 }

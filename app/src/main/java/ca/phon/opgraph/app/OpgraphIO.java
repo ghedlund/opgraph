@@ -16,10 +16,9 @@
 package ca.phon.opgraph.app;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.io.OpGraphSerializer;
@@ -33,7 +32,8 @@ import ca.phon.opgraph.io.OpGraphSerializerFactory;
 public class OpgraphIO {
 
 	public static OpGraph read(File file) throws IOException {
-		return read(new FileInputStream(file));
+		final OpGraphSerializer serializer = OpGraphSerializerFactory.getDefaultSerializer();
+		return serializer.read(file);
 	}
 	
 	public static OpGraph read(InputStream in) throws IOException {
@@ -43,7 +43,12 @@ public class OpgraphIO {
 	
 	public static void write(OpGraph graph, File file) throws IOException {
 		final OpGraphSerializer serializer = OpGraphSerializerFactory.getDefaultSerializer();
-		serializer.write(graph, new FileOutputStream(file));
+		serializer.write(graph, file);
+	}
+	
+	public static void write(OpGraph graph, OutputStream stream) throws IOException {
+		final OpGraphSerializer serializer = OpGraphSerializerFactory.getDefaultSerializer();
+		serializer.write(graph, stream);
 	}
 	
 }

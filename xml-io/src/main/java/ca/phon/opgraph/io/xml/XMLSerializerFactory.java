@@ -17,6 +17,9 @@
 package ca.phon.opgraph.io.xml;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,7 +55,9 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.extensions.Extendable;
@@ -67,7 +72,7 @@ import ca.phon.opgraph.util.ServiceDiscovery;
 @OpGraphSerializerInfo(extension="xml", description="XML Files")
 public final class XMLSerializerFactory implements Extendable, OpGraphSerializer {
 	/** The default namespace */
-	static final String DEFAULT_NAMESPACE = "https://www.phon.ca/ns/opgraph";
+	public static final String DEFAULT_NAMESPACE = "https://www.phon.ca/ns/opgraph";
 
 	/** The default prefix used for writing */
 	static final String DEFAULT_PREFIX = "og";
@@ -211,21 +216,38 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 		}
 		return null;
 	}
-
-	//
-	// Overrides
-	//
-
-	/**
-	 * Writes a graph to a stream.
-	 *
-	 * @param graph  the graph to write
-	 * @param stream  the stream to write to
-	 *
-	 * @throws IOException  if any I/O errors occur
-	 */
-	@Override
-	public void write(OpGraph graph, OutputStream stream) throws IOException {
+	
+	private Document documentFromFile(File file) throws IOException {
+		Document doc;
+		try {
+			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			
+			doc = factory.newDocumentBuilder().parse(file);
+			return doc;
+		} catch(SAXException exc) {
+			throw new IOException("Could not parse stream as XML", exc);
+		} catch(ParserConfigurationException exc) {
+			throw new IOException("Could not create document builder", exc);
+		}
+	}
+	
+	private Document documentFromStream(InputStream stream) throws IOException {
+		Document doc;
+		try {
+			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true);
+			
+			doc = factory.newDocumentBuilder().parse(stream);
+			return doc;
+		} catch(SAXException exc) {
+			throw new IOException("Could not parse stream as XML", exc);
+		} catch(ParserConfigurationException exc) {
+			throw new IOException("Could not create document builder", exc);
+		}
+	}
+	
+	private Document documentFromGraph(OpGraph graph) throws IOException {
 		Document doc;
 		try {
 			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -248,8 +270,86 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 			serializer.write(this, doc, root, graph);
 
 		doc.normalize();
+		
+		return doc;
+	}
 
-		// Write to stream
+	//
+	// Overrides
+	//
+	
+	private void validate(Document doc) throws IOException {
+		if(validator != null) {
+			try {
+				final Source source = new DOMSource(doc);
+				final DOMResult result = new DOMResult();
+				validator.validate(source, result);
+	
+				// Get the schema-transformed document
+				final Node resultNode = result.getNode();
+				if(resultNode instanceof Document)
+					doc = (Document)resultNode;
+			} catch(SAXException exc) {
+				exc.printStackTrace();
+				throw new IOException("Given stream is not a valid OpGraph XML document", exc);
+			}
+		}
+	}
+
+	@Override
+	public void validate(File file) throws IOException {
+		Document doc = documentFromFile(file);
+		validate(doc);
+	}
+
+	@Override
+	public void validate(InputStream stream) throws IOException {
+		// Create document
+		Document doc = documentFromStream(stream);
+		validate(doc);
+	}
+
+	private OpGraph read(Document doc) throws IOException {
+		// Read from stream
+		OpGraph ret = null;
+	
+		final XMLSerializer serializer = getHandler(getQName(doc.getDocumentElement()));
+		if(serializer != null) {
+			final Object objRead = serializer.read(this, null, null, doc, doc.getDocumentElement());
+			if(objRead instanceof OpGraph)
+				ret = (OpGraph)objRead;
+		}
+	
+		if(ret == null)
+			throw new IOException("Graph could not be read from stream");
+	
+		return ret;
+	}
+
+	@Override
+	public OpGraph read(File file) throws IOException {
+		Document doc = documentFromFile(file);
+		validate(doc);
+	
+		return read(doc);
+	}
+
+	/**
+	 * Reads a graph from a stream.
+	 *
+	 * @param stream  the stream to read from
+	 *
+	 * @throws IOException  if any I/O errors occur
+	 */
+	@Override
+	public OpGraph read(InputStream stream) throws IOException {
+		Document doc = documentFromStream(stream);
+		validate(doc);
+	
+		return read(doc);
+	}
+
+	private void write(Document doc, OutputStream stream) throws IOException {
 		try {
 			final Source source = new DOMSource(doc);
 			final Result result = new StreamResult(stream);
@@ -269,61 +369,29 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 			throw new IOException("Could not write DOM tree to stream", exc);
 		}
 	}
+	
+	@Override
+	public void write(OpGraph graph, File file) throws IOException {
+		Document doc = documentFromGraph(graph);
+		validate(doc);
+		write(doc, new FileOutputStream(file));
+	}
 
 	/**
-	 * Reads a graph from a stream.
+	 * Writes a graph to a stream.
 	 *
-	 * @param stream  the stream to read from
+	 * @param graph  the graph to write
+	 * @param stream  the stream to write to
 	 *
 	 * @throws IOException  if any I/O errors occur
 	 */
 	@Override
-	public OpGraph read(InputStream stream) throws IOException {
-		// Create document
-		Document doc;
-		try {
-			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware(true);
-			doc = factory.newDocumentBuilder().parse(stream);
-		} catch(SAXException exc) {
-			throw new IOException("Could not parse stream as XML", exc);
-		} catch(ParserConfigurationException exc) {
-			throw new IOException("Could not create document builder", exc);
-		}
-
-		// XXX Should we require a validator?
-		if(validator != null) {
-			try {
-				final Source source = new DOMSource(doc);
-				final DOMResult result = new DOMResult();
-				validator.validate(source, result);
-
-				// Get the schema-transformed document
-				final Node resultNode = result.getNode();
-				if(resultNode instanceof Document)
-					doc = (Document)resultNode;
-			} catch(SAXException exc) {
-				exc.printStackTrace();
-				throw new IOException("Given stream is not a valid OpGraph XML document", exc);
-			}
-		}
-
-		// Read from stream
-		OpGraph ret = null;
-
-		final XMLSerializer serializer = getHandler(getQName(doc.getDocumentElement()));
-		if(serializer != null) {
-			final Object objRead = serializer.read(this, null, null, doc, doc.getDocumentElement());
-			if(objRead instanceof OpGraph)
-				ret = (OpGraph)objRead;
-		}
-
-		if(ret == null)
-			throw new IOException("Graph could not be read from stream");
-
-		return ret;
+	public void write(OpGraph graph, OutputStream stream) throws IOException {
+		Document doc = documentFromGraph(graph);
+		validate(doc);
+		write(doc, stream);
 	}
-
+	
 	public <T> T getExtension(Class<T> type) {
 		return extSupport.getExtension(type);
 	}
@@ -335,5 +403,5 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 	public <T> T putExtension(Class<T> type, T extension) {
 		return extSupport.putExtension(type, extension);
 	}
-	
+
 }

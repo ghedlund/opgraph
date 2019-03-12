@@ -29,6 +29,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
+import javax.swing.event.MouseInputAdapter;
 
 /**
  * A grip component that will resize a given component when dragged over.
@@ -65,8 +66,8 @@ public class ResizeGrip extends JComponent {
 		this.initialComponentSize = component.getSize();
 
 		setOpaque(true);
-		addMouseListener(mouseAdapter);
-		addMouseMotionListener(mouseAdapter);
+		addMouseListener(new MouseInputAdapter() {
+		});
 	}
 
 	/**
@@ -86,39 +87,24 @@ public class ResizeGrip extends JComponent {
 	public Dimension getInitialComponentSize() {
 		return initialComponentSize;
 	}
+	
+	public void saveSize() {
+		initialComponentSize = component.getSize();
+	}
 
-	//
-	// Event adapters
-	//
-
-	private final MouseAdapter mouseAdapter = new MouseAdapter() {
-		/** The initial click point on screen */
-		private Point initialLocationOnScreen;
-
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			final Point p = e.getLocationOnScreen();
-			if(initialLocationOnScreen != null) {
-				final int dx = p.x - initialLocationOnScreen.x;
-				final int dy = p.y - initialLocationOnScreen.y;
-				if(component != null) {
-					final Dimension dim = component.getMinimumSize();
-					dim.width = Math.max(dim.width, initialComponentSize.width + dx);
-					dim.height = Math.max(dim.height, initialComponentSize.height + dy);
-					component.setPreferredSize(dim);
-					component.invalidate();
-					revalidate();
-				}
-			}	
+	public void resize(Point initialLocation, Point p) {
+		final int dx = p.x - initialLocation.x;
+		final int dy = p.y - initialLocation.y;
+		if(component != null) {
+			final Dimension dim = component.getMinimumSize();
+			dim.width = Math.max(dim.width, initialComponentSize.width + dx);
+			dim.height = Math.max(dim.height, initialComponentSize.height + dy);
+			component.setPreferredSize(dim);
+			component.invalidate();
+			revalidate();
 		}
-
-		@Override
-		public void mousePressed(MouseEvent e) {
-			initialComponentSize = component.getSize();
-			initialLocationOnScreen = e.getLocationOnScreen();
-		}
-	};
-
+	}
+	
 	//
 	// Overrides
 	//

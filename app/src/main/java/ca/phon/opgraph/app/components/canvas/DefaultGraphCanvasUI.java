@@ -773,16 +773,17 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 						newSrc = getMinimapLayer().getMinimap().getLabel();
 						newPt = SwingUtilities.convertPoint(canvas, zoomedPt, newSrc);
 					} else {
-						for(Component c:canvas.getComponentsInLayer(NODES_LAYER)) {
+						List<Component> selectableComponents = new ArrayList<>();
+						selectableComponents.addAll(Arrays.asList(canvas.getComponentsInLayer(NOTES_LAYER)));
+						selectableComponents.addAll(Arrays.asList(canvas.getComponentsInLayer(NODES_LAYER)));
+						for(Component c:selectableComponents) {
 							if(c.getBounds().contains(zoomedPt)) {
-								final CanvasNode cn = (CanvasNode)c;
-								
 								// convert zoomedPt to canvas node coords
-								Point canvasNodePt = SwingUtilities.convertPoint(canvas, zoomedPt, cn);
+								Point canvasNodePt = SwingUtilities.convertPoint(canvas, zoomedPt, c);
 								// find deepest component at canvasNodePt
-								newSrc = SwingUtilities.getDeepestComponentAt(cn, canvasNodePt.x, canvasNodePt.y);
+								newSrc = SwingUtilities.getDeepestComponentAt(c, canvasNodePt.x, canvasNodePt.y);
 								// location in srcCmp coords
-								newPt = SwingUtilities.convertPoint(cn, canvasNodePt, newSrc);
+								newPt = SwingUtilities.convertPoint(c, canvasNodePt, newSrc);
 							}
 						}
 					}
@@ -790,6 +791,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				final CustomMouseEvent newMe = new CustomMouseEvent(newSrc, me.getID(), System.currentTimeMillis(), me.getModifiersEx(), 
 						newPt.x, newPt.y, me.getClickCount(), me.isPopupTrigger(), me.getButton());
 				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(newMe);
+				
 				me.consume();
 				return;
 			}
@@ -827,13 +829,20 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 						canvas.moveToFront(note);
 
 						final Component comp = (source instanceof ResizeGrip) ? source : note;
-						final Point initialLocation = note.getLocation();
-						componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
+						if(comp instanceof ResizeGrip) {
+							((ResizeGrip)comp).saveSize();
+							final Point initialLocation = me.getLocationOnScreen();
+							componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
+						} else {
+							final Point initialLocation = note.getLocation();
+							componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));							
+						}
 						
 						selectionRect = null;
 					} else {
 						selectionRect = new Rectangle(me.getPoint());
 					}
+					System.out.println(componentsToMove);
 				} else {
 					// If it's not already selected, then select it
 					if(!canvas.getSelectionModel().getSelectedNodes().contains(canvasNode.getNode())) {
@@ -917,6 +926,9 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 						if(!(comp instanceof ResizeGrip)) {
 							final Point initialLoc = compLoc.getSecond();
 							comp.setLocation(initialLoc.x + deltaX, initialLoc.y + deltaY);
+						} else {
+							final Point initialLoc = compLoc.getSecond();
+							((ResizeGrip)comp).resize(initialLoc, me.getLocationOnScreen());
 						}
 					}
 					canvas.repaint();

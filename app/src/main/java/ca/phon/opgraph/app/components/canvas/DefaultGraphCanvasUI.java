@@ -848,7 +848,6 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 					} else {
 						selectionRect = new Rectangle(me.getPoint());
 					}
-					System.out.println(componentsToMove);
 				} else {
 					// If it's not already selected, then select it
 					if(!canvas.getSelectionModel().getSelectedNodes().contains(canvasNode.getNode())) {

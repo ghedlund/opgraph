@@ -402,6 +402,22 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			}
 		}
 	}
+	
+	private Point convertPointToCanvas(Component src, Point p) {
+		final AffineTransform at = new AffineTransform();
+		at.scale(canvas.getZoomLevel(), canvas.getZoomLevel());
+		
+		Point canvasPt = SwingUtilities.convertPoint(src, p, canvas);
+		if(canvas.getZoomLevel() != 1.0f) {
+			try {
+				Point2D zoomedPt = at.inverseTransform(canvasPt, null);
+				canvasPt.setLocation(zoomedPt.getX(), zoomedPt.getY());
+			} catch (NoninvertibleTransformException e1) {
+			}
+		}
+		
+		return canvasPt;
+	}
 
 	/**
 	 * Called to update link dragging status.
@@ -719,19 +735,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			
 			final Component source = (Component)e.getSource();
 			final MouseEvent me = (MouseEvent)e;
-			
-//			if(me.getID() == MouseEvent.MOUSE_RELEASED
-//					&& !(e instanceof CustomMouseEvent)) {
-//				if(!canvas.contains(me.getPoint())) {
-//					// clear selection, components to move, etc.
-//					if(selectionRect != null)
-//						selectionRect = null;
-//					
-//					canvas.repaint();
-//					me.consume();
-//				}
-//			}
-						
+
 			if(!SwingUtilities.isDescendingFrom(source, canvas))
 				return;
 			
@@ -739,7 +743,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				showContextMenu(me);
 				return;
 			}
-			
+
 			// re-dispatch events with zoomed coords if necessary
 			if(canvas.getZoomLevel() != 1.0f && !(me instanceof CustomMouseEvent)) {
 				final AffineTransform at = new AffineTransform();
@@ -809,8 +813,8 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				componentsToMove.clear();
 				
 				final boolean addToSelection = 
-						((me.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())
-								== Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+						((me.getModifiersEx() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx())
+								== Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx());
 
 				// No CanvasNode parent? Select nothing, otherwise select its node
 				final CanvasNode canvasNode = GUIHelper.getAncestorOrSelfOfClass(CanvasNode.class, source);
@@ -823,11 +827,13 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 						canvas.moveToFront(note);
 
 						final Component comp = (source instanceof ResizeGrip) ? source : note;
-						final Point initialLocation = comp.getLocation();
+						final Point initialLocation = note.getLocation();
 						componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
+						
+						selectionRect = null;
+					} else {
+						selectionRect = new Rectangle(me.getPoint());
 					}
-					
-					selectionRect = new Rectangle(me.getPoint());
 				} else {
 					// If it's not already selected, then select it
 					if(!canvas.getSelectionModel().getSelectedNodes().contains(canvasNode.getNode())) {
@@ -852,6 +858,8 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 							componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
 						}
 					}
+					
+					selectionRect = null;
 				}
 					
 				if(source instanceof CanvasNodeField) {

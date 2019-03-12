@@ -796,7 +796,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				return;
 			}
 			
-			if(e.getID() == MouseEvent.MOUSE_PRESSED) {
+			if(e.getID() == MouseEvent.MOUSE_PRESSED && me.getButton() == MouseEvent.BUTTON1) {
 				// If the mouse is pressed, update the selection. If pressed
 				// on the canvas area, clear the selection. If on a node, and
 				// it isn't already selected, select it. Otherwise, do nothing.
@@ -824,18 +824,24 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 					if(!addToSelection)
 						canvas.getSelectionModel().setSelectedNode(null);
 
+					// see if we have a note
 					final NoteComponent note = GUIHelper.getAncestorOrSelfOfClass(NoteComponent.class, source);
 					if(note != null) {
 						canvas.moveToFront(note);
 
-						final Component comp = (source instanceof ResizeGrip) ? source : note;
-						if(comp instanceof ResizeGrip) {
-							((ResizeGrip)comp).saveSize();
+						if(source instanceof ResizeGrip) {
+							((ResizeGrip)source).saveSize();
 							final Point initialLocation = me.getLocationOnScreen();
-							componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));
+							componentsToMove.add(new Pair<Component, Point>(source, initialLocation));
 						} else {
 							final Point initialLocation = note.getLocation();
-							componentsToMove.add(new Pair<Component, Point>(comp, initialLocation));							
+							componentsToMove.add(new Pair<Component, Point>(note, initialLocation));
+							
+							for(Component comp:canvas.getComponentsInLayer(NODES_LAYER)) {
+								if(note.getBounds().contains(comp.getBounds())) {
+									componentsToMove.add(new Pair<Component, Point>(comp, comp.getLocation()));
+								}
+							}
 						}
 						
 						selectionRect = null;
@@ -906,18 +912,23 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				return;
 			
 			if(e.getID() == MouseEvent.MOUSE_DRAGGED) {
+				boolean snapToGrid = 
+					(me.getModifiersEx() & MouseEvent.SHIFT_DOWN_MASK) == MouseEvent.SHIFT_DOWN_MASK;
+				
 				// Move the selected nodes, if not creating a link
 				if(clickLocation != null && currentlyDraggedLinkInputField == null && selectionRect == null) {
 					int deltaX = me.getLocationOnScreen().x - clickLocation.x;
 					int deltaY = me.getLocationOnScreen().y - clickLocation.y;
 
-					// Snap to grid if top left corner of selection is close to grid
-					final Point topLeftBound = getBoundingRectOfMoved().getLocation();
-					topLeftBound.translate(deltaX, deltaY);
-
-					final Point snapDelta = gridLayer.snap(topLeftBound);
-					deltaX += snapDelta.x;
-					deltaY += snapDelta.y;
+					if(snapToGrid) {
+						// Snap to grid if top left corner of selection is close to grid
+						final Point topLeftBound = getBoundingRectOfMoved().getLocation();
+						topLeftBound.translate(deltaX, deltaY);
+	
+						final Point snapDelta = gridLayer.snap(topLeftBound);
+						deltaX += snapDelta.x;
+						deltaY += snapDelta.y;
+					}
 
 					// First, make sure that one of the components to move is
 					// an ancestor of the source of the drag
@@ -950,27 +961,28 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 					int deltaX = me.getXOnScreen() - clickLocation.x;
 					int deltaY = me.getYOnScreen() - clickLocation.y;
 					if(deltaX != 0 || deltaY != 0) {
-						final Collection<OpNode> selected = canvas.getSelectionModel().getSelectedNodes();
-						if(selected.size() > 0) {
-							// If nodes selected, post special edit for them
-							canvas.getDocument().getUndoSupport().postEdit(new MoveNodesEdit(selected, deltaX, deltaY));
-						} else {
-							// Otherwise, assume we have a note
-							//
-							// TODO generalized element movement
-							//
-							canvas.getDocument().getUndoSupport().beginUpdate();
-							for(Pair<Component, Point> compLoc : componentsToMove) {
-								final Component comp = compLoc.getFirst();
-								if(comp instanceof NoteComponent) {
-									final Note note = ((NoteComponent)comp).getNote();
-									final Point p = new Point(comp.getX()-deltaX, comp.getY()-deltaY);
-									comp.setLocation(p);
-									canvas.getDocument().getUndoSupport().postEdit(new MoveNoteEdit(note, deltaX, deltaY));
-								}
+						List<OpNode> movedNodes = new ArrayList<>();
+						List<Note> movedNotes = new ArrayList<>();
+						for(Pair<Component, Point> compPair:componentsToMove) {
+							final Component c = compPair.getFirst();
+							
+							if(c instanceof CanvasNode) {
+								movedNodes.add(((CanvasNode)c).getNode());
+							} else if(c instanceof NoteComponent) {
+								movedNotes.add(((NoteComponent)c).getNote());
+								
+								final Point p = new Point(c.getX()-deltaX, c.getY()-deltaY);
+								c.setLocation(p);
 							}
-							canvas.getDocument().getUndoSupport().endUpdate();
 						}
+						
+						canvas.getDocument().getUndoSupport().beginUpdate();
+						if(movedNodes.size() > 0)
+							canvas.getDocument().getUndoSupport().postEdit(new MoveNodesEdit(movedNodes, deltaX, deltaY));
+
+						movedNotes.forEach( (note) -> canvas.getDocument().getUndoSupport().postEdit(new MoveNoteEdit(note, deltaX, deltaY)) );
+						
+						canvas.getDocument().getUndoSupport().endUpdate();
 					}
 				}
 				
@@ -983,8 +995,8 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 							selected.add( ((CanvasNode)comp).getNode() );
 					}
 					
-					if((me.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask())
-							== Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) {
+					if((me.getModifiersEx() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx())
+							== Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) {
 						final HashSet<OpNode> currentSelection = new HashSet<>(canvas.getSelectionModel().getSelectedNodes());
 						currentSelection.addAll(selected);
 						selected = currentSelection;

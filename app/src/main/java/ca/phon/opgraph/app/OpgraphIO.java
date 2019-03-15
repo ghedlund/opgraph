@@ -15,6 +15,8 @@
  */
 package ca.phon.opgraph.app;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,6 +51,27 @@ public class OpgraphIO {
 	public static void write(OpGraph graph, OutputStream stream) throws IOException {
 		final OpGraphSerializer serializer = OpGraphSerializerFactory.getDefaultSerializer();
 		serializer.write(graph, stream);
+	}
+	
+	/**
+	 * Round-trip
+	 * 
+	 * Write the given {@link OpGraph} to a temporary output stream and then 
+	 * parse that stream as a new {@link OpGraph} instance.  This method
+	 * can be used to clone graph objects.
+	 * 
+	 * @param graph
+	 * 
+	 * @return a cloned instance of the given graph
+	 * 
+	 * @throws IOException
+	 */
+	public static OpGraph roundtrip(OpGraph graph) throws IOException {
+		final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		write(graph, bout);
+		
+		final ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray());
+		return read(bin);
 	}
 	
 }

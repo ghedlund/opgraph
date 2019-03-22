@@ -78,6 +78,8 @@ public class GraphDocument {
 	/** Support for property changes */
 	private PropertyChangeSupport changeSupport;
 	
+	private boolean modified = false;
+	
 	/**
 	 * Construct a graph document.
 	 */
@@ -98,6 +100,7 @@ public class GraphDocument {
 			@Override
 			public void undoableEditHappened(UndoableEditEvent e) {
 				super.undoableEditHappened(e);
+				modified = true;
 				changeSupport.firePropertyChange(UNDO_STATE, null, this);
 			}
 
@@ -298,10 +301,9 @@ public class GraphDocument {
 	/**
 	 * Marks the model as unmodified in its current state.
 	 * 
-	 * Note that currently this will discard all undoable edits!!!
 	 */
 	public void markAsUnmodified() {
-		undoManager.discardAllEdits();
+		modified = false;
 	}
 
 	/**

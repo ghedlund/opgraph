@@ -298,6 +298,11 @@ public class GraphDocument {
 		}
 	}
 
+	
+	public boolean isModified() {
+		return this.modified;
+	}
+	
 	/**
 	 * Marks the model as unmodified in its current state.
 	 * 

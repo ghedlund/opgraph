@@ -340,7 +340,7 @@ public final class OpGraph
 	private boolean _add(OpNode node) {
 		if(node != null && node.getId() != null) {
 			if(nodeMap.containsKey(node)) {
-				// XXX What to do if node with that id already exists?
+				throw new IllegalArgumentException("A node with id " + node.getId() + " already exists in graph");
 			} else {
 				super.add(node);
 				node.addNodeListener(nodeListener);

@@ -662,10 +662,15 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	}
 	
 	private void showContextMenu(MouseEvent me) {
-		final Point loc = SwingUtilities.convertPoint((Component)me.getSource(), me.getPoint(), canvas);
 		final JPopupMenu popup = constructPopup(me);
-		if(popup != null)
-			popup.show(canvas, loc.x, loc.y);
+		if(popup != null) {
+			Point pt = me.getPoint();
+			if(me instanceof CustomMouseEvent) {
+				CustomMouseEvent cme = (CustomMouseEvent)me;
+				pt = SwingUtilities.convertPoint(cme.getOrigSource(), cme.getOrigPt(), (Component)me.getSource());
+			}
+			popup.show((Component)me.getSource(), pt.x, pt.y);
+		}
 	}
 	
 	//
@@ -739,11 +744,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			if(!SwingUtilities.isDescendingFrom(source, canvas))
 				return;
 			
-			if(me.isPopupTrigger()) {
-				showContextMenu(me);
-				return;
-			}
-
+			
 			// re-dispatch events with zoomed coords if necessary
 			if(canvas.getZoomLevel() != 1.0f && !(me instanceof CustomMouseEvent)) {
 				final AffineTransform at = new AffineTransform();
@@ -790,9 +791,17 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				}
 				final CustomMouseEvent newMe = new CustomMouseEvent(newSrc, me.getID(), System.currentTimeMillis(), me.getModifiersEx(), 
 						newPt.x, newPt.y, me.getClickCount(), me.isPopupTrigger(), me.getButton());
+				newMe.setOrigPt(mp);
+				newMe.setOrigSource(source);
+				
 				Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(newMe);
 				
 				me.consume();
+				return;
+			}
+			
+			if((me.getID() == MouseEvent.MOUSE_RELEASED || me.getID() == MouseEvent.MOUSE_PRESSED) && me.isPopupTrigger()) {
+				showContextMenu(me);
 				return;
 			}
 			
@@ -1035,9 +1044,11 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 	};
 	
 	private class CustomMouseEvent extends MouseEvent {
+		
+		private Component origSource;
+		
+		private Point origPt;
 
-		
-		
 		public CustomMouseEvent(Component source, int id, long when, int modifiers, int x, int y, int clickCount,
 				boolean popupTrigger, int button) {
 			super(source, id, when, modifiers, x, y, clickCount, popupTrigger, button);
@@ -1051,6 +1062,22 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 		public CustomMouseEvent(Component source, int id, long when, int modifiers, int x, int y, int xAbs, int yAbs,
 				int clickCount, boolean popupTrigger, int button) {
 			super(source, id, when, modifiers, x, y, xAbs, yAbs, clickCount, popupTrigger, button);
+		}
+
+		public Component getOrigSource() {
+			return origSource;
+		}
+
+		public void setOrigSource(Component origSource) {
+			this.origSource = origSource;
+		}
+
+		public Point getOrigPt() {
+			return origPt;
+		}
+
+		public void setOrigPt(Point origPt) {
+			this.origPt = origPt;
 		}
 		
 	}

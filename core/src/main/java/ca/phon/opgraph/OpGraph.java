@@ -27,6 +27,7 @@ import java.util.Set;
 
 import ca.phon.opgraph.dag.CycleDetectedException;
 import ca.phon.opgraph.dag.DirectedAcyclicGraph;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 import ca.phon.opgraph.exceptions.ItemMissingException;
 import ca.phon.opgraph.extensions.CompositeNode;
@@ -259,11 +260,7 @@ public final class OpGraph
 		try {
 			link = new OpLink(source, sourceFieldKey, destination, destinationFieldKey);
 			add(link);
-		} catch(ItemMissingException exc) {
-			link = null;
-		} catch(VertexNotFoundException exc) {
-			link = null;
-		} catch(CycleDetectedException exc) {
+		} catch(ItemMissingException | VertexNotFoundException | CycleDetectedException | InvalidEdgeException e) {
 			link = null;
 		}
 
@@ -292,18 +289,14 @@ public final class OpGraph
 		try {
 			link = new OpLink(source, sourceField, destination, destinationField);
 			add(link);
-		} catch(ItemMissingException exc) {
-			link = null;
-		} catch(VertexNotFoundException exc) {
-			link = null;
-		} catch(CycleDetectedException exc) {
+		} catch(ItemMissingException | VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
 			link = null;
 		}
 
 		return link;
 	}
 
-	public OpNode swap(OpNode node) throws VertexNotFoundException, CycleDetectedException, ItemMissingException {
+	public OpNode swap(OpNode node) throws VertexNotFoundException, CycleDetectedException, ItemMissingException, InvalidEdgeException {
 		OpNode toSwap = getNodeById(node.getId(), false);
 		if(toSwap == null)
 			throw new IllegalArgumentException("Node with id " + node.getId() + " not found");
@@ -389,7 +382,15 @@ public final class OpGraph
 	}
 
 	@Override
-	public void add(OpLink link) throws VertexNotFoundException, CycleDetectedException {
+	public void add(OpLink link) throws VertexNotFoundException, CycleDetectedException, InvalidEdgeException {
+		// check to ensure a link to specified input field does not already exist
+		final OpNode destNode = link.getDestination();
+		for(OpLink existingLink:getIncomingEdges(destNode)) {
+			if(existingLink.getDestinationField() == link.getDestinationField()) {
+				throw new InvalidEdgeException(String.format("A link to %s.%s already exists", destNode.getName(), link.getDestinationField().getKey()), link);
+			}
+		}
+		
 		super.add(link);
 		if(link != null)
 			fireLinkAdded(link);

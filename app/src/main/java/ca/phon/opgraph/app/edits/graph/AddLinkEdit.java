@@ -23,6 +23,7 @@ import javax.swing.undo.CannotUndoException;
 import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.OpLink;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 import ca.phon.opgraph.exceptions.ItemMissingException;
 
@@ -45,9 +46,10 @@ public class AddLinkEdit extends AbstractUndoableEdit {
 	 * @throws CycleDetectedException  if creation of the link creates a cycle
 	 * @throws VertexNotFoundException  if either/both of the source/destination of
 	 *                                  the link is not a member of the graph 
+	 * @throws InvalidEdgeException 
 	 */
 	public AddLinkEdit(OpGraph graph, OpLink link)
-		throws VertexNotFoundException, CycleDetectedException
+		throws VertexNotFoundException, CycleDetectedException, InvalidEdgeException
 	{
 		this.graph = graph;
 		this.link = link;
@@ -57,7 +59,7 @@ public class AddLinkEdit extends AbstractUndoableEdit {
 	/**
 	 * Performs this edit.
 	 */
-	private void perform() throws VertexNotFoundException, CycleDetectedException {
+	private void perform() throws VertexNotFoundException, CycleDetectedException, InvalidEdgeException {
 		graph.add(link);
 	}
 
@@ -75,9 +77,7 @@ public class AddLinkEdit extends AbstractUndoableEdit {
 		super.redo();
 		try {
 			perform();
-		} catch(VertexNotFoundException exc) {
-			throw new CannotRedoException();
-		} catch(CycleDetectedException exc) {
+		} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
 			throw new CannotRedoException();
 		}
 	}

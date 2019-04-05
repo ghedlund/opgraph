@@ -46,7 +46,7 @@ public class CopyCommand extends GraphCommand {
 		
 		this.canvas = canvas;
 		
-		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 	}
 
 	@Override
@@ -72,10 +72,8 @@ public class CopyCommand extends GraphCommand {
 						if(selectedNodes.contains(link.getDestination())) {
 							try {
 								selectedGraph.add(link);
-							} catch(VertexNotFoundException exc) {
-								LOGGER.severe(exc.getMessage());
-							} catch(CycleDetectedException exc) {
-								LOGGER.severe(exc.getMessage());
+							} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
+								LOGGER.severe(exc.getLocalizedMessage());
 							}
 						}
 					}

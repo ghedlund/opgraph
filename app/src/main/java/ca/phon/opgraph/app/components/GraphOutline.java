@@ -234,7 +234,7 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 						if(graph.contains(link.getSource()) && graph.contains(link.getDestination())) {
 							try {
 								graph.add(link);
-							} catch (VertexNotFoundException | CycleDetectedException e) {
+							} catch (VertexNotFoundException | CycleDetectedException | InvalidEdgeException e) {
 								LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 							}
 						}

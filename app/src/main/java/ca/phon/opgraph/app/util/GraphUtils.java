@@ -41,6 +41,7 @@ import ca.phon.opgraph.app.extensions.NodeSettings;
 import ca.phon.opgraph.app.extensions.Note;
 import ca.phon.opgraph.app.extensions.Notes;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 import ca.phon.opgraph.exceptions.ItemMissingException;
 import ca.phon.opgraph.extensions.CompositeNode;
@@ -244,11 +245,7 @@ public class GraphUtils {
 			try {
 				final OpLink newLink = new OpLink(newSource, sourceField.getKey(), newDest, destField.getKey());
 				retVal.add(newLink);
-			} catch (ItemMissingException e) {
-				LOGGER.severe(e.getMessage());
-			} catch (VertexNotFoundException e) {
-				LOGGER.severe(e.getMessage());
-			} catch (CycleDetectedException e) {
+			} catch (ItemMissingException | VertexNotFoundException | CycleDetectedException | InvalidEdgeException e) {
 				LOGGER.severe(e.getMessage());
 			}
 		}

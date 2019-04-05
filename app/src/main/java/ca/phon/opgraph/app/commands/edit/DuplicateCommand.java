@@ -98,11 +98,7 @@ public class DuplicateCommand extends GraphCommand {
 							try {
 								final OpLink newLink = new OpLink(srcNode, srcField, dstNode, dstField);
 								cmpEdit.addEdit(new AddLinkEdit(graph, newLink));
-							} catch(VertexNotFoundException exc) {
-								LOGGER.severe(exc.getMessage());
-							} catch(CycleDetectedException exc) {
-								LOGGER.severe(exc.getMessage());
-							} catch(ItemMissingException exc) {
+							} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException | ItemMissingException exc) {
 								LOGGER.severe(exc.getMessage());
 							}
 						}

@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.OpNode;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 import ca.phon.opgraph.exceptions.ItemMissingException;
 import ca.phon.opgraph.extensions.CompositeNode;
@@ -99,9 +100,8 @@ public class LinkedMacroNodeOverridesXMLSerializer implements XMLSerializer {
 					}
 					try {
 						parentGraph.swap(overrideNode);
-					} catch (VertexNotFoundException | CycleDetectedException | ItemMissingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					} catch (VertexNotFoundException | CycleDetectedException | ItemMissingException | InvalidEdgeException e) {
+						throw new IOException(e);
 					}
 				}
 			}

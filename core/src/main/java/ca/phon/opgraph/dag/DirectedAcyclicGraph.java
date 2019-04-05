@@ -45,6 +45,8 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 
 	/** The edges in this DAG */
 	protected Set<E> edges;
+	
+	/** Allow multiple inputs 
 
 	/**
 	 * A mapping from vertex to its level.
@@ -142,8 +144,10 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 *                                  that are not contained within this graph.
 	 *
 	 * @throws CycleDetectedException  if adding <code>edge</code> will induce a cycle
+	 * 
+	 * @throws InvalidEdgeException	  if another issue with the link is found
 	 */
-	public void add(E edge) throws VertexNotFoundException, CycleDetectedException {
+	public void add(E edge) throws VertexNotFoundException, CycleDetectedException, InvalidEdgeException {
 		if(!vertices.contains(edge.getSource()))
 			throw new VertexNotFoundException(edge.getSource());
 

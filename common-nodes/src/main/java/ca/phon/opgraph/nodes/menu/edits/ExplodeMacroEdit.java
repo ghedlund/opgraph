@@ -28,6 +28,7 @@ import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.OpLink;
 import ca.phon.opgraph.OpNode;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 import ca.phon.opgraph.exceptions.ItemMissingException;
 import ca.phon.opgraph.extensions.Publishable.PublishedInput;
@@ -122,10 +123,8 @@ public class ExplodeMacroEdit extends AbstractUndoableEdit {
 		for(OpLink link : newLinks) {
 			try {
 				graph.add(link);
-			} catch(VertexNotFoundException exc) {
-				LOGGER.severe("impossible exception");
-			} catch(CycleDetectedException exc) {
-				LOGGER.severe("impossible exception");
+			} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
+				LOGGER.severe(exc.getLocalizedMessage());
 			}
 		}
 	}
@@ -159,11 +158,10 @@ public class ExplodeMacroEdit extends AbstractUndoableEdit {
 		for(OpLink link : oldLinks) {
 			try {
 				graph.add(link);
-			} catch(VertexNotFoundException exc) {
-				LOGGER.severe("impossible exception");
-			} catch(CycleDetectedException exc) {
-				LOGGER.severe("impossible exception");
+			} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
+				LOGGER.severe(exc.getLocalizedMessage());
 			}
+			
 		}
 	}
 }

@@ -526,11 +526,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 									document.getUndoSupport().postEdit(new AddLinkEdit(graph, link));
 									document.getUndoSupport().endUpdate();
 								}
-							} catch(ItemMissingException exc) {
-								ErrorDialog.showError(exc);
-							} catch(VertexNotFoundException exc) {
-								ErrorDialog.showError(exc);
-							} catch(CycleDetectedException exc) {
+							} catch(ItemMissingException | VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
 								ErrorDialog.showError(exc);
 							}
 
@@ -549,8 +545,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 						if(!graph.contains(currentlyDraggedLink)) {
 							try {
 								graph.add(currentlyDraggedLink);
-							} catch (VertexNotFoundException e) {
-							} catch (CycleDetectedException e) {
+							} catch (VertexNotFoundException | CycleDetectedException | InvalidEdgeException e) {
 							}
 						}
 						document.getUndoSupport().postEdit(new RemoveLinkEdit(graph, currentlyDraggedLink));
@@ -576,9 +571,7 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 				if(!graph.contains(currentlyDraggedLink)) {
 					try {
 						graph.add(currentlyDraggedLink);
-					} catch (VertexNotFoundException e) {
-					} catch (CycleDetectedException e) {
-					}
+					} catch (VertexNotFoundException | CycleDetectedException | InvalidEdgeException e) {}
 				}
 				// Invalid link, and we are editing an existing link, so remove it
 				document.getUndoSupport().postEdit(new RemoveLinkEdit(graph, currentlyDraggedLink));

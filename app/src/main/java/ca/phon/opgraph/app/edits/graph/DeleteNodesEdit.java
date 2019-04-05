@@ -33,6 +33,7 @@ import ca.phon.opgraph.OpLink;
 import ca.phon.opgraph.OpNode;
 import ca.phon.opgraph.app.components.ErrorDialog;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 
 /**
@@ -110,11 +111,8 @@ public class DeleteNodesEdit extends AbstractUndoableEdit {
 		for(OpLink link : links) {
 			try {
 				graph.add(link);
-			} catch(VertexNotFoundException exc) {
-				LOGGER.severe("Erroneous state that should never happen");
-				ErrorDialog.showError(exc);
-			} catch(CycleDetectedException exc) {
-				LOGGER.severe("Erroneous state that should never happen");
+			} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
+				LOGGER.severe(exc.getLocalizedMessage());
 				ErrorDialog.showError(exc);
 			}
 		}

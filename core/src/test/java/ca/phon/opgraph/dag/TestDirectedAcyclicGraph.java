@@ -93,6 +93,8 @@ public class TestDirectedAcyclicGraph {
 			fail("Vertex not found, but should be: " + exc.getVertex());
 		} catch(CycleDetectedException exc) {
 			fail("Adding edge creates cycle, but this shouldn't happen");
+		} catch (InvalidEdgeException e) {
+			fail("Should not happen");
 		}
 
 		assertCollectionEqualsArray(dag.getVertices(), 
@@ -118,6 +120,8 @@ public class TestDirectedAcyclicGraph {
 			dag.add(edgeMap.get("BD")); // creates a cycle
 		} catch(VertexNotFoundException exc) {
 			fail("Vertex not found, but should be: " + exc.getVertex());
+		} catch (InvalidEdgeException e) {
+			fail("Invalid link");
 		}
 	}
 
@@ -147,6 +151,8 @@ public class TestDirectedAcyclicGraph {
 			fail("Adding edge creates cycle, but this shouldn't happen");
 		} catch(VertexNotFoundException exc) {
 			fail("Vertex not found, but should be: " + exc.getVertex());
+		} catch (InvalidEdgeException e) {
+			fail("Invalid link");
 		}
 
 		assertCollectionEqualsArray(dag.getIncomingEdges(vertexMap.get("A")), edgeMap.get("CA"), edgeMap.get("DA"));

@@ -414,9 +414,7 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 					if(selectedNodes.contains(link.getDestination())) {
 						try {
 							selectedGraph.add(link);
-						} catch(VertexNotFoundException exc) {
-							LOGGER.severe(exc.getMessage());
-						} catch(CycleDetectedException exc) {
+						} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
 							LOGGER.severe(exc.getMessage());
 						}
 					}
@@ -483,11 +481,7 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 					try {
 						final OpLink newLink = new OpLink(srcNode, srcField, dstNode, dstField);
 						cmpEdit.addEdit(new AddLinkEdit(graph, newLink));
-					} catch(ItemMissingException exc) {
-						LOGGER.severe(exc.getMessage());
-					} catch(VertexNotFoundException exc) {
-						LOGGER.severe(exc.getMessage());
-					} catch(CycleDetectedException exc) {
+					} catch(ItemMissingException | VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
 						LOGGER.severe(exc.getMessage());
 					}
 				}

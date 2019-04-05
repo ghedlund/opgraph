@@ -35,6 +35,7 @@ import ca.phon.opgraph.OpLink;
 import ca.phon.opgraph.OpNode;
 import ca.phon.opgraph.OutputField;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 import ca.phon.opgraph.exceptions.ItemMissingException;
 import ca.phon.opgraph.extensions.NodeMetadata;
@@ -161,7 +162,7 @@ public class CreateMacroEdit extends AbstractUndoableEdit {
 					final OpLink objectLink = new OpLink(inputNode, inputNode.getOutputFieldWithKey("obj"),
 							link.getDestination(), link.getDestinationField());
 					macro.getGraph().add(objectLink);
-				} catch (ItemMissingException | VertexNotFoundException | CycleDetectedException e) {
+				} catch (ItemMissingException | VertexNotFoundException | CycleDetectedException | InvalidEdgeException e) {
 					LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 				}
 
@@ -199,6 +200,8 @@ public class CreateMacroEdit extends AbstractUndoableEdit {
 					LOGGER.severe("impossible exception");
 				} catch(CycleDetectedException exc) {
 					LOGGER.severe("impossible exception");
+				} catch (InvalidEdgeException e) {
+					LOGGER.severe("invalid link");
 				}
 			}
 		}
@@ -223,6 +226,8 @@ public class CreateMacroEdit extends AbstractUndoableEdit {
 				LOGGER.severe("impossible exception");
 			} catch(CycleDetectedException exc) {
 				LOGGER.severe("impossible exception");
+			} catch (InvalidEdgeException e) {
+				LOGGER.severe("Invalid link");
 			}
 		}
 	}
@@ -260,6 +265,8 @@ public class CreateMacroEdit extends AbstractUndoableEdit {
 				LOGGER.severe("impossible exception");
 			} catch(CycleDetectedException exc) {
 				LOGGER.severe("impossible exception");
+			} catch (InvalidEdgeException e) {
+				LOGGER.severe("Invalid link");
 			}
 		}
 	}

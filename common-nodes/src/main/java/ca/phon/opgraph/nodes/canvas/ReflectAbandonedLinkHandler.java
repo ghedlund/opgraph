@@ -31,6 +31,7 @@ import ca.phon.opgraph.app.components.canvas.GraphCanvas;
 import ca.phon.opgraph.app.edits.graph.AddLinkEdit;
 import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 import ca.phon.opgraph.exceptions.ItemMissingException;
 import ca.phon.opgraph.nodes.reflect.IterableClassNode;
@@ -67,9 +68,7 @@ public class ReflectAbandonedLinkHandler implements AbandonedLinkHandler {
 				final OpLink link = new OpLink(sourceNode.getNode(), outputField, newNode, inputField);
 				final AddLinkEdit addLinkEdit = new AddLinkEdit(document.getGraph(), link);
 				document.getUndoSupport().postEdit(addLinkEdit);
-			} catch (ItemMissingException e) {
-			} catch (VertexNotFoundException e) {
-			} catch (CycleDetectedException e) {
+			} catch (ItemMissingException | VertexNotFoundException | CycleDetectedException | InvalidEdgeException e) {
 			}
 		}
 	}

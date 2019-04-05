@@ -34,6 +34,7 @@ import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.OpLink;
 import ca.phon.opgraph.OpNode;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 import ca.phon.opgraph.extensions.Extendable;
 
@@ -165,7 +166,7 @@ public class DefaultGraphXMLSerializer implements XMLSerializer {
 								} else if(objRead instanceof OpLink) {
 									try {
 										graph.add( (OpLink)objRead );
-									} catch(VertexNotFoundException | CycleDetectedException | NullPointerException exc) {
+									} catch(VertexNotFoundException | CycleDetectedException | NullPointerException | InvalidEdgeException exc) {
 										warnings.add(exc);
 									}
 								}

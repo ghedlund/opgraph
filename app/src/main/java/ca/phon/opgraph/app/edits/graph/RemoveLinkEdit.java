@@ -23,6 +23,7 @@ import javax.swing.undo.CannotUndoException;
 import ca.phon.opgraph.OpGraph;
 import ca.phon.opgraph.OpLink;
 import ca.phon.opgraph.dag.CycleDetectedException;
+import ca.phon.opgraph.dag.InvalidEdgeException;
 import ca.phon.opgraph.dag.VertexNotFoundException;
 
 /**
@@ -74,9 +75,7 @@ public class RemoveLinkEdit extends AbstractUndoableEdit {
 		super.undo();
 		try {
 			graph.add(link);
-		} catch(VertexNotFoundException exc) {
-			throw new CannotUndoException();
-		} catch(CycleDetectedException exc) {
+		} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
 			throw new CannotUndoException();
 		}
 	}

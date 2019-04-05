@@ -232,7 +232,7 @@ public class NodeFieldsPanel extends JPanel {
 							edit.end();
 							
 							document.getUndoSupport().postEdit(edit);
-						} catch (VertexNotFoundException | CycleDetectedException | ItemMissingException e1) {
+						} catch (VertexNotFoundException | CycleDetectedException | ItemMissingException | InvalidEdgeException e1) {
 							LOGGER.log(Level.WARNING, e1.getLocalizedMessage(), e1);
 							connectionBox.setSelectedItem(null);
 						}

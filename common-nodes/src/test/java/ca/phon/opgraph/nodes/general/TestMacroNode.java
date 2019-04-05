@@ -31,6 +31,7 @@ import ca.phon.opgraph.nodes.general.ConstantValueNode;
 import ca.phon.opgraph.nodes.general.MacroNode;
 import ca.phon.opgraph.nodes.general.PassThroughNode;
 import ca.phon.opgraph.nodes.logic.LogicalNotNode;
+import ca.phon.opgraph.nodes.reflect.StaticMethodNode;
 
 /**
  * Tests {@link MacroNode}.
@@ -151,8 +152,10 @@ public class TestMacroNode {
 	 * @param outputs  an array for returning the single node containing the output
 	 * 
 	 * @return the graph
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
 	 */
-	private static OpGraph createMinDAG(PassThroughNode[] inputs, PassThroughNode[] outputs) {
+	private static OpGraph createMinDAG(PassThroughNode[] inputs, PassThroughNode[] outputs) throws NoSuchMethodException, SecurityException {
 		//
 		// Constructs a dag that computes the minimum of two values, making
 		// use of the ENABLED_FIELD feature of OpNode 
@@ -160,49 +163,37 @@ public class TestMacroNode {
 		final OpGraph minDAG = new OpGraph();
 		minDAG.setId("min");
 
-		final PassThroughNode pt1_1 = new PassThroughNode();
-		final PassThroughNode pt2_1 = new PassThroughNode();		
-		final PassThroughNode pt1_2 = new PassThroughNode();
-		final PassThroughNode pt2_2 = new PassThroughNode();
+		final PassThroughNode pt1 = new PassThroughNode();
+		final PassThroughNode pt2 = new PassThroughNode();		
 		final PassThroughNode ov1 = new PassThroughNode();
-
-		final LessThanNode lv1 = new LessThanNode();
-		final LogicalNotNode nv1 = new LogicalNotNode();
+		
+		final StaticMethodNode minNode = new StaticMethodNode(Math.class.getMethod("min", double.class, double.class));
 
 		// Return values
-		inputs[0] = pt1_1;
-		inputs[1] = pt2_1;
+		inputs[0] = pt1;
+		inputs[1] = pt2;
 		outputs[0] = ov1;
 
 		// Add nodes
-		minDAG.add(pt1_1);
-		minDAG.add(pt1_2);
-		minDAG.add(pt2_1);
-		minDAG.add(pt2_2);
-		minDAG.add(lv1);
-		minDAG.add(nv1);
+		minDAG.add(pt1);
+		minDAG.add(pt2);
 		minDAG.add(ov1);
+		minDAG.add(minNode);
 
 		// Add link
-		assertNotNull(minDAG.connect(pt1_1, PassThroughNode.OUTPUT, lv1, LessThanNode.X_FIELD));
-		assertNotNull(minDAG.connect(pt2_1, PassThroughNode.OUTPUT, lv1, LessThanNode.Y_FIELD));
+		assertNotNull(minDAG.connect(pt1, PassThroughNode.OUTPUT, minNode, minNode.getInputFieldWithKey("arg1")));
+		assertNotNull(minDAG.connect(pt2, PassThroughNode.OUTPUT, minNode, minNode.getInputFieldWithKey("arg2")));
 
-		assertNotNull(minDAG.connect(pt1_1, PassThroughNode.OUTPUT, pt1_2, PassThroughNode.INPUT));
-		assertNotNull(minDAG.connect(pt2_1, PassThroughNode.OUTPUT, pt2_2, PassThroughNode.INPUT));
-
-		assertNotNull(minDAG.connect(lv1, LessThanNode.RESULT_FIELD, pt1_2, OpNode.ENABLED_FIELD));
-		assertNotNull(minDAG.connect(lv1, LessThanNode.RESULT_FIELD, nv1, LogicalNotNode.X_INPUT_FIELD));
-		assertNotNull(minDAG.connect(nv1, LogicalNotNode.RESULT_OUTPUT_FIELD, pt2_2, OpNode.ENABLED_FIELD));
-
-		assertNotNull(minDAG.connect(pt1_2, PassThroughNode.OUTPUT, ov1, PassThroughNode.INPUT));
-		assertNotNull(minDAG.connect(pt2_2, PassThroughNode.OUTPUT, ov1, PassThroughNode.INPUT));
+		assertNotNull(minDAG.connect(minNode, minNode.getOutputFieldWithKey("value"), ov1, PassThroughNode.INPUT));
 
 		return minDAG;
 	}
 
-	/** Tests the correctness of a macro */
+	/** Tests the correctness of a macro 
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException */
 	@Test
-	public void testMacro() {
+	public void testMacro() throws NoSuchMethodException, SecurityException {
 		PassThroughNode [] inputs1 = new PassThroughNode[2];
 		PassThroughNode [] outputs1 = new PassThroughNode[1];
 

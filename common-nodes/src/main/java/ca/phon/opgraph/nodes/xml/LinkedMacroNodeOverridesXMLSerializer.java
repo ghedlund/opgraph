@@ -11,6 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import ca.phon.opgraph.OpGraph;
+import ca.phon.opgraph.OpGraphListener;
 import ca.phon.opgraph.OpNode;
 import ca.phon.opgraph.dag.CycleDetectedException;
 import ca.phon.opgraph.dag.InvalidEdgeException;
@@ -84,22 +85,8 @@ public class LinkedMacroNodeOverridesXMLSerializer implements XMLSerializer {
 				
 				if(macro != null) {
 					OpGraph macroGraph = macro.getGraph();
-					List<OpNode> nodePath = macroGraph.getNodePath(overrideNode.getId());
-					
-					if(nodePath.size() == 0 || !nodePath.get(nodePath.size()-1).getId().equals(overrideNode.getId())) {
-						throw new IOException("Override node not found in macro");
-					}
-					
-					OpGraph parentGraph = macro.getGraph();
-					if(nodePath.size() > 1) {
-						CompositeNode cnode = (CompositeNode)nodePath.get(nodePath.size()-2);
-						parentGraph = cnode.getGraph();
-						
-						cnode.setGraph(new OpGraph(parentGraph));
-						parentGraph = cnode.getGraph();
-					}
 					try {
-						parentGraph.swap(overrideNode);
+						macroGraph.swap(overrideNode);
 					} catch (VertexNotFoundException | CycleDetectedException | ItemMissingException | InvalidEdgeException e) {
 						throw new IOException(e);
 					}

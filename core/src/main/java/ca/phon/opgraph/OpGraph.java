@@ -16,6 +16,7 @@
  */
 package ca.phon.opgraph;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -296,31 +297,57 @@ public final class OpGraph
 		return link;
 	}
 
+	/**
+	 * Swap nodes.  This will swap an existing node with the same
+	 * id as the given node.
+	 * @param node
+	 * @return
+	 * @throws VertexNotFoundException
+	 * @throws CycleDetectedException
+	 * @throws ItemMissingException
+	 * @throws InvalidEdgeException
+	 */
 	public OpNode swap(OpNode node) throws VertexNotFoundException, CycleDetectedException, ItemMissingException, InvalidEdgeException {
-		OpNode toSwap = getNodeById(node.getId(), false);
+		List<OpNode> nodePath = getNodePath(node.getId());
+		
+		if(nodePath.size() == 0 || !nodePath.get(nodePath.size()-1).getId().equals(node.getId())) {
+			throw new IllegalArgumentException("Node with id " + node.getId() + " found in macro");
+		}
+		
+		OpGraph parentGraph = this;
+		if(nodePath.size() > 1) {
+			CompositeNode cnode = (CompositeNode)nodePath.get(nodePath.size()-2);
+			parentGraph = cnode.getGraph();
+			
+			cnode.setGraph(new OpGraph(parentGraph));
+			parentGraph = cnode.getGraph();
+		}
+		
+		OpNode toSwap = parentGraph.getNodeById(node.getId(), false);
 		if(toSwap == null)
 			throw new IllegalArgumentException("Node with id " + node.getId() + " not found");
 
 		List<OpLink> newEdges = new ArrayList<>();
-		for(OpLink edge:getIncomingEdges(toSwap)) {
+		for(OpLink edge:parentGraph.getIncomingEdges(toSwap)) {
 			OpLink newEdge = new OpLink(
 					edge.getSource(), edge.getSourceField(),
 					node, node.getInputFieldWithKey(edge.getDestinationField().getKey()) );
 			newEdges.add(newEdge);
 		}
-		for(OpLink edge:getOutgoingEdges(toSwap)) {
+		for(OpLink edge:parentGraph.getOutgoingEdges(toSwap)) {
 			OpLink newEdge = new OpLink(
 					node, node.getOutputFieldWithKey(edge.getSourceField().getKey()),
 					edge.getDestination(), edge.getDestinationField());
 			newEdges.add(newEdge);
 		}
 		
-		_remove(toSwap);
-		_add(node);
+		parentGraph._remove(toSwap);
+		parentGraph._add(node);
 		
 		for(OpLink edge:newEdges) {
-			add(edge);
+			parentGraph.add(edge);
 		}
+		
 		fireNodeSwapped(toSwap, node);
 		
 		return toSwap;

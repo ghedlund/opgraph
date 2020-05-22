@@ -17,6 +17,7 @@
 package ca.phon.opgraph;
 
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import ca.phon.opgraph.ProcessorEvent.Type;
 import ca.phon.opgraph.exceptions.*;
@@ -39,7 +40,7 @@ public class Processor {
 	 * An iterator that points to the node we are currently processing on,
 	 * or <code>null</code> if processing hasn't begun/should be restarted.
 	 */
-	private Iterator<OpNode> nodeIter;
+	private Queue<OpNode> nodeQueue;
 
 	/** The node we are operating on*/
 	private OpNode currentNode;
@@ -136,12 +137,15 @@ public class Processor {
 		currentNode = null;
 
 		// Set up node iteration
-		nodeIter = null;
-		if(customProcessor != null)
-			nodeIter = customProcessor;
+		nodeQueue = null;
+		if(customProcessor != null) {
+			List<OpNode> nodeList = new ArrayList<OpNode>();
+			customProcessor.forEachRemaining(nodeList::add);
+			nodeQueue = new LinkedBlockingQueue<OpNode>(nodeList);
+		}
 
-		if(nodeIter == null)
-			nodeIter = graph.getVertices().iterator();
+		if(nodeQueue == null)
+			nodeQueue = new LinkedBlockingQueue<OpNode>(graph.getVertices());
 
 		// Set up context
 		if(globalContext != null && globalContext == context)
@@ -156,7 +160,7 @@ public class Processor {
 
 		installNodeDefaults(getGraph(), globalContext);
 	}
-
+	
 	/**
 	 * Gets the graph that is currently being operated on.
 	 *
@@ -249,7 +253,7 @@ public class Processor {
 	 *          <code>false</code> otherwise
 	 */
 	public boolean hasNext() {
-		return (currentMacro != null || (nodeIter != null && nodeIter.hasNext()));
+		return (currentMacro != null || (nodeQueue != null && !nodeQueue.isEmpty()));
 	}
 
 	/**
@@ -276,11 +280,11 @@ public class Processor {
 				currentMacro.step(shouldBreak);
 			else
 				stepOutOf();
-		} else if(nodeIter == null) {
+		} else if(nodeQueue == null) {
 			throw new NoSuchElementException("No nodes to process");
 		} else {
 			// Step to the next node and process
-			currentNode = nodeIter.next();
+			currentNode = nodeQueue.poll();
 
 			if(currentNode != null && currentNode.isBreakpoint() && shouldBreak) {
 				throw new BreakpointEncountered(this, currentNode);
@@ -334,13 +338,13 @@ public class Processor {
 		} catch(ProcessingException exc) {
 			//LOGGER.log(Level.SEVERE, exc.getLocalizedMessage(), exc);
 			currentError = exc;
-			nodeIter = null; // prevent further processing
+			nodeQueue = null; // prevent further processing
 			if(exc.getContext() == null) exc.setContext(this);
 			throw currentError;
 		} catch(Throwable exc) {
 			//LOGGER.log(Level.SEVERE, exc.getLocalizedMessage(), exc);
 			currentError = new ProcessingException(this, exc);
-			nodeIter = null; // prevent further processing
+			nodeQueue = null; // prevent further processing
 			throw currentError;
 		}
 	}
@@ -372,7 +376,7 @@ public class Processor {
 		}
 
 		if(!found) {
-			while(hasNext() && currentNode != node)
+			while(hasNext() && nodeQueue.peek() != node)
 				step(shouldBreak);
 
 			found = (currentNode == node);
@@ -408,7 +412,7 @@ public class Processor {
 			else
 				stepOutOf();
 		} else {
-			currentNode = nodeIter.next();
+			currentNode = nodeQueue.poll();
 
 			final CompositeNode composite = currentNode.getExtension(CompositeNode.class);
 			if(composite != null) {
@@ -418,11 +422,14 @@ public class Processor {
 
 					final CustomProcessing customProcessing = currentNode.getExtension(CustomProcessing.class);
 					final CustomProcessor customProcessor = (customProcessing == null ? null : customProcessing.getCustomProcessor());
+					if(customProcessor != null) {
+						customProcessor.initialize(context);
+					}
 					currentMacro = new Processor(composite.getGraph(), customProcessor, context);
 				} catch(ProcessingException error) {
 					currentError = error;
 					currentMacro = null; // we didn't properly step into the macro, so null it
-					nodeIter = null; // prevent further processing
+					nodeQueue = null; // prevent further processing
 				}
 			} else {
 				processCurrentNode();
@@ -612,4 +619,5 @@ public class Processor {
 	public void fireCompleteEvent() {
 		fireProcessorEvent(new ProcessorEvent(Type.COMPLETE, this, currentNode));
 	}
+	
 }

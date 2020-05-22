@@ -17,6 +17,7 @@
 package ca.phon.opgraph.extensions;
 
 import java.util.Iterator;
+import java.util.Queue;
 
 import ca.phon.opgraph.OpContext;
 import ca.phon.opgraph.OpNode;

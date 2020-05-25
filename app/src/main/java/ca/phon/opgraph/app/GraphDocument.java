@@ -338,12 +338,12 @@ public class GraphDocument {
 	 * 
 	 * @param processor  the processing context
 	 */
-	private OpNode prevDebugNode = null;
+	private OpNode debugNode = null;
 	public void updateDebugState(Processor processor) {
 		if(processor != null && this.processor == processor) {
 			OpNode newNode = processor.getCurrentNode();
-			changeSupport.firePropertyChange(DEBUG_STATE, prevDebugNode, newNode);
-			prevDebugNode = newNode;
+			changeSupport.firePropertyChange(DEBUG_STATE, debugNode, newNode);
+			debugNode = newNode;
 			changeSupport.firePropertyChange(PROCESSING_CONTEXT, new Object(), processor);
 		}
 	}

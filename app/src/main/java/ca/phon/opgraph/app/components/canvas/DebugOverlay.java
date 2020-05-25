@@ -19,6 +19,7 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -50,6 +51,9 @@ class DebugOverlay extends JComponent {
 
 	/** Mask for error node */
 	static final Paint ERROR_MASK;
+	
+	static final Paint NEXT_NODE_MASK;
+	static final Paint NEXT_NODE_BORDER_PAINT;
 
 	static {
 		final int W = 4;
@@ -63,8 +67,10 @@ class DebugOverlay extends JComponent {
 			g.drawLine(0, 0, W - 1, H - 1);
 			g.drawLine(0, H - 1, W - 1, 0);
 		}
-
+		
 		DARK_MASK = new TexturePaint(texture, new Rectangle2D.Double(0, 0, W, H));
+		NEXT_NODE_MASK = new Color(200, 200, 200, 127);
+		NEXT_NODE_BORDER_PAINT = new Color(200, 200, 255, 255);
 		LIGHT_MASK = new Color(0, 0, 0, 127);
 		ERROR_MASK = new Color(255, 0, 0, 50);
 	}
@@ -105,7 +111,8 @@ class DebugOverlay extends JComponent {
 				final Graphics2D g = (Graphics2D)gfx;
 				final IdentityHashMap<CanvasNode, Boolean> connectedNodes = new IdentityHashMap<CanvasNode, Boolean>();
 				final OpNode currentNode = activeContext.getCurrentNodeOfContext();
-
+				final OpNode nextNode = activeContext.getNodeToProcess();
+				
 				if(currentNode != null) {
 					for(OpLink link : canvas.getDocument().getGraph().getIncomingEdges(currentNode))
 						connectedNodes.put( canvas.getNode(link.getSource()), true );
@@ -131,13 +138,23 @@ class DebugOverlay extends JComponent {
 							g.fill(bounds);
 						}
 					} else {
-						g.setPaint(LIGHT_MASK);
-						g.fill(bounds);
-						if(!connectedNodes.containsKey(canvasNode)) {
-							g.setPaint(DARK_MASK);
+						if(nextNode != null && node == nextNode) {
+							g.setPaint(NEXT_NODE_BORDER_PAINT);
+							g.setStroke(new BasicStroke(5.0f));
+							g.draw(bounds);
+							g.setPaint(NEXT_NODE_MASK);
 							g.fill(bounds);
+						} else {
+							g.setPaint(LIGHT_MASK);
+							g.fill(bounds);
+							if(!connectedNodes.containsKey(canvasNode)) {
+								g.setPaint(DARK_MASK);
+								g.fill(bounds);
+							}
 						}
 					}
+					
+					
 				}
 
 				g.setPaint(oldPaint);

@@ -225,6 +225,10 @@ public class Processor {
 			return currentMacro.getCurrentNode();
 		return currentNode;
 	}
+	
+	public OpNode getNodeToProcess() {
+		return (nodeQueue != null ? nodeQueue.peek() : null);
+	}
 
 	/**
 	 * Gets the node that was most recently processed in this context.
@@ -328,6 +332,7 @@ public class Processor {
 
 				fireBeginNodeEvent();
 				localContext.put(OpNode.COMPLETED_FIELD, Boolean.FALSE);
+				localContext.put("__stepInto", isStepInto);
 				currentNode.operate(localContext);
 				localContext.put(OpNode.COMPLETED_FIELD, Boolean.TRUE);
 				fireEndNodeEvent();
@@ -405,6 +410,7 @@ public class Processor {
 	 *
 	 * @throws NoSuchElementException  if no more nodes to process
 	 */
+	private boolean isStepInto = false;
 	public void stepInto() {
 		if(currentMacro != null) {
 			if(currentMacro.hasNext())
@@ -432,7 +438,9 @@ public class Processor {
 					nodeQueue = null; // prevent further processing
 				}
 			} else {
+				isStepInto = true;
 				processCurrentNode();
+				isStepInto = false;
 			}
 		}
 	}

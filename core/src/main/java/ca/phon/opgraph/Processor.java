@@ -227,6 +227,9 @@ public class Processor {
 	}
 	
 	public OpNode getNodeToProcess() {
+		if(currentMacro != null) {
+			return currentMacro.getNodeToProcess();
+		}
 		return (nodeQueue != null ? nodeQueue.peek() : null);
 	}
 

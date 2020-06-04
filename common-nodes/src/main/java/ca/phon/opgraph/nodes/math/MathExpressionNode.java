@@ -118,9 +118,7 @@ public class MathExpressionNode
 
 		try {
 			expressionTree = expressionParser.prog().getTree();
-			if(expressionTree != null)
-				LOGGER.info(((org.antlr.runtime.tree.CommonTree)expressionTree).toStringTree());
-
+			
 			// Remove any input fields that correspond to non-existant variables
 			final ArrayList<InputField> inputFieldsCopy = new ArrayList<InputField>(getInputFields());
 			for(InputField field : inputFieldsCopy) {

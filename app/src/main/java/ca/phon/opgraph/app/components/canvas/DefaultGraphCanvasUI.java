@@ -646,6 +646,16 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 			final MenuManager manager = new MenuManager();
 			for(MenuProvider menuProvider : manager.getMenuProviders())
 				menuProvider.installPopupItems(context, event, document, addressable);
+			
+			// add addition runtime or node specific context menu items provided
+			// using the CanvasContextMenuExtension extension
+			if(context instanceof Extendable) {
+				CanvasContextMenuExtension menuExt = ((Extendable)context).getExtension(CanvasContextMenuExtension.class);
+				if(menuExt != null) {
+					popup.addSeparator();
+					menuExt.addContextMenuItems(popup, document, event);
+				}
+			}
 		}
 
 		if(popup.getComponentCount() == 0)

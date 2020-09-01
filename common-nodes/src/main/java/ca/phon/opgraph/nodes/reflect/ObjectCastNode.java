@@ -55,12 +55,15 @@ public class ObjectCastNode extends AbstractReflectNode {
 	@Override
 	public void operate(OpContext context) throws ProcessingException {
 		final Object obj = context.get(inputField);
-		if(obj == null)
-			throw new ProcessingException(null, new NullPointerException());
-		if(!getDeclaredClass().isInstance(obj)) 
-			throw new InvalidTypeException(null, inputField, obj);
 		
-		context.put(outputField, getDeclaredClass().cast(obj));
+		if(obj != null) {
+			if(!getDeclaredClass().isInstance(obj)) 
+				throw new InvalidTypeException(null, inputField, obj);
+			
+			context.put(outputField, getDeclaredClass().cast(obj));
+		} else {
+			context.put(outputField, null);
+		}
 	}
 
 }

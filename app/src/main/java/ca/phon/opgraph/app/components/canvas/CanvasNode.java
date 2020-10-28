@@ -364,7 +364,8 @@ public class CanvasNode extends JComponent {
 		@Override
 		public void fieldRemoved(OpNode node, OutputField field) {
 			final CanvasNodeField fieldComp = fields.get(field);
-			outputs.remove(fieldComp);
+			if(fieldComp != null) 
+				outputs.remove(fieldComp);
 			fields.remove(field);
 
 			revalidate();
@@ -374,7 +375,8 @@ public class CanvasNode extends JComponent {
 		@Override
 		public void fieldRemoved(OpNode node, InputField field) {
 			final CanvasNodeField fieldComp = fields.get(field);
-			inputs.remove(fieldComp);
+			if(fieldComp != null) 
+				inputs.remove(fieldComp);
 			fields.remove(field);
 
 			revalidate();
@@ -384,7 +386,8 @@ public class CanvasNode extends JComponent {
 		@Override
 		public void fieldAdded(OpNode node, OutputField field) {
 			final CanvasNodeField fieldComp = new CanvasNodeField(field);
-			fieldComp.setStyle(style);
+			if(fieldComp != null)
+				fieldComp.setStyle(style);
 			outputs.add(fieldComp);
 			fields.put(field, fieldComp);
 
@@ -396,7 +399,8 @@ public class CanvasNode extends JComponent {
 		public void fieldAdded(OpNode node, InputField field) {
 			if(field != OpNode.ENABLED_FIELD || style.ShowEnabledField) {
 				final CanvasNodeField fieldComp = new CanvasNodeField(field);
-				fieldComp.setStyle(style);
+				if(fieldComp != null)
+					fieldComp.setStyle(style);
 				inputs.add(fieldComp);
 				fields.put(field, fieldComp);
 

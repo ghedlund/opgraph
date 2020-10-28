@@ -49,8 +49,13 @@ public class OutputFields extends ArrayList<OutputField> {
 	 * @param description  a description for the field
 	 * @param isFixed  whether or not this field is fixed
 	 * @param outputType  the type of object this field outputs 
+	 * 
+	 * @return created output field 
 	 */
-	public void add(String key, String description, boolean isFixed, Class<?> outputType) {
-		node.putField(new OutputField(key, description, isFixed, outputType));
+	public OutputField add(String key, String description, boolean isFixed, Class<?> outputType) {
+		OutputField retVal = new OutputField(key, description, isFixed, outputType);
+		node.putField(retVal);
+		return retVal;
 	}
+	
 }

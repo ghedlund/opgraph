@@ -52,9 +52,11 @@ public class InputFields extends ArrayList<InputField> {
 	 * 
 	 * @param key  the reference key
 	 * @param description  a description for the field
+	 * 
+	 * @return created input field
 	 */
-	public void add(String key, String description) {
-		add(key, description, false, false);
+	public InputField add(String key, String description) {
+		return add(key, description, false, false);
 	}
 
 	/**
@@ -65,22 +67,24 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param description  a description for the field
 	 * @param isOptional  whether or not this field is optional
 	 * @param isFixed  whether or not this field is fixed
+	 * 
+	 * @return created input field
 	 */
-	public void add(
+	public InputField add(
 			String key,
 			String description,
 			boolean isOptional,
 			boolean isFixed)
 	{
-		addWithValidator(key, description, isOptional, isFixed, (TypeValidator)null);
+		return addWithValidator(key, description, isOptional, isFixed, (TypeValidator)null);
 	}
 	
-	public void add(
+	public InputField add(
 			String key,
 			String description,
 			Class<?> acceptedType) 
 	{
-		addWithTypes(key, description, new Class[]{acceptedType});
+		return addWithTypes(key, description, new Class[]{acceptedType});
 	}
 
 	/**
@@ -90,13 +94,15 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param key  the reference key
 	 * @param description  a description for the field
 	 * @param acceptedTypes  the classes that are accepted
+	 * 
+	 * @return created input field
 	 */
-	public void addWithTypes(
+	public InputField addWithTypes(
 			String key,
 			String description,
 			Class<?>... acceptedTypes)
 	{
-		addWithValidators(key, description, false, false, acceptedTypes);
+		return addWithValidators(key, description, false, false, acceptedTypes);
 	}
 
 	/**
@@ -107,13 +113,15 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param description  a description for the field
 	 * @param validators  a {@link List} of {@link TypeValidator}s to use
 	 *                    for validating incoming values
+	 *                    
+	 * @return created input field
 	 */
-	public void addWithValidators(
+	public InputField addWithValidators(
 			String key,
 			String description,
 			TypeValidator... validators)
 	{
-		addWithValidator(key, description, false, false, validators.length == 1 ? validators[0] : new CompositeValidator(validators));
+		return addWithValidator(key, description, false, false, validators.length == 1 ? validators[0] : new CompositeValidator(validators));
 	}
 
 	/**
@@ -124,15 +132,18 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param isOptional  whether or not this field is optional
 	 * @param isFixed  whether or not this field is fixed
 	 * @param acceptedTypes  the classes that are accepted
+	 * 
+	 * 
+	 * @return created input field
 	 */
-	public void addWithValidators(
+	public InputField addWithValidators(
 			String key, 
 			String description, 
 			boolean isOptional, 
 			boolean isFixed, 
 			Class<?>... acceptedTypes)
 	{
-		addWithValidator(key, description, isOptional, isFixed, new ClassValidator(acceptedTypes));
+		return addWithValidator(key, description, isOptional, isFixed, new ClassValidator(acceptedTypes));
 	}
 
 	/**
@@ -144,14 +155,18 @@ public class InputFields extends ArrayList<InputField> {
 	 * @param isFixed  whether or not this field is fixed
 	 * @param validators  a {@link List} of {@link TypeValidator}s to use
 	 *                    for validating incoming values
+	 *                    
+	 * @return created input field
 	 */
-	public void addWithValidator(
+	public InputField addWithValidator(
 			String key,
 			String description,
 			boolean isOptional,
 			boolean isFixed,
 			TypeValidator validators)
 	{
-		node.putField(new InputField(key, description, isOptional, isFixed, validators));
+		InputField retVal = new InputField(key, description, isOptional, isFixed, validators);
+		node.putField(retVal);
+		return retVal;
 	}
 }

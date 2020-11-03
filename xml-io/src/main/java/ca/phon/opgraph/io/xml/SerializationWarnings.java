@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2018 Gregory Hedlund <https://www.phon.ca>
+ * Copyright (C) 2012-2020 Gregory Hedlund <https://www.phon.ca>
  * Copyright (C) 2012 Jason Gedge <http://www.gedge.ca>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

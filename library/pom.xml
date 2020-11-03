@@ -31,15 +31,17 @@
 	<name>OpGraph Node Library</name>
 	<description>Library module for management and discovery of implementations of OpGraph structures.</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
+	<dependencies>		
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>opgraph-core</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

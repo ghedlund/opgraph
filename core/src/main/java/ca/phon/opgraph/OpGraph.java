@@ -16,26 +16,12 @@
  */
 package ca.phon.opgraph;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-
-import ca.phon.opgraph.dag.CycleDetectedException;
-import ca.phon.opgraph.dag.DirectedAcyclicGraph;
-import ca.phon.opgraph.dag.InvalidEdgeException;
-import ca.phon.opgraph.dag.VertexNotFoundException;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.extensions.CompositeNode;
-import ca.phon.opgraph.extensions.Extendable;
-import ca.phon.opgraph.extensions.ExtendableSupport;
-import ca.phon.opgraph.extensions.NodeMetadata;
-import ca.phon.opgraph.util.Pair;
+import ca.phon.opgraph.dag.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.opgraph.util.*;
 
 /**
  * A DAG that supports a general flow of "operation". One implements various

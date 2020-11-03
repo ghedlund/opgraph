@@ -18,16 +18,16 @@ package ca.phon.opgraph.nodes.reflect;
 
 import java.awt.*;
 import java.lang.reflect.*;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javax.swing.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * Creates a node which provides access to the get/set property methods

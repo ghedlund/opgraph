@@ -18,19 +18,15 @@ package ca.phon.opgraph.io.xml;
 
 import static ca.phon.opgraph.io.xml.XMLSerializerFactory.*;
 
-import java.io.IOException;
+import java.io.*;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import javax.xml.*;
+import javax.xml.namespace.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.exceptions.ItemMissingException;
+import org.w3c.dom.*;
+
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * A default serializer for reading/writing {@link OpLink} to/from XML.

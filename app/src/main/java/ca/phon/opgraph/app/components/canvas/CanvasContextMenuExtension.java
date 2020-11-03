@@ -16,12 +16,12 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.GraphDocument;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
 
 /**
  * Extension interface for adding context menu items

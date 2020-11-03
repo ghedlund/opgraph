@@ -16,15 +16,11 @@
  */
 package ca.phon.opgraph.extensions;
 
-import java.awt.Point;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.*;
+import java.beans.*;
+import java.util.*;
 
-import ca.phon.opgraph.InputField;
+import ca.phon.opgraph.*;
 
 /**
  * The metadata this graph stores with its nodes.

@@ -16,17 +16,17 @@
  */
 package ca.phon.opgraph.app.commands.core;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.*;
 
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.commands.GraphCommand;
-import ca.phon.opgraph.app.components.ErrorDialog;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
+import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.io.*;
 
 /**

@@ -19,9 +19,9 @@
  */
 package ca.phon.opgraph.app.extensions;
 
-import java.util.Collection;
+import java.util.*;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 import ca.phon.opgraph.extensions.*;
 

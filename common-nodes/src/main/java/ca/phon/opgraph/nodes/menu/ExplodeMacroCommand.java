@@ -16,16 +16,16 @@
  */
 package ca.phon.opgraph.nodes.menu;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.components.canvas.GraphCanvasSelectionModel;
-import ca.phon.opgraph.nodes.general.MacroNode;
-import ca.phon.opgraph.nodes.menu.edits.ExplodeMacroEdit;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.nodes.general.*;
+import ca.phon.opgraph.nodes.menu.edits.*;
 
 /**
  * Breaks apart a macro into its constituent components, connecting links

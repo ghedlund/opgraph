@@ -16,29 +16,17 @@
  */
 package ca.phon.opgraph.nodes.xml;
 
-import java.io.IOException;
-import java.util.List;
+import java.io.*;
 
-import javax.xml.namespace.QName;
+import javax.xml.namespace.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpGraphListener;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.dag.CycleDetectedException;
-import ca.phon.opgraph.dag.InvalidEdgeException;
-import ca.phon.opgraph.dag.VertexNotFoundException;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.extensions.CompositeNode;
-import ca.phon.opgraph.extensions.Extendable;
-import ca.phon.opgraph.io.xml.XMLSerializer;
-import ca.phon.opgraph.io.xml.XMLSerializerFactory;
-import ca.phon.opgraph.nodes.general.LinkedMacroNodeOverrides;
-import ca.phon.opgraph.nodes.general.MacroNode;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.dag.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.io.xml.*;
+import ca.phon.opgraph.nodes.general.*;
 
 public class LinkedMacroNodeOverridesXMLSerializer implements XMLSerializer {
 	

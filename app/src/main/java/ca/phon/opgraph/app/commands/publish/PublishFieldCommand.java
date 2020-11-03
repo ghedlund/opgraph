@@ -19,24 +19,15 @@
  */
 package ca.phon.opgraph.app.commands.publish;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.awt.event.*;
+import java.util.*;
 
-import javax.swing.AbstractAction;
-
-import ca.phon.opgraph.ContextualItem;
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.GraphEditorModel;
-import ca.phon.opgraph.app.commands.HookableCommand;
-import ca.phon.opgraph.app.edits.graph.RemoveLinkEdit;
-import ca.phon.opgraph.app.edits.node.PublishFieldEdit;
-import ca.phon.opgraph.extensions.Publishable;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.app.edits.node.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * A command to publish a field in a node.

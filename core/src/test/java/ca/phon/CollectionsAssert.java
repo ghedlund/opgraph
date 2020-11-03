@@ -16,12 +16,9 @@
  */
 package ca.phon;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-import junit.framework.Assert;
+import junit.framework.*;
 
 /**
  * A set of assertions that make comparing equality of collections and

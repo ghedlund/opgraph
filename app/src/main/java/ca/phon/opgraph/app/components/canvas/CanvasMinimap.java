@@ -18,14 +18,12 @@ package ca.phon.opgraph.app.components.canvas;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
-import java.lang.ref.WeakReference;
+import java.awt.geom.*;
+import java.awt.image.*;
+import java.lang.ref.*;
 
 import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
+import javax.swing.event.*;
 
 public class CanvasMinimap extends JComponent {
 	

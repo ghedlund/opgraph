@@ -19,25 +19,15 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import java.awt.TexturePaint;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.IdentityHashMap;
+import java.awt.*;
+import java.awt.geom.*;
+import java.awt.image.*;
+import java.util.*;
 
-import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.Processor;
-import ca.phon.opgraph.app.util.GUIHelper;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.util.*;
 
 /**
  * A full-canvas component to draw debug things on top of everything else.

@@ -16,13 +16,10 @@
  */
 package ca.phon.opgraph.app.components;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.reflect.*;
+import java.util.logging.*;
 
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  * Text field for create objects of the declared type

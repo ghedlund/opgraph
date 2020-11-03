@@ -16,12 +16,11 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import java.net.URI;
-import java.net.URL;
+import java.net.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.library.NodeData;
-import ca.phon.opgraph.library.instantiators.Instantiator;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.library.*;
+import ca.phon.opgraph.library.instantiators.*;
 
 public class MacroNodeData extends NodeData {
 	

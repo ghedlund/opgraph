@@ -16,21 +16,18 @@
  */
 package ca.phon.opgraph.nodes.xml;
 
-import java.io.IOException;
+import java.io.*;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
+import javax.xml.*;
+import javax.xml.namespace.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.extensions.Extendable;
+import ca.phon.opgraph.extensions.*;
 import ca.phon.opgraph.extensions.Publishable.*;
 import ca.phon.opgraph.io.xml.*;
-import ca.phon.opgraph.nodes.general.MacroNode;
+import ca.phon.opgraph.nodes.general.*;
 
 /**
  * A default serializer for reading/writing published {@link InputField}s and

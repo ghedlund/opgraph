@@ -16,11 +16,11 @@
  */
 package ca.phon.opgraph.app.commands.notes;
 
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.commands.GraphCommand;
-import ca.phon.opgraph.app.edits.notes.RemoveNoteEdit;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
+import ca.phon.opgraph.app.edits.notes.*;
 import ca.phon.opgraph.app.extensions.*;
 
 /**

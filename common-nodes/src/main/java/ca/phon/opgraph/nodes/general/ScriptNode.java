@@ -20,19 +20,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.logging.*;
+import java.util.stream.*;
 
 import javax.script.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.text.BadLocationException;
+import javax.swing.text.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.edits.node.NodeSettingsEdit;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.edits.node.*;
+import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.exceptions.*;
 import ca.phon.opgraph.nodes.general.script.*;
 
 /**

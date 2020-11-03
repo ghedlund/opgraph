@@ -16,10 +16,10 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 public class StaticMethodNode extends MethodNode {
 

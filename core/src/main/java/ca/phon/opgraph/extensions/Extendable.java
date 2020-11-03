@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.extensions;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * An interface for any class which would like to provide extensions to

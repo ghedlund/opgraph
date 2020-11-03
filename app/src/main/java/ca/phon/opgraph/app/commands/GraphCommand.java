@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.app.commands;
 
-import ca.phon.opgraph.app.GraphDocument;
+import ca.phon.opgraph.app.*;
 
 public abstract class GraphCommand extends HookableCommand {
 	

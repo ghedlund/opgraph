@@ -19,13 +19,11 @@
  */
 package ca.phon.opgraph.app.edits.node;
 
-import java.util.Properties;
+import java.util.*;
 
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.app.extensions.NodeSettings;
+import ca.phon.opgraph.app.extensions.*;
 
 /**
  * Changes a node's settings.

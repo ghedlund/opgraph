@@ -16,11 +16,9 @@
  */
 package ca.phon.opgraph;
 
-import java.util.List;
+import java.util.*;
 
-import ca.phon.opgraph.validators.ClassValidator;
-import ca.phon.opgraph.validators.CompositeValidator;
-import ca.phon.opgraph.validators.TypeValidator;
+import ca.phon.opgraph.validators.*;
 
 /**
  * A descriptor for an input field of an {@link OpNode} in an {@link OpGraph}.

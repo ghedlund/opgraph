@@ -16,15 +16,11 @@
  */
 package ca.phon.opgraph.nodes.random;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import java.math.*;
+import java.security.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * A node that outputs a random string.

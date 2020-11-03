@@ -16,8 +16,7 @@
  */
 package ca.phon.opgraph.extensions;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
+import ca.phon.opgraph.*;
 
 /**
  * An extension meant for any {@link OpNode} that contains a graph (e.g., macro nodes).

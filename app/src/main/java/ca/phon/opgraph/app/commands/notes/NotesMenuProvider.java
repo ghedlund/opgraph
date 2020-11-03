@@ -20,14 +20,14 @@
 package ca.phon.opgraph.app.commands.notes;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.OpGraph;
+import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
-import ca.phon.opgraph.app.components.PathAddressableMenu;
-import ca.phon.opgraph.app.extensions.Note;
+import ca.phon.opgraph.app.components.*;
+import ca.phon.opgraph.app.extensions.*;
 
 /**
  * Menu provider for core functions.

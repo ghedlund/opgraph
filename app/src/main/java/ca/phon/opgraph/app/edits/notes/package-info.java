@@ -20,4 +20,3 @@
  * Provides edits for {@link ca.phon.opgraph.app.extensions.Note} operations.
  */
 package ca.phon.opgraph.app.edits.notes;
-import ca.phon.opgraph.app.extensions.Note;

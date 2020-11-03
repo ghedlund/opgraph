@@ -16,20 +16,13 @@
  */
 package ca.phon.opgraph.app.components;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
-import javax.swing.JEditorPane;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
+import javax.swing.*;
+import javax.swing.text.html.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.Processor;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * A component to show inputs and output values from a node's {@link OpContext}.

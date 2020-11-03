@@ -16,22 +16,18 @@
  */
 package ca.phon.opgraph.app;
 
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.*;
 
-import javax.swing.JComponent;
-import javax.swing.undo.CompoundEdit;
-import javax.swing.undo.UndoableEdit;
+import javax.swing.*;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.components.canvas.CanvasNode;
-import ca.phon.opgraph.app.edits.graph.MoveNodesEdit;
-import ca.phon.opgraph.extensions.NodeMetadata;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * Layout nodes in a graph in a logical manner.  Nodes

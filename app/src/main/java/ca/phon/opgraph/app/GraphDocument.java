@@ -16,30 +16,19 @@
  */
 package ca.phon.opgraph.app;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.Map;
+import java.beans.*;
+import java.io.*;
+import java.util.*;
 
-import javax.swing.JOptionPane;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.Processor;
-import ca.phon.opgraph.app.commands.core.SaveCommand;
-import ca.phon.opgraph.app.components.canvas.GraphCanvas;
-import ca.phon.opgraph.app.components.canvas.GraphCanvasSelectionModel;
-import ca.phon.opgraph.extensions.CompositeNode;
-import ca.phon.opgraph.extensions.NodeMetadata;
-import ca.phon.ui.jbreadcrumb.Breadcrumb;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.commands.core.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.ui.jbreadcrumb.*;
 
 /**
  * Document model used for graphs.

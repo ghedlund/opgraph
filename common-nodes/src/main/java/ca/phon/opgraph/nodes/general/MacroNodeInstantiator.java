@@ -16,17 +16,13 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.UUID;
+import java.io.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.OpgraphIO;
-import ca.phon.opgraph.app.util.GraphUtils;
-import ca.phon.opgraph.extensions.Publishable.PublishedInput;
-import ca.phon.opgraph.extensions.Publishable.PublishedOutput;
-import ca.phon.opgraph.library.instantiators.Instantiator;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.util.*;
+import ca.phon.opgraph.extensions.Publishable.*;
+import ca.phon.opgraph.library.instantiators.*;
 
 /**
  * This class will generate a new macro node given the location

@@ -19,24 +19,24 @@ package ca.phon.opgraph.app.components;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 import java.util.List;
 import java.util.logging.*;
 
-import javax.imageio.ImageIO;
+import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
-import javax.swing.undo.UndoableEdit;
+import javax.swing.undo.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
+import ca.phon.opgraph.app.*;
 import ca.phon.opgraph.app.components.canvas.*;
-import ca.phon.opgraph.app.edits.graph.MoveNodesEdit;
+import ca.phon.opgraph.app.edits.graph.*;
 import ca.phon.opgraph.dag.*;
-import ca.phon.opgraph.extensions.CompositeNode;
-import ca.phon.ui.jbreadcrumb.BreadcrumbEvent;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.ui.jbreadcrumb.*;
 
 /**
  * Provides an outline component for {@link OpGraph}s.  The outline

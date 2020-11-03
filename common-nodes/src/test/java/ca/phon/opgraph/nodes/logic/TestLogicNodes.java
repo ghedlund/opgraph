@@ -18,17 +18,10 @@ package ca.phon.opgraph.nodes.logic;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.nodes.logic.LogicalAndNode;
-import ca.phon.opgraph.nodes.logic.LogicalNotNode;
-import ca.phon.opgraph.nodes.logic.LogicalOrNode;
-import ca.phon.opgraph.nodes.logic.LogicalXorNode;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * Test nodes in {@link ca.phon.opgraph.nodes.logic}.

@@ -16,40 +16,25 @@
  */
 package ca.phon.opgraph.app.commands.edit;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+import java.util.logging.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-import javax.swing.undo.CompoundEdit;
+import javax.swing.*;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.GraphEditorModel;
-import ca.phon.opgraph.app.commands.HookableCommand;
-import ca.phon.opgraph.app.components.canvas.SubgraphClipboardContents;
-import ca.phon.opgraph.app.edits.graph.AddLinkEdit;
-import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
-import ca.phon.opgraph.app.util.GraphUtils;
-import ca.phon.opgraph.dag.CycleDetectedException;
-import ca.phon.opgraph.dag.InvalidEdgeException;
-import ca.phon.opgraph.dag.VertexNotFoundException;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.extensions.NodeMetadata;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.app.util.*;
+import ca.phon.opgraph.dag.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * Paste copied nodes (if any) from the system clipboard into the current graph.

@@ -16,16 +16,13 @@
  */
 package ca.phon.opgraph.app.commands.edit;
 
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-import javax.swing.undo.UndoManager;
+import javax.swing.*;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.app.commands.HookableCommand;
+import ca.phon.opgraph.app.commands.*;
 
 /**
  * Sends a redo command to a given {@link UndoManager}.

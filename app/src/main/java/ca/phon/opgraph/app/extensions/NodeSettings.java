@@ -19,10 +19,10 @@
  */
 package ca.phon.opgraph.app.extensions;
 
-import java.awt.Component;
-import java.util.Properties;
+import java.awt.*;
+import java.util.*;
 
-import ca.phon.opgraph.app.GraphDocument;
+import ca.phon.opgraph.app.*;
 
 /**
  * A node extension that supplies a component for modifying settings

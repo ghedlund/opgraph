@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.app.commands;
 
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 
 /**
  * Interface for command hooks.  Hooks are performed

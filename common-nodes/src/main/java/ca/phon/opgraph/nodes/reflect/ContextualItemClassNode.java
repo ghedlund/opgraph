@@ -16,12 +16,11 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Properties;
+import java.lang.reflect.*;
+import java.util.*;
 
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * Node that grabs an instance of the specified class

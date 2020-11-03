@@ -16,36 +16,15 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.BasicStroke;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.Ellipse2D;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.*;
+import java.awt.geom.*;
+import java.beans.*;
 
-import javax.swing.JComponent;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.MouseInputAdapter;
+import javax.swing.*;
+import javax.swing.border.*;
 
-import ca.phon.opgraph.ContextualItem;
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.components.DoubleClickableTextField;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.components.*;
 
 /**
  * A component that displays either an {@link InputField} or an {@link OutputField}.

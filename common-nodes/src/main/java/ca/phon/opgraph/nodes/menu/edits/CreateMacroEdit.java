@@ -16,32 +16,18 @@
  */
 package ca.phon.opgraph.nodes.menu.edits;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.dag.CycleDetectedException;
-import ca.phon.opgraph.dag.InvalidEdgeException;
-import ca.phon.opgraph.dag.VertexNotFoundException;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.extensions.NodeMetadata;
-import ca.phon.opgraph.nodes.general.MacroNode;
-import ca.phon.opgraph.nodes.reflect.ObjectNode;
-import ca.phon.opgraph.util.Pair;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.dag.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.opgraph.nodes.general.*;
+import ca.phon.opgraph.nodes.reflect.*;
+import ca.phon.opgraph.util.*;
 
 /**
  * An edit that creates a macro from a given collection of nodes in a graph.

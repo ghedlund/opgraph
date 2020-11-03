@@ -19,16 +19,14 @@
  */
 package ca.phon.opgraph.app.commands.publish;
 
-import java.awt.event.MouseEvent;
-import javax.swing.JMenu;
+import java.awt.event.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.GraphEditorModel;
-import ca.phon.opgraph.app.MenuProvider;
-import ca.phon.opgraph.app.commands.publish.PublishedFieldMenuHelper;
-import ca.phon.opgraph.app.components.PathAddressableMenu;
-import ca.phon.opgraph.extensions.Publishable;
+import javax.swing.*;
+
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.components.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * Menu provider for publishing input/output fields.

@@ -16,20 +16,15 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.awt.Component;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.*;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.logging.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.util.ReflectUtil;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.util.*;
 
 /**
  * Base node for all reflection based {@link OpGraph} nodes.

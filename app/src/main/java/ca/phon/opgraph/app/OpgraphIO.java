@@ -16,16 +16,10 @@
  */
 package ca.phon.opgraph.app;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.io.OpGraphSerializer;
-import ca.phon.opgraph.io.OpGraphSerializerFactory;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.io.*;
 
 /**
  * Utility class providing easy access to open/save methods for opgraph

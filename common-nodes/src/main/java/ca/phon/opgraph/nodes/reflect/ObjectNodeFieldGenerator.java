@@ -16,12 +16,10 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.*;
+import java.util.*;
 
-import ca.phon.opgraph.util.ReflectUtil;
+import ca.phon.opgraph.util.*;
 
 /**
  * Class used to add input/output fields based on

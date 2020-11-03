@@ -16,8 +16,8 @@
  */
 package ca.phon.opgraph.library.handlers;
 
-import java.io.IOException;
-import java.net.URI;
+import java.io.*;
+import java.net.*;
 
 /**
  * An interface for classes that want to load information from a given URI.

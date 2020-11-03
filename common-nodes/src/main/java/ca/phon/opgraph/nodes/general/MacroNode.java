@@ -16,28 +16,12 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.net.*;
+import java.util.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpGraphListener;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.Processor;
-import ca.phon.opgraph.ProcessorListener;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.extensions.CompositeNode;
-import ca.phon.opgraph.extensions.CustomProcessing;
-import ca.phon.opgraph.extensions.Publishable;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * A node that contains a macro operation: a collection of nodes that behave

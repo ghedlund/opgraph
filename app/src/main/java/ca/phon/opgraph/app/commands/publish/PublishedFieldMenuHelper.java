@@ -16,16 +16,11 @@
  */
 package ca.phon.opgraph.app.commands.publish;
 
-import javax.swing.AbstractAction;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
+import javax.swing.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.GraphEditorModel;
-import ca.phon.opgraph.extensions.Publishable;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * A menu that allows one to control the publishing of inputs and outputs

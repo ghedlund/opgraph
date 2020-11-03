@@ -16,17 +16,13 @@
  */
 package ca.phon.opgraph.app.commands;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.event.*;
+import java.util.*;
+import java.util.logging.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.Icon;
+import javax.swing.*;
 
-import ca.phon.opgraph.util.DefaultServiceDiscovery;
+import ca.phon.opgraph.util.*;
 
 /**
  * 

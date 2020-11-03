@@ -19,14 +19,11 @@
  */
 package ca.phon.opgraph.app.components.library;
 
-import java.util.Enumeration;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
+import java.util.*;
 
-import ca.phon.opgraph.library.NodeData;
-import ca.phon.opgraph.library.NodeLibrary;
-import ca.phon.opgraph.library.NodeLibraryListener;
+import javax.swing.tree.*;
+
+import ca.phon.opgraph.library.*;
 
 /**
  * A tree model for viewing a node library. 

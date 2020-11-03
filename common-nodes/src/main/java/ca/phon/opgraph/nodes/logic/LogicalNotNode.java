@@ -16,12 +16,8 @@
  */
 package ca.phon.opgraph.nodes.logic;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * An {@link OpNode} that computes the logical negation of its input.

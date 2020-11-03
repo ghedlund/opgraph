@@ -16,23 +16,14 @@
  */
 package ca.phon.opgraph.library;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.logging.Logger;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.logging.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.library.handlers.URIHandler;
-import ca.phon.opgraph.library.instantiators.ClassInstantiator;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.library.handlers.*;
+import ca.phon.opgraph.library.instantiators.*;
 
 /**
  * A class for managing available node classes.

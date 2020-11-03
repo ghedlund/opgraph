@@ -19,14 +19,11 @@
  */
 package ca.phon.opgraph.app.edits.notes;
 
-import javax.swing.JComponent;
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoableEdit;
+import javax.swing.*;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.app.commands.graph.MoveNodeCommand;
-import ca.phon.opgraph.app.extensions.Note;
+import ca.phon.opgraph.app.commands.graph.*;
+import ca.phon.opgraph.app.extensions.*;
 
 /**
  * Sets the location of a note.

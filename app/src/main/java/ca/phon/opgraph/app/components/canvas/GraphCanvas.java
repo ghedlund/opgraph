@@ -19,30 +19,28 @@ package ca.phon.opgraph.app.components.canvas;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 import java.beans.*;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javax.swing.*;
-import javax.swing.undo.CompoundEdit;
+import javax.swing.undo.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
+import ca.phon.opgraph.app.*;
 import ca.phon.opgraph.app.components.*;
-import ca.phon.opgraph.app.components.canvas.CanvasNodeField.AnchorFillState;
+import ca.phon.opgraph.app.components.canvas.CanvasNodeField.*;
 import ca.phon.opgraph.app.edits.graph.*;
-import ca.phon.opgraph.app.edits.notes.ResizeNoteEdit;
+import ca.phon.opgraph.app.edits.notes.*;
 import ca.phon.opgraph.app.extensions.*;
 import ca.phon.opgraph.app.util.*;
 import ca.phon.opgraph.dag.*;
-import ca.phon.opgraph.exceptions.ItemMissingException;
+import ca.phon.opgraph.exceptions.*;
 import ca.phon.opgraph.extensions.*;
 import ca.phon.opgraph.extensions.Publishable.*;
 import ca.phon.ui.jbreadcrumb.*;
-import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.BreadcrumbEventType;
+import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.*;
 
 /**
  * A canvas for creating/modifying an {@link OpGraph}.

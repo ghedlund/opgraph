@@ -18,13 +18,13 @@ package ca.phon.opgraph.nodes.general;
 
 import java.awt.*;
 import java.text.*;
-import java.util.Properties;
+import java.util.*;
 
 import javax.swing.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.extensions.NodeSettings;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.extensions.*;
 
 @OpNodeInfo(category="Objects", description="Number value", name="Number", showInLibrary=true)
 public class NumberNode extends ConstantValueNode implements NodeSettings {

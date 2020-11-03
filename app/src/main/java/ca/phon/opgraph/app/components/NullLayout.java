@@ -16,10 +16,7 @@
  */
 package ca.phon.opgraph.app.components;
 
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.LayoutManager;
+import java.awt.*;
 
 /**
  * A special version of a <code>null</code> layout which takes care of

@@ -17,13 +17,13 @@
 package ca.phon.opgraph.nodes.general;
 
 import java.awt.*;
-import java.util.Properties;
+import java.util.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.extensions.NodeSettings;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.extensions.*;
 
 @OpNodeInfo(category="Objects", name="Boolean", description="Boolean value", showInLibrary=true)
 public class BooleanNode extends ConstantValueNode implements NodeSettings {

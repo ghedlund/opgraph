@@ -16,17 +16,11 @@
  */
 package ca.phon.opgraph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.prefs.NodeChangeEvent;
+import java.util.*;
 
-import ca.phon.opgraph.dag.Vertex;
-import ca.phon.opgraph.exceptions.NodeCanceledException;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.extensions.Extendable;
-import ca.phon.opgraph.extensions.ExtendableSupport;
+import ca.phon.opgraph.dag.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * A node in an {@link OpGraph}.

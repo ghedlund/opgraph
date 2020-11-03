@@ -19,7 +19,7 @@
  */
 package ca.phon.opgraph.app.components.library;
 
-import ca.phon.opgraph.library.NodeData;
+import ca.phon.opgraph.library.*;
 
 /**
  * A {@link NodeInfoFilter} that filters on {@link NodeData#name},

@@ -16,11 +16,10 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.nodes.xml.MacroNodeXMLSerializer;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.nodes.xml.*;
 
 /**
  * An {@link MacroNode} extension containing a list of nodes. These nodes

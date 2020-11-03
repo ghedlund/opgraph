@@ -19,17 +19,17 @@
  */
 package ca.phon.opgraph.nodes.menu;
 
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.*;
-import java.util.Collection;
+import java.util.*;
 
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
-import ca.phon.opgraph.OpNode;
+import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
-import ca.phon.opgraph.app.components.PathAddressableMenu;
+import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.app.components.canvas.*;
-import ca.phon.opgraph.nodes.general.MacroNode;
+import ca.phon.opgraph.nodes.general.*;
 
 /**
  * 

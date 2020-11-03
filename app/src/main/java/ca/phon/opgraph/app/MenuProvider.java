@@ -16,9 +16,9 @@
  */
 package ca.phon.opgraph.app;
 
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
-import ca.phon.opgraph.app.components.PathAddressableMenu;
+import ca.phon.opgraph.app.components.*;
 
 /**
  * An interface for menu providers.    

@@ -18,14 +18,10 @@ package ca.phon.opgraph.nodes.random;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.nodes.random.RandomBooleanNode;
-import ca.phon.opgraph.nodes.random.RandomDecimalNode;
-import ca.phon.opgraph.nodes.random.RandomIntegerNode;
-import ca.phon.opgraph.nodes.random.RandomStringNode;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * Test nodes in {@link ca.phon.opgraph.nodes.random}.

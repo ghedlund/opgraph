@@ -19,12 +19,9 @@
  */
 package ca.phon.opgraph.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
-import ca.phon.opgraph.OpGraph;
+import ca.phon.opgraph.*;
 
 /**
  * An interface for any class providing OpGraph serialization services.

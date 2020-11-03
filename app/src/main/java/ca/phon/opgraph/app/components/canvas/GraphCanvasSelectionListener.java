@@ -16,9 +16,9 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.util.Collection;
+import java.util.*;
 
-import ca.phon.opgraph.OpNode;
+import ca.phon.opgraph.*;
 
 /**
  * An interface for classes that want to listen to selection events fired

@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.Point;
+import java.awt.*;
 
 /**
  * Handler for links which have been canceled by dragging onto

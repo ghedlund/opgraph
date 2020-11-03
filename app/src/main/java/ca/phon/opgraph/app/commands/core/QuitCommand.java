@@ -19,17 +19,12 @@
  */
 package ca.phon.opgraph.app.commands.core;
 
-import java.awt.Frame;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.event.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
-import ca.phon.opgraph.app.commands.HookableCommand;
+import ca.phon.opgraph.app.commands.*;
 
 /**
  * A command to quit the application.

@@ -16,24 +16,13 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.awt.Component;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.reflect.*;
+import java.util.*;
+import java.util.logging.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.util.ReflectUtil;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.util.*;
 
 public class MethodNode extends AbstractReflectNode {
 

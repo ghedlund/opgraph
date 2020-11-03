@@ -16,16 +16,16 @@
  */
 package ca.phon.opgraph.app.commands.edit;
 
-import java.awt.event.ActionEvent;
-import java.util.Collection;
+import java.awt.event.*;
+import java.util.*;
 
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.commands.GraphCommand;
-import ca.phon.opgraph.app.components.canvas.GraphCanvas;
-import ca.phon.opgraph.app.edits.graph.DeleteNodesEdit;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.app.edits.graph.*;
 
 /**
  * Deletes selected nodes in a {@link GraphCanvas}.

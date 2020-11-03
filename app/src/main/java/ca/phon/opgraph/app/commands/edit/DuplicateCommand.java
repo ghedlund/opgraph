@@ -16,22 +16,22 @@
  */
 package ca.phon.opgraph.app.commands.edit;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
-import javax.swing.KeyStroke;
-import javax.swing.undo.CompoundEdit;
+import javax.swing.*;
+import javax.swing.undo.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.commands.GraphCommand;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
 import ca.phon.opgraph.app.edits.graph.*;
-import ca.phon.opgraph.app.util.GraphUtils;
+import ca.phon.opgraph.app.util.*;
 import ca.phon.opgraph.dag.*;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.extensions.NodeMetadata;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * Duplicate selected nodes within a graph.

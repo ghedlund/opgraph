@@ -16,20 +16,17 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+import java.util.logging.*;
 
-import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.border.Border;
+import javax.imageio.*;
+import javax.swing.*;
+import javax.swing.border.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.extensions.CompositeNode;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * A class containing styling information for a node.

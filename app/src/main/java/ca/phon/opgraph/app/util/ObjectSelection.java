@@ -16,10 +16,8 @@
  */
 package ca.phon.opgraph.app.util;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
+import java.awt.datatransfer.*;
+import java.io.*;
 
 /**
  * A transferable that deals with the transfer of an object of a specific class.

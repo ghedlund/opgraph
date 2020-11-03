@@ -19,12 +19,9 @@
  */
 package ca.phon.opgraph.app.components;
 
-import java.awt.Component;
+import java.awt.*;
 
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.MenuElement;
+import javax.swing.*;
 
 /**
  * A menu that provides path-based addressing, to make menu-building a simpler task.

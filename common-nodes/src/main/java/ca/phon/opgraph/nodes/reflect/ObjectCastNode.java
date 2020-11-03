@@ -16,11 +16,8 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.exceptions.InvalidTypeException;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * Node for casting instances of an object to the type

@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.exceptions;
 
-import ca.phon.opgraph.ContextualItem;
+import ca.phon.opgraph.*;
 
 /**
  * An exception thrown whenever a given {@link ContextualItem} does not exist, but

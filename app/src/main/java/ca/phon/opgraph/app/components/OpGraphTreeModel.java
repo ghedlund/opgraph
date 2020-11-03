@@ -16,25 +16,13 @@
  */
 package ca.phon.opgraph.app.components;
 
-import java.beans.PropertyChangeListener;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
+import javax.swing.*;
+import javax.swing.tree.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpGraphListener;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeListener;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.extensions.CompositeNode;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * Tree model for {@link OpGraph} outline.

@@ -16,9 +16,7 @@
  */
 package ca.phon.opgraph.validators;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * A validator that uses {@link Class} instances for validation.

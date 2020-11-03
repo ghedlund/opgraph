@@ -16,17 +16,13 @@
  */
 package ca.phon.opgraph.app.edits.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoableEdit;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.commands.graph.MoveNodeCommand;
-import ca.phon.opgraph.extensions.NodeMetadata;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.commands.graph.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * Moves a collection of nodes a specified amount.

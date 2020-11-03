@@ -16,18 +16,14 @@
  */
 package ca.phon.opgraph.app.edits.graph;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.util.Collection;
-import java.util.Collections;
+import java.awt.*;
+import java.util.*;
 
-import javax.swing.JComponent;
-import javax.swing.SwingConstants;
-import javax.swing.undo.CompoundEdit;
+import javax.swing.*;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.util.GraphUtils;
-import ca.phon.opgraph.extensions.NodeMetadata;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.util.*;
 
 public class AlignNodesEdit extends CompoundEdit {
 	

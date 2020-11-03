@@ -19,13 +19,13 @@
  */
 package ca.phon.opgraph.app.commands.core;
 
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.beans.*;
 
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
 import ca.phon.opgraph.app.*;
-import ca.phon.opgraph.app.components.PathAddressableMenu;
+import ca.phon.opgraph.app.components.*;
 
 /**
  * Menu provider for core functions.

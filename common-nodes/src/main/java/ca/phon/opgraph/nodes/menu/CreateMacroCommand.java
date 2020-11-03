@@ -16,16 +16,16 @@
  */
 package ca.phon.opgraph.nodes.menu;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
-import java.util.Collection;
+import java.util.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.components.canvas.GraphCanvasSelectionModel;
-import ca.phon.opgraph.nodes.menu.edits.CreateMacroEdit;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.nodes.menu.edits.*;
 
 /**
  * A command for creating a macro from the selected nodes in the active editor's canvas.

@@ -18,17 +18,9 @@ package ca.phon.opgraph;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.Processor;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.exceptions.RequiredInputException;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * Tests {@link OpGraph}.

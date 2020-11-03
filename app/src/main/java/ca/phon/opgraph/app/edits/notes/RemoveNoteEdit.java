@@ -19,12 +19,9 @@
  */
 package ca.phon.opgraph.app.edits.notes;
 
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.app.extensions.Note;
-import ca.phon.opgraph.app.extensions.Notes;
+import ca.phon.opgraph.app.extensions.*;
 
 /**
  * Removes a note from a note collection.

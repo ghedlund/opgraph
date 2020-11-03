@@ -19,17 +19,18 @@
  */
 package ca.phon.opgraph.app.components.library;
 
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.List;
+import java.util.logging.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.OpGraph;
+import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
 import ca.phon.opgraph.app.components.*;
-import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
+import ca.phon.opgraph.app.edits.graph.*;
 import ca.phon.opgraph.library.*;
 
 /**

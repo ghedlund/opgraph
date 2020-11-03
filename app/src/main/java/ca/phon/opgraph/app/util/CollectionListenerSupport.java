@@ -19,7 +19,7 @@
  */
 package ca.phon.opgraph.app.util;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Support for collection-oriented classes that provide the listening

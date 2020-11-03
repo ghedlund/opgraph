@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.dag;
 
-import ca.phon.opgraph.OpLink;
+import ca.phon.opgraph.*;
 
 public class InvalidEdgeException extends Exception {
 	

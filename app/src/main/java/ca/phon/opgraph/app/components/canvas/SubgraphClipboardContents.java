@@ -21,15 +21,15 @@ package ca.phon.opgraph.app.components.canvas;
 
 import java.awt.*;
 import java.awt.datatransfer.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
+import java.awt.geom.*;
+import java.awt.image.*;
 import java.io.*;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.util.GraphUtils;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.util.*;
 import ca.phon.opgraph.io.*;
 
 /**

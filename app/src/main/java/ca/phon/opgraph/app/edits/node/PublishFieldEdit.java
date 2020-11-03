@@ -16,16 +16,10 @@
  */
 package ca.phon.opgraph.app.edits.node;
 
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.ContextualItem;
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.extensions.Publishable;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * Publishes or unpublishes inputs/outputs of a node.

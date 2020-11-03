@@ -19,10 +19,9 @@
  */
 package ca.phon.opgraph.nodes.general.script;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
-import ca.phon.opgraph.Processor;
+import ca.phon.opgraph.*;
 
 /**
  */

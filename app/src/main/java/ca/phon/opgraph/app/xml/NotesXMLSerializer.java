@@ -19,25 +19,19 @@
  */
 package ca.phon.opgraph.app.xml;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.io.IOException;
+import java.awt.*;
+import java.io.*;
 
-import javax.swing.JComponent;
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
+import javax.swing.*;
+import javax.xml.*;
+import javax.xml.namespace.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.app.extensions.Note;
-import ca.phon.opgraph.app.extensions.Notes;
-import ca.phon.opgraph.extensions.Extendable;
-import ca.phon.opgraph.io.xml.XMLSerializer;
-import ca.phon.opgraph.io.xml.XMLSerializerFactory;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.opgraph.io.xml.*;
 
 /**
  */

@@ -16,10 +16,10 @@
  */
 package ca.phon.opgraph.nodes.canvas;
 
-import java.awt.Point;
-import java.util.Map;
+import java.awt.*;
+import java.util.*;
 
-import ca.phon.opgraph.OpNode;
+import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.components.canvas.*;
 
 public class MacroAbandonedLinkHandler implements AbandonedLinkHandler {

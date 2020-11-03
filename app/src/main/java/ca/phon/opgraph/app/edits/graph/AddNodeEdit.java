@@ -16,14 +16,11 @@
  */
 package ca.phon.opgraph.app.edits.graph;
 
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.extensions.NodeMetadata;
-import ca.phon.opgraph.library.NodeData;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.opgraph.library.*;
 
 /**
  * A canvas edit that moves a collection of nodes a specified amount.

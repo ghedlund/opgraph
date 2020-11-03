@@ -21,14 +21,14 @@ package ca.phon.opgraph.app;
 
 import java.beans.*;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.app.components.canvas.*;
-import ca.phon.opgraph.app.components.library.NodeLibraryViewer;
-import ca.phon.opgraph.util.ServiceDiscovery;
-import ca.phon.ui.jbreadcrumb.JBreadcrumb;
+import ca.phon.opgraph.app.components.library.*;
+import ca.phon.opgraph.util.*;
+import ca.phon.ui.jbreadcrumb.*;
 
 /**
  * A model for the graph editor.

@@ -16,25 +16,17 @@
  */
 package ca.phon.opgraph.nodes.menu;
 
-import java.awt.Component;
-import java.awt.GraphicsEnvironment;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.lang.reflect.Constructor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.*;
+import java.awt.event.*;
+import java.lang.reflect.*;
+import java.util.logging.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
-import ca.phon.opgraph.nodes.reflect.ConstructorNode;
-import ca.phon.opgraph.util.ReflectUtil;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.nodes.reflect.*;
+import ca.phon.opgraph.util.*;
 
 public class AddObjectCommand extends AbstractAction {
 	

@@ -17,13 +17,11 @@
 package ca.phon.opgraph.app.components.canvas;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
+import java.awt.geom.*;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
-import ca.phon.opgraph.app.util.GUIHelper;
+import ca.phon.opgraph.app.util.*;
 
 /**
  * A grid component intended for displaying on the background of a

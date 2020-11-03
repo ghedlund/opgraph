@@ -20,26 +20,26 @@ import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
 import java.awt.font.*;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.util.HashSet;
+import java.awt.geom.*;
+import java.awt.image.*;
+import java.util.*;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.html.*;
 import javax.swing.tree.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
+import ca.phon.opgraph.app.*;
 import ca.phon.opgraph.app.components.*;
-import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
-import ca.phon.opgraph.app.util.ObjectSelection;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.app.util.*;
 import ca.phon.opgraph.library.*;
-import ca.phon.opgraph.library.handlers.ClassHandler;
-import ca.phon.opgraph.util.ServiceDiscovery;
+import ca.phon.opgraph.library.handlers.*;
+import ca.phon.opgraph.util.*;
 
 /**
  * A panel to display the node types available in a {@link NodeLibrary}.

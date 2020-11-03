@@ -16,12 +16,9 @@
  */
 package ca.phon.opgraph.extensions;
 
-import java.util.Iterator;
-import java.util.Queue;
+import java.util.*;
 
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.Processor;
+import ca.phon.opgraph.*;
 
 /**
  * An extension meant for any {@link OpNode} that requires custom initialization,

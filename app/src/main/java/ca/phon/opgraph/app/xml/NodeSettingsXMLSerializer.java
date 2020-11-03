@@ -19,24 +19,17 @@
  */
 package ca.phon.opgraph.app.xml;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Properties;
+import java.io.*;
+import java.util.*;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
+import javax.xml.*;
+import javax.xml.namespace.*;
 
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.io.xml.XMLSerializer;
-import ca.phon.opgraph.io.xml.XMLSerializerFactory;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.io.xml.*;
 
 /**
  */

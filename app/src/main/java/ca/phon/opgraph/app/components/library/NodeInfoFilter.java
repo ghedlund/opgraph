@@ -19,9 +19,9 @@
  */
 package ca.phon.opgraph.app.components.library;
 
-import java.util.regex.Pattern;
+import java.util.regex.*;
 
-import ca.phon.opgraph.library.NodeData;
+import ca.phon.opgraph.library.*;
 
 /**
  * A filter for {@link NodeData} instances.

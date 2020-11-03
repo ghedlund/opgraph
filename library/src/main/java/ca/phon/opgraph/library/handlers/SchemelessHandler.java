@@ -16,13 +16,11 @@
  */
 package ca.phon.opgraph.library.handlers;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import ca.phon.opgraph.library.NodeData;
+import ca.phon.opgraph.library.*;
 
 /**
  * A handler that handles URIs with everything <code>null</code> except for

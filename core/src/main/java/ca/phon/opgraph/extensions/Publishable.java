@@ -16,11 +16,9 @@
  */
 package ca.phon.opgraph.extensions;
 
-import java.util.List;
+import java.util.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
+import ca.phon.opgraph.*;
 
 /**
  * An extension that allows a field of a node to be "published". This

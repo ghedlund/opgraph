@@ -16,16 +16,16 @@
  */
 package ca.phon.opgraph.app.commands.graph;
 
-import java.awt.event.ActionEvent;
-import java.util.Collection;
+import java.awt.event.*;
+import java.util.*;
 
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.commands.GraphCommand;
-import ca.phon.opgraph.app.components.canvas.GraphCanvas;
-import ca.phon.opgraph.app.edits.graph.MoveNodesEdit;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.app.edits.graph.*;
 
 /**
  * Moves selected nodes in the active {@link GraphCanvas}.

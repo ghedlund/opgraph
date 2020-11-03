@@ -19,16 +19,11 @@
  */
 package ca.phon.opgraph.app.components;
 
-import java.awt.Component;
+import java.awt.*;
 
-import javax.swing.Action;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.MenuElement;
+import javax.swing.*;
 
-import ca.phon.opgraph.util.Pair;
+import ca.phon.opgraph.util.*;
 
 /**
  * An implementation of {@link PathAddressableMenu} that operates on a given

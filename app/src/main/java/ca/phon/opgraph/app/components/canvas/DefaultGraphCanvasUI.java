@@ -20,28 +20,26 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.dnd.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.NoninvertibleTransformException;
-import java.awt.geom.Point2D;
-import java.io.IOException;
+import java.awt.geom.*;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.logging.*;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
+import javax.swing.text.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
 import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.app.edits.graph.*;
-import ca.phon.opgraph.app.edits.notes.MoveNoteEdit;
+import ca.phon.opgraph.app.edits.notes.*;
 import ca.phon.opgraph.app.extensions.*;
-import ca.phon.opgraph.app.util.GUIHelper;
+import ca.phon.opgraph.app.util.*;
 import ca.phon.opgraph.dag.*;
-import ca.phon.opgraph.exceptions.ItemMissingException;
+import ca.phon.opgraph.exceptions.*;
 import ca.phon.opgraph.extensions.*;
-import ca.phon.opgraph.library.NodeData;
+import ca.phon.opgraph.library.*;
 import ca.phon.opgraph.util.*;
 
 public class DefaultGraphCanvasUI extends GraphCanvasUI {

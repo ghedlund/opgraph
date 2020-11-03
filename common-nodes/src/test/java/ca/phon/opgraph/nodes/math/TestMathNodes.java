@@ -18,16 +18,14 @@ package ca.phon.opgraph.nodes.math;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.nodes.math.MathExpressionNode;
-import ca.phon.opgraph.util.Pair;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.util.*;
 
 /**
  * Test nodes in {@link ca.phon.opgraph.nodes.math}.

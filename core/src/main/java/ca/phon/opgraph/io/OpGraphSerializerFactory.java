@@ -19,10 +19,10 @@
  */
 package ca.phon.opgraph.io;
 
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
-import ca.phon.opgraph.util.ServiceDiscovery;
+import ca.phon.opgraph.util.*;
 
 /**
  * A factory for discovering and constructing {@link OpGraphSerializer}s.

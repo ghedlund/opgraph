@@ -16,26 +16,15 @@
  */
 package ca.phon.opgraph.nodes.canvas;
 
-import java.awt.Point;
+import java.awt.*;
 
-import ca.phon.opgraph.ContextualItem;
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.components.canvas.AbandonedLinkHandler;
-import ca.phon.opgraph.app.components.canvas.CanvasNode;
-import ca.phon.opgraph.app.components.canvas.CanvasNodeField;
-import ca.phon.opgraph.app.components.canvas.GraphCanvas;
-import ca.phon.opgraph.app.edits.graph.AddLinkEdit;
-import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
-import ca.phon.opgraph.dag.CycleDetectedException;
-import ca.phon.opgraph.dag.InvalidEdgeException;
-import ca.phon.opgraph.dag.VertexNotFoundException;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.nodes.reflect.IterableClassNode;
-import ca.phon.opgraph.nodes.reflect.ObjectNode;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.dag.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.nodes.reflect.*;
 
 public class ReflectAbandonedLinkHandler implements AbandonedLinkHandler {
 

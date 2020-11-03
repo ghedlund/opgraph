@@ -16,45 +16,16 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Paint;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.*;
+import java.awt.geom.*;
+import java.awt.image.*;
+import java.util.*;
 
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.event.MouseInputAdapter;
-import javax.swing.event.UndoableEditListener;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
 
-import ca.phon.opgraph.ContextualItem;
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeListener;
-import ca.phon.opgraph.OutputField;
+import ca.phon.opgraph.*;
 
 /**
  * A component that visualizes an {@link OpNode}.

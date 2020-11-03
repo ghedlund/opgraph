@@ -16,9 +16,7 @@
  */
 package ca.phon.opgraph.exceptions;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.Processor;
+import ca.phon.opgraph.*;
 
 public class BreakpointEncountered extends ProcessingException {
 

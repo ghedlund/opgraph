@@ -16,18 +16,15 @@
  */
 package ca.phon.opgraph.app;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Path2D;
-import java.awt.image.BufferedImage;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
+import java.awt.*;
+import java.awt.geom.*;
+import java.awt.image.*;
+import java.lang.ref.*;
+import java.util.*;
 
-import ca.phon.opgraph.util.Pair;
+import javax.swing.*;
+
+import ca.phon.opgraph.util.*;
 
 /**
  * A library for some default icons that are rendered programmatically.

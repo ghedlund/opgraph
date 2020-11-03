@@ -17,16 +17,16 @@
 package ca.phon.opgraph.nodes.general;
 
 import java.awt.*;
-import java.text.NumberFormat;
+import java.text.*;
+import java.util.*;
 import java.util.List;
-import java.util.Properties;
 
 import javax.swing.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.exceptions.*;
 
 @OpNodeInfo(name="Array", category="Objects", description="Create an array of n objects", showInLibrary=true)
 public class ArrayNode extends OpNode implements NodeSettings {

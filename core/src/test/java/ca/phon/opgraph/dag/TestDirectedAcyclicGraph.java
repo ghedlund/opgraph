@@ -16,18 +16,13 @@
  */
 package ca.phon.opgraph.dag;
 
-import static ca.phon.CollectionsAssert.assertCollectionEqualsArray;
+import static ca.phon.CollectionsAssert.*;
 import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
-import java.util.HashMap;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.*;
 
-import ca.phon.opgraph.dag.CycleDetectedException;
-import ca.phon.opgraph.dag.DirectedAcyclicGraph;
-import ca.phon.opgraph.dag.SimpleDirectedEdge;
-import ca.phon.opgraph.dag.Vertex;
-import ca.phon.opgraph.dag.VertexNotFoundException;
+import org.junit.*;
 
 /**
  * Tests {@link DirectedAcyclicGraph}.

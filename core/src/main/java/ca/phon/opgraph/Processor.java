@@ -17,13 +17,13 @@
 package ca.phon.opgraph;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 
-import ca.phon.opgraph.ProcessorEvent.Type;
+import ca.phon.opgraph.ProcessorEvent.*;
 import ca.phon.opgraph.exceptions.*;
 import ca.phon.opgraph.extensions.*;
-import ca.phon.opgraph.extensions.CustomProcessing.CustomProcessor;
-import ca.phon.opgraph.validators.TypeValidator;
+import ca.phon.opgraph.extensions.CustomProcessing.*;
+import ca.phon.opgraph.validators.*;
 
 /**
  * A processing context for {@link OpGraph} instances. A fine level of control

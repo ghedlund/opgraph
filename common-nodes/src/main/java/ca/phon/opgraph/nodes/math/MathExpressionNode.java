@@ -21,24 +21,24 @@ package ca.phon.opgraph.nodes.math;
 
 import java.awt.*;
 import java.beans.*;
-import java.math.BigDecimal;
-import java.text.ParseException;
+import java.math.*;
+import java.text.*;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import javax.swing.*;
-import javax.swing.JFormattedTextField.AbstractFormatter;
+import javax.swing.JFormattedTextField.*;
 import javax.swing.event.*;
 
 import org.antlr.runtime.*;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.runtime.tree.*;
 
-import ca.phon.opgraph.nodes.math.parser.*;
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.edits.node.NodeSettingsEdit;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.edits.node.*;
+import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.nodes.math.parser.*;
 
 /**
  * A node that computes a value from a mathematical expression.

@@ -18,20 +18,11 @@ package ca.phon.opgraph.nodes.general;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.Processor;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.nodes.general.ConstantValueNode;
-import ca.phon.opgraph.nodes.general.MacroNode;
-import ca.phon.opgraph.nodes.general.PassThroughNode;
-import ca.phon.opgraph.nodes.logic.LogicalNotNode;
-import ca.phon.opgraph.nodes.reflect.StaticMethodNode;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.nodes.reflect.*;
 
 /**
  * Tests {@link MacroNode}.

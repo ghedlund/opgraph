@@ -16,10 +16,9 @@
  */
 package ca.phon.opgraph.app.components;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import ca.phon.opgraph.OpGraph;
+import ca.phon.opgraph.*;
 
 /**
  * Provide basic information about a node including

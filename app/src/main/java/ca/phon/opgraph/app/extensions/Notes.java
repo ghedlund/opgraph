@@ -19,13 +19,9 @@
  */
 package ca.phon.opgraph.app.extensions;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
-import ca.phon.opgraph.app.util.CollectionListener;
-import ca.phon.opgraph.app.util.CollectionListenerSupport;
+import ca.phon.opgraph.app.util.*;
 
 /**
  * An extension that stores a set of notes. Notes are stored in memory as

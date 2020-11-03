@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import ca.phon.opgraph.library.instantiators.Instantiator;
+import ca.phon.opgraph.library.instantiators.*;
 
 /**
  * Create new object nodes in the graph.  The class will prompt the user

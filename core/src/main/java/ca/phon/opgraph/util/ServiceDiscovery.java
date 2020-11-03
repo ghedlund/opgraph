@@ -16,9 +16,9 @@
  */
 package ca.phon.opgraph.util;
 
-import java.net.URL;
-import java.util.List;
-import java.util.logging.Logger;
+import java.net.*;
+import java.util.*;
+import java.util.logging.*;
 
 /**
  * A class that provides service discovery facilities. By default, the

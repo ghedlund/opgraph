@@ -19,27 +19,14 @@
  */
 package ca.phon.opgraph.nodes.iteration;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.net.*;
+import java.util.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.Processor;
-import ca.phon.opgraph.app.components.canvas.NodeStyle;
-import ca.phon.opgraph.exceptions.BreakpointEncountered;
-import ca.phon.opgraph.exceptions.ProcessingException;
-import ca.phon.opgraph.nodes.general.MacroNode;
-import ca.phon.opgraph.validators.CollectionValidator;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.components.canvas.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.nodes.general.*;
+import ca.phon.opgraph.validators.*;
 
 /**
  * A special macro node that loops over {@link List} inputs. When a field is

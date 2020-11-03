@@ -16,12 +16,13 @@
  */
 package ca.phon.opgraph.io.xml;
 
-import java.io.IOException;
-import javax.xml.namespace.QName;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.*;
 
-import ca.phon.opgraph.OpGraph;
+import javax.xml.namespace.*;
+
+import org.w3c.dom.*;
+
+import ca.phon.opgraph.*;
 
 /**
  * An extension for classes that require custom XML serialization.

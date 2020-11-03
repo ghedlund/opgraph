@@ -16,10 +16,7 @@
  */
 package ca.phon.opgraph.io.xml;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Container for a list of non-fatal exceptions which occured

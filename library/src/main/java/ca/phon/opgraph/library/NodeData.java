@@ -16,10 +16,10 @@
  */
 package ca.phon.opgraph.library;
 
-import java.net.URI;
+import java.net.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.library.instantiators.Instantiator;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.library.instantiators.*;
 
 /**
  * Information about nodes registered with a node library.

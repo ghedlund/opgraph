@@ -16,11 +16,7 @@
  */
 package ca.phon.opgraph.exceptions;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.Processor;
+import ca.phon.opgraph.*;
 
 /**
  * An exception that is thrown during the processing of an {@link OpGraph}

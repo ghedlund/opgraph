@@ -16,19 +16,13 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.io.*;
+import java.lang.ref.*;
+import java.net.*;
+import java.util.*;
 
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.io.OpGraphSerializer;
-import ca.phon.opgraph.io.OpGraphSerializerFactory;
-import ca.phon.opgraph.io.OpGraphSerializerInfo;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.io.*;
 
 public class MacroNodeCache {
 	

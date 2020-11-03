@@ -16,19 +16,11 @@
  */
 package ca.phon.opgraph.app.components;
 
-import java.awt.Color;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
+import java.awt.*;
+import java.awt.event.*;
+import java.beans.*;
 
-import javax.swing.text.Highlighter;
-import javax.swing.text.JTextComponent;
+import javax.swing.text.*;
 
 /**
  * A text field that begins editing on double-click. When the ENTER key is

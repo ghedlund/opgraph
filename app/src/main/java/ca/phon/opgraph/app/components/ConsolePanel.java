@@ -16,22 +16,14 @@
  */
 package ca.phon.opgraph.app.components;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import java.io.*;
+import java.util.logging.*;
 
-import javax.swing.JEditorPane;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Element;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
+import javax.swing.*;
+import javax.swing.text.*;
+import javax.swing.text.html.*;
 
-import ca.phon.opgraph.Processor;
+import ca.phon.opgraph.*;
 
 /**
  * A component to show debug information on a node.

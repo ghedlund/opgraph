@@ -18,14 +18,14 @@ package ca.phon.opgraph.app.commands.edit;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Collection;
-import java.util.logging.Logger;
+import java.util.*;
+import java.util.logging.*;
 
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.commands.GraphCommand;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
 import ca.phon.opgraph.app.components.canvas.*;
 import ca.phon.opgraph.dag.*;
 

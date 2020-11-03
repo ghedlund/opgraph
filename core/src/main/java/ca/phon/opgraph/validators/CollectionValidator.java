@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.validators;
 
-import java.util.Collection;
+import java.util.*;
 
 /**
  * A validator that will check if a {@link Collection} contains objects that

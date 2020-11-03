@@ -19,28 +19,28 @@ package ca.phon.opgraph.app.components;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.*;
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
+import java.io.*;
+import java.text.*;
+import java.util.*;
 import java.util.List;
 import java.util.logging.*;
-import java.util.stream.Collectors;
+import java.util.stream.*;
 
-import javax.imageio.ImageIO;
+import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.undo.CompoundEdit;
+import javax.swing.undo.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.components.canvas.NodeStyle;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.components.canvas.*;
 import ca.phon.opgraph.app.edits.graph.*;
 import ca.phon.opgraph.dag.*;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.extensions.NodeMetadata;
-import ca.phon.opgraph.util.Pair;
-import ca.phon.opgraph.validators.ClassValidator;
-import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.BreadcrumbEventType;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.opgraph.util.*;
+import ca.phon.opgraph.validators.*;
+import ca.phon.ui.jbreadcrumb.BreadcrumbEvent.*;
 
 /**
  * A panel for displaying and editing default values for a node's input fields.

@@ -19,7 +19,7 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import java.util.AbstractList;
+import java.util.*;
 
 /**
  * An integer range, as a list.

@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.lang.reflect.Member;
+import java.lang.reflect.*;
 
 /**
  * Interface implemented by reflection based nodes.

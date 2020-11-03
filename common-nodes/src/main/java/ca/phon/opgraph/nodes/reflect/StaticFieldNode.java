@@ -16,8 +16,7 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 
 public class StaticFieldNode extends FieldNode {
 

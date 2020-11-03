@@ -18,13 +18,11 @@ package ca.phon.opgraph.nodes.general;
 
 import static org.junit.Assert.*;
 
-import java.util.Collection;
-import java.util.TreeSet;
+import java.util.*;
 
-import org.junit.Test;
+import org.junit.*;
 
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.nodes.general.RangeNode;
+import ca.phon.opgraph.*;
 
 /**
  * Test nodes in {@link ca.phon.opgraph.nodes.general}.

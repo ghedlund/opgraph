@@ -16,12 +16,9 @@
  */
 package ca.phon.opgraph.app.edits.node;
 
-import javax.swing.undo.AbstractUndoableEdit;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoableEdit;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.OpNode;
+import ca.phon.opgraph.*;
 
 /**
  * Modifies the name of a node.

@@ -16,29 +16,18 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.*;
+import java.beans.*;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.UndoableEditListener;
-import javax.swing.undo.UndoableEditSupport;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+import javax.swing.undo.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeAdapter;
-import ca.phon.opgraph.app.components.DoubleClickableTextField;
-import ca.phon.opgraph.app.edits.node.ChangeNodeNameEdit;
-import ca.phon.opgraph.app.util.GUIHelper;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.components.*;
+import ca.phon.opgraph.app.edits.node.*;
+import ca.phon.opgraph.app.util.*;
 
 /**
  * Name panel for nodes, includes 

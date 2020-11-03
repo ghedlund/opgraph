@@ -16,16 +16,10 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.BorderLayout;import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
+import java.awt.*;
+import java.util.*;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
+import javax.swing.*;
 
 public final class GraphCanvasScroller extends JScrollPane {
 

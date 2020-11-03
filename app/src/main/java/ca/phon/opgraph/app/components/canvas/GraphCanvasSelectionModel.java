@@ -16,11 +16,9 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
-import ca.phon.opgraph.OpNode;
+import ca.phon.opgraph.*;
 
 /**
  * Selection model used in a {@link GraphCanvas}.

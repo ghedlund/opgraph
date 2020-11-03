@@ -16,10 +16,7 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.OutputField;
+import ca.phon.opgraph.*;
 
 /**
  * A node that fetches a value from the local context.

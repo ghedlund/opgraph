@@ -22,9 +22,9 @@ import java.util.logging.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
-import ca.phon.opgraph.nodes.reflect.ClassNode;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.nodes.reflect.*;
 
 public class AddClassCommand extends AbstractAction {
 	

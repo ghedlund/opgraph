@@ -19,14 +19,10 @@
  */
 package ca.phon.opgraph.nodes.general.script;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.validators.ClassValidator;
-import ca.phon.opgraph.validators.CompositeValidator;
-import ca.phon.opgraph.validators.TypeValidator;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.validators.*;
 
 /**
  * Wrapper for an {@link ArrayList} of {@link InputField}s to simplify adding

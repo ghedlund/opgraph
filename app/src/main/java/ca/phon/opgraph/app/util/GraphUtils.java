@@ -16,41 +16,20 @@
  */
 package ca.phon.opgraph.app.util;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+import java.util.logging.*;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.app.extensions.Note;
-import ca.phon.opgraph.app.extensions.Notes;
-import ca.phon.opgraph.dag.CycleDetectedException;
-import ca.phon.opgraph.dag.InvalidEdgeException;
-import ca.phon.opgraph.dag.VertexNotFoundException;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.extensions.CompositeNode;
-import ca.phon.opgraph.extensions.NodeMetadata;
-import ca.phon.opgraph.extensions.Publishable;
-import ca.phon.opgraph.extensions.Publishable.PublishedInput;
-import ca.phon.opgraph.extensions.Publishable.PublishedOutput;
-import ca.phon.opgraph.io.OpGraphSerializer;
-import ca.phon.opgraph.io.OpGraphSerializerFactory;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.dag.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.opgraph.extensions.Publishable.*;
+import ca.phon.opgraph.io.*;
 
 /**
  * Helper methods for graphs.

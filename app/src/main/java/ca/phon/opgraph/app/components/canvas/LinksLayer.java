@@ -19,28 +19,14 @@
  */
 package ca.phon.opgraph.app.components.canvas;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Path2D;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
+import java.awt.*;
+import java.awt.geom.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
-import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
-import ca.phon.opgraph.OpLink;
-import ca.phon.opgraph.OpNode;
+import ca.phon.opgraph.*;
 
 /**
  * A full-canvas component to draw links between node fields

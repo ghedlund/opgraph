@@ -16,13 +16,12 @@
  */
 package ca.phon.opgraph;
 
-import java.util.Collection;
+import java.util.*;
 
-import ca.phon.opgraph.dag.SimpleDirectedEdge;
-import ca.phon.opgraph.exceptions.ItemMissingException;
-import ca.phon.opgraph.extensions.Extendable;
-import ca.phon.opgraph.extensions.ExtendableSupport;
-import ca.phon.opgraph.validators.TypeValidator;
+import ca.phon.opgraph.dag.*;
+import ca.phon.opgraph.exceptions.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.opgraph.validators.*;
 
 /**
  * A link between nodes in an {@link OpGraph}.

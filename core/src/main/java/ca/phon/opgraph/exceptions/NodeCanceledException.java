@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.exceptions;
 
-import ca.phon.opgraph.Processor;
+import ca.phon.opgraph.*;
 
 public class NodeCanceledException extends ProcessingException {
 

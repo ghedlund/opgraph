@@ -17,14 +17,14 @@
 package ca.phon.opgraph.nodes.menu;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.util.logging.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
-import ca.phon.opgraph.nodes.reflect.ObjectCastNode;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.nodes.reflect.*;
 
 /**
  * Add a new {@link ObjectCastNode} to the graph.

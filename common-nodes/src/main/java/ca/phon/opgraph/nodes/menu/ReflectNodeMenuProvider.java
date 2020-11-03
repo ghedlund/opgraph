@@ -16,14 +16,14 @@
  */
 package ca.phon.opgraph.nodes.menu;
 
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.lang.reflect.*;
 
-import javax.swing.JMenu;
+import javax.swing.*;
 
 import ca.phon.opgraph.app.*;
-import ca.phon.opgraph.app.components.PathAddressableMenu;
-import ca.phon.opgraph.nodes.reflect.ReflectNode;
+import ca.phon.opgraph.app.components.*;
+import ca.phon.opgraph.nodes.reflect.*;
 
 public class ReflectNodeMenuProvider implements MenuProvider {
 

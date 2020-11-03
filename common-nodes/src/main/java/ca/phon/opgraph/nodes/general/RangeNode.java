@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import java.util.List;
+import java.util.*;
 
 import ca.phon.opgraph.*;
 

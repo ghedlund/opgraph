@@ -16,14 +16,10 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
+import java.lang.reflect.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.extensions.NodeSettings;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 /**
  * Provide access to a non-static {@link Field} for an instance

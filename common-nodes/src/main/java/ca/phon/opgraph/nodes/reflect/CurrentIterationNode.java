@@ -16,10 +16,8 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import ca.phon.opgraph.OpContext;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.exceptions.ProcessingException;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.exceptions.*;
 
 @OpNodeInfo(
 		name="Current Iteration",

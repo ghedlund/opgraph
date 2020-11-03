@@ -17,15 +17,15 @@
 package ca.phon.opgraph.nodes.menu;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.lang.reflect.Method;
+import java.awt.event.*;
+import java.lang.reflect.*;
 
-import javax.swing.AbstractAction;
+import javax.swing.*;
 
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.edits.graph.AddNodeEdit;
-import ca.phon.opgraph.nodes.reflect.MethodNode;
-import ca.phon.opgraph.util.ReflectUtil;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.nodes.reflect.*;
+import ca.phon.opgraph.util.*;
 
 public class AddMethodCommand extends AbstractAction {
 	

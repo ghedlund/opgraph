@@ -18,9 +18,9 @@ package ca.phon.opgraph.app.components.canvas;
 
 import java.awt.*;
 
-import javax.swing.plaf.ComponentUI;
+import javax.swing.plaf.*;
 
-import ca.phon.opgraph.OpLink;
+import ca.phon.opgraph.*;
 
 public abstract class GraphCanvasUI extends ComponentUI {
 	

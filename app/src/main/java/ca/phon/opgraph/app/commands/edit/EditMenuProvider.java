@@ -20,16 +20,16 @@
 package ca.phon.opgraph.app.commands.edit;
 
 import java.awt.*;
-import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.beans.*;
-import java.util.Collection;
+import java.util.*;
 
 import javax.swing.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
-import ca.phon.opgraph.app.components.PathAddressableMenu;
+import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.app.components.canvas.*;
 
 /**

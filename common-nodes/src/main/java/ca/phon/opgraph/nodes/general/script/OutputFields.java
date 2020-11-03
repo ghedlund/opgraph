@@ -19,10 +19,9 @@
  */
 package ca.phon.opgraph.nodes.general.script;
 
-import java.util.ArrayList;
+import java.util.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
+import ca.phon.opgraph.*;
 
 /**
  * Wrapper for an {@link ArrayList} of {@link OutputField}s to simplify adding

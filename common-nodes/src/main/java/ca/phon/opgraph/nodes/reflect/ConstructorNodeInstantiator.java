@@ -16,7 +16,7 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import ca.phon.opgraph.library.instantiators.Instantiator;
+import ca.phon.opgraph.library.instantiators.*;
 
 public class ConstructorNodeInstantiator implements Instantiator<MethodNode> {
 

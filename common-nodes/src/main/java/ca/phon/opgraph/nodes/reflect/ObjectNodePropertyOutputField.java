@@ -16,9 +16,9 @@
  */
 package ca.phon.opgraph.nodes.reflect;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
-import ca.phon.opgraph.OutputField;
+import ca.phon.opgraph.*;
 
 class ObjectNodePropertyOutputField extends OutputField {
 	

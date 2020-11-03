@@ -16,39 +16,22 @@
  */
 package ca.phon.opgraph.nodes.xml;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.logging.Level;
+import java.io.*;
+import java.lang.reflect.*;
+import java.net.*;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
+import javax.xml.*;
+import javax.xml.namespace.*;
 
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
-import ca.phon.opgraph.InputField;
-import ca.phon.opgraph.OpGraph;
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OutputField;
-import ca.phon.opgraph.app.OpgraphIO;
-import ca.phon.opgraph.extensions.Extendable;
-import ca.phon.opgraph.extensions.Publishable.PublishedInput;
-import ca.phon.opgraph.extensions.Publishable.PublishedOutput;
-import ca.phon.opgraph.io.xml.SerializerNotFound;
-import ca.phon.opgraph.io.xml.XMLSerializer;
-import ca.phon.opgraph.io.xml.XMLSerializerFactory;
-import ca.phon.opgraph.nodes.general.LinkedMacroNodeOverrides;
-import ca.phon.opgraph.nodes.general.MacroNode;
-import ca.phon.opgraph.nodes.general.MacroNodeCache;
-import ca.phon.opgraph.nodes.iteration.ForEachNode;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.extensions.*;
+import ca.phon.opgraph.extensions.Publishable.*;
+import ca.phon.opgraph.io.xml.*;
+import ca.phon.opgraph.nodes.general.*;
+import ca.phon.opgraph.nodes.iteration.*;
 
 /**
  * A default serializer for reading/writing {@link OpNode} to/from XML.

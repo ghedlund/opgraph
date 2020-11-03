@@ -16,13 +16,13 @@
  */
 package ca.phon.opgraph.app.commands.core;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.commands.GraphCommand;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.commands.*;
 
 /**
  * A command which resets the editor state to an empty graph.

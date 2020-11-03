@@ -16,10 +16,9 @@
  */
 package ca.phon.opgraph;
 
-import java.util.Collection;
+import java.util.*;
 
-import ca.phon.opgraph.extensions.Extendable;
-import ca.phon.opgraph.extensions.ExtendableSupport;
+import ca.phon.opgraph.extensions.*;
 
 /**
  * A {@link ContextualItem} with only a key and description.

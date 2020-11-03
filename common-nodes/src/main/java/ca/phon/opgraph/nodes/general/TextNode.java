@@ -17,14 +17,14 @@
 package ca.phon.opgraph.nodes.general;
 
 import java.awt.*;
-import java.util.Properties;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
 
 import ca.phon.opgraph.*;
-import ca.phon.opgraph.app.GraphDocument;
-import ca.phon.opgraph.app.extensions.NodeSettings;
+import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.extensions.*;
 
 /**
  * Node for creating a new string.

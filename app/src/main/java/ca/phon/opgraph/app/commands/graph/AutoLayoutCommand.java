@@ -16,13 +16,13 @@
  */
 package ca.phon.opgraph.app.commands.graph;
 
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
 
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import ca.phon.opgraph.app.*;
-import ca.phon.opgraph.app.commands.GraphCommand;
+import ca.phon.opgraph.app.commands.*;
 
 /**
  * A command for performing automatic layout of the active canvas' nodes.

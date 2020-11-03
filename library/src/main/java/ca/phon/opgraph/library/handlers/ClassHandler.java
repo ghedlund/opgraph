@@ -16,15 +16,13 @@
  */
 package ca.phon.opgraph.library.handlers;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
-import ca.phon.opgraph.OpNode;
-import ca.phon.opgraph.OpNodeInfo;
-import ca.phon.opgraph.library.NodeData;
-import ca.phon.opgraph.library.instantiators.ClassInstantiator;
+import ca.phon.opgraph.*;
+import ca.phon.opgraph.library.*;
+import ca.phon.opgraph.library.instantiators.*;
 
 /**
  * A {@link URIHandler} that loads node information from a given class. Handles

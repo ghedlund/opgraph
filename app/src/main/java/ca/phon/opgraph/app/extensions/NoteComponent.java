@@ -21,13 +21,13 @@ package ca.phon.opgraph.app.extensions;
 
 import java.awt.*;
 import java.beans.*;
-import java.lang.ref.WeakReference;
+import java.lang.ref.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
 
 import ca.phon.opgraph.app.components.*;
-import ca.phon.opgraph.app.edits.notes.SetNoteTextEdit;
+import ca.phon.opgraph.app.edits.notes.*;
 
 /**
  * A component for displaying a {@link Note}.

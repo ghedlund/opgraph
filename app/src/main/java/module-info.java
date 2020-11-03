@@ -17,7 +17,6 @@ module ca.phon.opgraph.app {
 	exports ca.phon.opgraph.app.components;
 	exports ca.phon.opgraph.app.components.canvas;
 	exports ca.phon.opgraph.app.components.library;
-	exports ca.phon.opgraph.app.edits;
 	exports ca.phon.opgraph.app.edits.graph;
 	exports ca.phon.opgraph.app.edits.node;
 	exports ca.phon.opgraph.app.edits.notes;

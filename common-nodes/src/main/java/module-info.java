@@ -7,7 +7,6 @@ module ca.phon.opgraph.nodes {
 	requires transitive ca.phon.opgraph.core;
 	requires transitive ca.phon.opgraph.app;
 	
-	exports ca.phon.opgraph.nodes;
 	exports ca.phon.opgraph.nodes.canvas;
 	exports ca.phon.opgraph.nodes.general;
 	exports ca.phon.opgraph.nodes.general.script;

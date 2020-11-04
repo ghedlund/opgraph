@@ -12,3 +12,4 @@ ca.phon.opgraph.nodes.logic.LogicalOrNode
 ca.phon.opgraph.nodes.logic.LogicalXorNode
 
 ca.phon.opgraph.nodes.math.MathExpressionNode
+ca.phon.opgraph.nodes.general.ScriptNode

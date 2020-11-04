@@ -41,8 +41,8 @@ import ca.phon.opgraph.nodes.general.script.*;
 @OpNodeInfo(
 	name="Script",
 	description="Executes a script.",
-	category="General",
-	showInLibrary=false
+	category="Scripting",
+	showInLibrary=true
 )
 public class ScriptNode 
 	extends OpNode

@@ -23,6 +23,7 @@ import javax.swing.border.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
+import ca.phon.opgraph.app.edits.node.*;
 import ca.phon.opgraph.app.extensions.*;
 
 /**
@@ -35,6 +36,10 @@ public class NodeSettingsPanel extends JPanel {
 	private OpNode node;
 	
 	private GraphDocument document;
+	
+	private JTextField nodeTitleField;
+	
+	private JLabel nodeInfoLabel;
 
 	/**
 	 * Default constructor.
@@ -46,6 +51,21 @@ public class NodeSettingsPanel extends JPanel {
 		
 		setNode(null);
 		setBorder(new EmptyBorder(5, 5, 5, 5));
+	}
+	
+	private void setupNodeInfoLabel() {
+		if(this.node == null) {
+			nodeInfoLabel.setText("");
+			nodeInfoLabel.setToolTipText(null);
+		} else {
+			OpNodeInfo nodeInfo = this.node.getClass().getAnnotation(OpNodeInfo.class);
+			if(nodeInfo != null) {
+				String txt = String.format("Category: %s, Name: %s", nodeInfo.category(), nodeInfo.name());
+				String ttTxt = String.format("%s, %s", txt, nodeInfo.description());
+				nodeInfoLabel.setText(txt);
+				nodeInfoLabel.setToolTipText(ttTxt);
+			}
+		}
 	}
 
 	/**
@@ -61,7 +81,7 @@ public class NodeSettingsPanel extends JPanel {
 		final Component settingsComp = settings.getComponent(document);
 		return settingsComp;
 	}
-
+	
 	/**
 	 * Sets the node this panel is currently viewing.
 	 * 
@@ -69,11 +89,50 @@ public class NodeSettingsPanel extends JPanel {
 	 */
 	public void setNode(OpNode node) {
 		if(this.node != node || getComponentCount() == 0) {
+			if(this.node != null)
+				this.node.removeNodeListener(nodeNameListener);
 			this.node = node;
+			if(this.node != null)
+				this.node.addNodeListener(nodeNameListener);
 
 			// Clear all current components and add in new ones
 			removeAll();
+			
+			if(nodeTitleField == null) {
+				nodeTitleField = new JTextField();
+				nodeTitleField.getDocument().addUndoableEditListener( (evt) -> {
+					if(this.node != null && nodeTitleField.hasFocus()) {
+						final ChangeNodeNameEdit edit = new ChangeNodeNameEdit(this.node, nodeTitleField.getText());
+						document.getUndoSupport().postEdit(edit);
+					}
+				});
+			}
+			if(node != null)
+				nodeTitleField.setText(node.getName());
+			else
+				nodeTitleField.setText("");
+			
+			if(nodeInfoLabel == null)
+				nodeInfoLabel = new JLabel();
+			setupNodeInfoLabel();
 
+			JPanel topPanel = new JPanel(new GridBagLayout());
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.weightx = 0.0;
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			topPanel.add(new JLabel("Title:"), gbc);
+			++gbc.gridx;
+			gbc.weightx = 1.0;
+			topPanel.add(nodeTitleField, gbc);
+			++gbc.gridy;
+			gbc.gridx = 0;
+			gbc.gridwidth = 2;
+			topPanel.add(nodeInfoLabel, gbc);
+			topPanel.setBorder(BorderFactory.createTitledBorder("Node information"));
+			add(topPanel, BorderLayout.NORTH);
+			
 			// Get the settings component
 			Component settingsComp = null;
 			if(node == null) {
@@ -98,4 +157,32 @@ public class NodeSettingsPanel extends JPanel {
 			repaint();
 		}
 	}
+	
+	private OpNodeListener nodeNameListener = new OpNodeListener() {
+		
+		@Override
+		public void nodePropertyChanged(OpNode node, String propertyName, Object oldValue, Object newValue) {
+			if(OpNode.NAME_PROPERTY.equals(propertyName)) {
+				if(nodeTitleField != null && !nodeTitleField.hasFocus()) {
+					nodeTitleField.setText(node.getName());
+				}
+			}
+		}
+		
+		@Override
+		public void fieldRemoved(OpNode node, OutputField field) {
+		}
+		
+		@Override
+		public void fieldRemoved(OpNode node, InputField field) {
+		}
+		
+		@Override
+		public void fieldAdded(OpNode node, OutputField field) {
+		}
+		
+		@Override
+		public void fieldAdded(OpNode node, InputField field) {
+		}
+	};
 }

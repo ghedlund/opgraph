@@ -79,7 +79,7 @@ public class GraphUtils {
 			node.setId(newId);
 
 			final CompositeNode cmpNode = node.getExtension(CompositeNode.class);
-			if(cmpNode != null) {
+			if(cmpNode != null && cmpNode.isGraphEmbedded()) {
 				final OpGraph subGraph = cmpNode.getGraph();
 				changeNodeIds(subGraph);
 			}

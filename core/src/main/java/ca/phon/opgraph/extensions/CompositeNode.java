@@ -35,4 +35,12 @@ public interface CompositeNode {
 	 * @param graph  the graph that composes this node
 	 */
 	public abstract void setGraph(OpGraph graph);
+	
+	/**
+	 * Is graph linked or embedded
+	 * 
+	 * @return is graph linked or embedded
+	 */
+	public abstract boolean isGraphEmbedded();
+	
 }

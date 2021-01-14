@@ -30,5 +30,7 @@ Eventually there will be more specifics in this section, but for now just follow
 
 License
 -------
-Copyright (C) 2012-2015 Jason Gedge and Greg Hedlund. Distributed under the GPLv3 license.
+Copyright (C) 2015-2021 Greg Hedlund.
+Copyright (C) 2012-2015 Jason Gedge and Greg Hedlund.
 
+See LICENSE.txt for license details.

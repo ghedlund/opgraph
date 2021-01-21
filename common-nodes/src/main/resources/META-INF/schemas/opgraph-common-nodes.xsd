@@ -50,6 +50,7 @@
 							<xs:element ref="og:abstract_node" minOccurs="0" maxOccurs="unbounded"/>
 						</xs:sequence>
 					</xs:choice>
+					<xs:element ref="og:input" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="published_input" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="published_output" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element ref="og:extensions" minOccurs="0" maxOccurs="1"/>

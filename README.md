@@ -19,16 +19,9 @@ This project uses Maven for project management:
 * Install [Maven 3](http://maven.apache.org/download.html)
 * Check out this repo and execute `mvn clean package`
 
-Pull Request Conventions
-------------------------
-
-Eventually there will be more specifics in this section, but for now just follow a few simple rules:
-
-* Write code in a style that is consistent with the existing style.
-* If possible, write accompanying unit tests.
-* Be sure to test your code before submitting a pull request.
-
 License
 -------
-Copyright (C) 2012-2015 Jason Gedge and Greg Hedlund. Distributed under the GPLv3 license.
 
+Copyright (C) 2012-2021 Jason Gedge and Greg Hedlund.
+
+See LICENSE.txt for license details.

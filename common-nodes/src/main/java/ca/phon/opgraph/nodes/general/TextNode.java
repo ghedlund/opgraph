@@ -36,6 +36,9 @@ public class TextNode extends ConstantValueNode implements NodeSettings {
 	/* Settings UI */
 	private JPanel settingsPanel;
 	private JTextArea textArea;
+
+	private InputField formatInput =
+			new InputField("format", "string format (overrides settings)", true, true, String.class);
 	
 	private InputField objectsInputs = 
 			new InputField("objects", "array of objects for formatted strings", true, true, Object[].class);
@@ -48,7 +51,8 @@ public class TextNode extends ConstantValueNode implements NodeSettings {
 		super();
 			
 		setValue(text);
-		
+
+		putField(formatInput);
 		putField(objectsInputs);
 		
 		putExtension(NodeSettings.class, this);
@@ -66,14 +70,16 @@ public class TextNode extends ConstantValueNode implements NodeSettings {
 	@Override
 	public void operate(OpContext context) {
 		super.operate(context);
-		
+
+		String format =
+				(context.get(formatInput) != null ? context.get(formatInput).toString() : getText());
 		if(context.get(objectsInputs) != null) {
 			Object[] objArray = (Object[])context.get(objectsInputs);
 			
-			final String value = String.format(super.getValue().toString(), objArray);
+			final String value = String.format(format, objArray);
 			context.put(VALUE_OUTPUT_FIELD, value);
 		} else {
-			context.put(VALUE_OUTPUT_FIELD, super.getValue().toString());
+			context.put(VALUE_OUTPUT_FIELD, format);
 		}
 	}
 	

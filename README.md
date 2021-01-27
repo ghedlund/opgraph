@@ -22,6 +22,6 @@ This project uses Maven for project management:
 License
 -------
 
-Copyright (C) 2012-2021 Jason Gedge and Greg Hedlund.
+Copyright (C) 2012-2021 Greg Hedlund and Jason Gedge
 
-See LICENSE.txt for license details.
+See LICENSE.txt for details.

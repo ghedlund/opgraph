@@ -25,6 +25,8 @@ public class SetGlobalNode extends OpNode implements NodeSettings {
 	private JPanel settingsPanel;
 	private JTextField globalNameField;
 
+	private String globalName = "";
+
 	public SetGlobalNode() {
 		super();
 
@@ -40,7 +42,12 @@ public class SetGlobalNode extends OpNode implements NodeSettings {
 		while(globalContext.getParent() != null)
 			globalContext = globalContext.getParent();
 
-		String globalName = context.get(globalNameInput).toString();
+		String globalName = (context.get(globalNameInput) != null
+				? context.get(globalNameInput).toString()
+				: getGlobalName());
+		if(globalName == null || globalName.length() == 0)
+			throw new ProcessingException(null, "Invalid global variable name");
+
 		Object value = context.get(globalValueInput);
 
 		globalContext.put(globalName, value);
@@ -73,14 +80,16 @@ public class SetGlobalNode extends OpNode implements NodeSettings {
 	@Override
 	public Properties getSettings() {
 		Properties props = new Properties();
-		props.put("globalName", getGlobalName());
+		if(getGlobalName() != null)
+			props.put("globalName", getGlobalName());
 		return props;
 	}
 
 	@Override
 	public void loadSettings(Properties properties) {
 		String globalName = properties.getProperty("globalName");
-		setGlobalName(globalName);
+		if(globalName != null)
+			setGlobalName(globalName);
 	}
 
 }

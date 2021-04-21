@@ -5,6 +5,7 @@ ca.phon.opgraph.nodes.general.ArrayNode
 ca.phon.opgraph.nodes.general.BooleanNode
 ca.phon.opgraph.nodes.general.NumberNode
 ca.phon.opgraph.nodes.general.TextNode
+ca.phon.opgraph.nodes.general.SetGlobalNode
 
 ca.phon.opgraph.nodes.logic.LogicalAndNode
 ca.phon.opgraph.nodes.logic.LogicalNotNode

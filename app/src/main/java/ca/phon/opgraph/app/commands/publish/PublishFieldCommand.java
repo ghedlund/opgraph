@@ -71,7 +71,12 @@ class PublishFieldCommand extends HookableCommand {
 	 */
 	public void publishFieldOfSelected(ContextualItem field) {
 		if(publishable != null && field != null && node != null) {
-			document.getUndoSupport().postEdit(new PublishFieldEdit(document.getGraph(), publishable, node, field.getKey(), field));
+			String keyName = node.getName();
+			if(!"obj".equals(field.getKey())) {
+				keyName += "." + field.getKey();
+			}
+
+			document.getUndoSupport().postEdit(new PublishFieldEdit(document.getGraph(), publishable, node, keyName, field));
 			document.firePropertyChange("anchorFillStates", new Object(), node);
 		}
 	}

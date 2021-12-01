@@ -16,6 +16,7 @@
  */
 package ca.phon.opgraph;
 
+import java.beans.*;
 import java.util.*;
 
 import ca.phon.opgraph.extensions.*;
@@ -24,6 +25,9 @@ import ca.phon.opgraph.extensions.*;
  * A {@link ContextualItem} with only a key and description.
  */
 public class SimpleItem implements ContextualItem, Extendable {
+
+	private final PropertyChangeSupport propSupport = new PropertyChangeSupport(this);
+
 	/** The key for this field */
 	private String key;
 
@@ -65,10 +69,10 @@ public class SimpleItem implements ContextualItem, Extendable {
 		return false;
 	}
 
-	@Override
-	public int hashCode() {
-		return key.hashCode();
-	}
+//	@Override
+//	public int hashCode() {
+//		return key.hashCode();
+//	}
 
 	//
 	// ContextualItem
@@ -86,12 +90,16 @@ public class SimpleItem implements ContextualItem, Extendable {
 
 	@Override
 	public void setKey(String key) {
+		var oldKey = this.key;
 		this.key = (key == null ? "" : key);
+		propSupport.firePropertyChange("key", oldKey, key);
 	}
 
 	@Override
 	public void setDescription(String description) {
+		var oldDesc = this.description;
 		this.description = (description == null ? "" : description);
+		propSupport.firePropertyChange("description", oldDesc, description);
 	}
 	
 	//
@@ -114,4 +122,29 @@ public class SimpleItem implements ContextualItem, Extendable {
 	public <T> T putExtension(Class<T> type, T extension) {
 		return extendableSupport.putExtension(type, extension);
 	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		propSupport.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		propSupport.removePropertyChangeListener(listener);
+	}
+
+	public PropertyChangeListener[] getPropertyChangeListeners() {
+		return propSupport.getPropertyChangeListeners();
+	}
+
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propSupport.removePropertyChangeListener(propertyName, listener);
+	}
+
+	public PropertyChangeListener[] getPropertyChangeListeners(String propertyName) {
+		return propSupport.getPropertyChangeListeners(propertyName);
+	}
+
 }

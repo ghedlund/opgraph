@@ -344,6 +344,12 @@ public class CanvasNode extends JComponent {
 		}
 
 		@Override
+		public void fieldRenamed(OpNode node, ContextualItem field) {
+			revalidate();
+			repaint();
+		}
+
+		@Override
 		public void fieldRemoved(OpNode node, InputField field) {
 			final CanvasNodeField fieldComp = fields.get(field);
 			if(fieldComp != null) 

@@ -23,6 +23,7 @@ import java.beans.*;
 import java.io.*;
 import java.util.*;
 import java.util.logging.*;
+import java.util.stream.Collectors;
 
 import javax.swing.*;
 import javax.swing.undo.*;
@@ -663,6 +664,19 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 			final CanvasNode canvasNode = nodes.get(node);
 			if(canvasNode != null)
 				repaint();
+		}
+
+		@Override
+		public void fieldRenamed(OpNode node, ContextualItem field) {
+			final CanvasNode canvasNode = nodes.get(node);
+			if(canvasNode != null) {
+				document.getGraph().getOutgoingEdges(node)
+						.stream().filter( (e) -> e.getSourceField() == field)
+						.collect(Collectors.toList()).forEach(getUI().getLinksLayer()::updateLink);
+				document.getGraph().getIncomingEdges(node)
+						.stream().filter( (e) -> e.getDestinationField() == field)
+						.collect(Collectors.toList()).forEach(getUI().getLinksLayer()::updateLink);
+			}
 		}
 
 		@Override

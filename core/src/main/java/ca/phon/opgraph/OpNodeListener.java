@@ -63,4 +63,13 @@ public interface OpNodeListener {
 	 * @param field  the output field that was removed
 	 */
 	public abstract void fieldRemoved(OpNode node, OutputField field);
+
+	/**
+	 * Called when a field has been renamed.
+	 *
+	 * @param node the source node for which the field was renamed
+	 * @param field the field that was renamed
+	 */
+	public abstract void fieldRenamed(OpNode node, ContextualItem field);
+
 }

@@ -511,6 +511,11 @@ public final class OpGraph
 		}
 
 		@Override
+		public void fieldRenamed(OpNode node, ContextualItem field) {
+
+		}
+
+		@Override
 		public void fieldRemoved(OpNode node, InputField field) {
 			for(OpLink link : getIncomingEdges(node)) {
 				if(link.getDestinationField().equals(field)) {

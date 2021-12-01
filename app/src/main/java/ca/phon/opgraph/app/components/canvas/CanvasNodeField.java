@@ -110,7 +110,9 @@ public class CanvasNodeField extends JComponent {
 		private PropertyChangeListener textListener = new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent e) {
-				if(field != null)
+				if(field != null) {
+
+				}
 					field.setKey((String)e.getNewValue());
 			}
 		};

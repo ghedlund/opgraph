@@ -184,7 +184,12 @@ public class OpGraphTreeModel extends DefaultTreeModel {
 		@Override
 		public void fieldRemoved(OpNode node, OutputField field) {
 		}
-		
+
+		@Override
+		public void fieldRenamed(OpNode node, ContextualItem field) {
+
+		}
+
 	};
 
 	private final OpGraphListener graphListener = new OpGraphListener() {

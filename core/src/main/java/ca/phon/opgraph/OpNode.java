@@ -16,6 +16,7 @@
  */
 package ca.phon.opgraph;
 
+import java.beans.PropertyChangeListener;
 import java.util.*;
 
 import ca.phon.opgraph.dag.*;
@@ -151,7 +152,7 @@ public abstract class OpNode implements Extendable, Vertex {
 	 * of the implementing class to check this method
 	 * at appropriate times during the operate() method.
 	 *
-	 * @throws NodeCanceldException
+	 * @throws NodeCanceledException
 	 */
 	public synchronized void checkCanceled() throws NodeCanceledException {
 		if(isCanceled()) {
@@ -356,6 +357,7 @@ public abstract class OpNode implements Extendable, Vertex {
 					inputFields.add(field);
 				else
 					inputFields.add(pos, field);
+				field.addPropertyChangeListener("key", fieldNameListener);
 				fireFieldAdded(field);
 			} else {
 				foundField.setDescription(field.getDescription());
@@ -402,6 +404,7 @@ public abstract class OpNode implements Extendable, Vertex {
 					outputFields.add(field);
 				else
 					outputFields.add(pos, field);
+				field.addPropertyChangeListener("key", fieldNameListener);
 				fireFieldAdded(field);
 			} else {
 				foundField.setDescription(field.getDescription());
@@ -418,8 +421,10 @@ public abstract class OpNode implements Extendable, Vertex {
 	 */
 	public final void removeField(InputField field) {
 		if(field != ENABLED_FIELD) {
-			if(inputFields.remove(field))
+			if(inputFields.remove(field)) {
+				field.removePropertyChangeListener("key", fieldNameListener);
 				fireFieldRemoved(field);
+			}
 		}
 	}
 
@@ -438,8 +443,10 @@ public abstract class OpNode implements Extendable, Vertex {
 	 * @param field  the field
 	 */
 	public final void removeField(OutputField field) {
-		if(outputFields.remove(field))
+		if(outputFields.remove(field)) {
+			field.removePropertyChangeListener("key", fieldNameListener);
 			fireFieldRemoved(field);
+		}
 	}
 
 	/**
@@ -541,6 +548,11 @@ public abstract class OpNode implements Extendable, Vertex {
 	// Listeners
 	//
 
+	private PropertyChangeListener fieldNameListener = (e) -> {
+		if(!"key".equals(e.getPropertyName())) return;
+		fireFieldRenamed((ContextualItem) e.getSource());
+	};
+
 	private final ArrayList<OpNodeListener> listeners = new ArrayList<OpNodeListener>();
 
 	/**
@@ -600,4 +612,12 @@ public abstract class OpNode implements Extendable, Vertex {
 				listener.fieldRemoved(this, field);
 		}
 	}
+
+	private void fireFieldRenamed(ContextualItem field) {
+		synchronized (listeners) {
+			for(OpNodeListener listener : listeners)
+				listener.fieldRenamed(this, field);
+		}
+	}
+
 }

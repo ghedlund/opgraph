@@ -172,7 +172,12 @@ public class NodeSettingsPanel extends JPanel {
 		@Override
 		public void fieldRemoved(OpNode node, OutputField field) {
 		}
-		
+
+		@Override
+		public void fieldRenamed(OpNode node, ContextualItem field) {
+
+		}
+
 		@Override
 		public void fieldRemoved(OpNode node, InputField field) {
 		}

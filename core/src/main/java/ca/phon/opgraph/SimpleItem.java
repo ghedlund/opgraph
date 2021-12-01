@@ -69,11 +69,6 @@ public class SimpleItem implements ContextualItem, Extendable {
 		return false;
 	}
 
-//	@Override
-//	public int hashCode() {
-//		return key.hashCode();
-//	}
-
 	//
 	// ContextualItem
 	//

@@ -19,12 +19,10 @@ package ca.phon.opgraph.app.components;
 import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
-import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.logging.*;
 
-import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
@@ -297,45 +295,7 @@ public class GraphOutline extends JPanel implements ClipboardOwner {
 		}
 		
 	};
-	
-	private class OpGraphTreeCellRenderer extends DefaultTreeCellRenderer {
 
-		private static final long serialVersionUID = -823509020400941004L;
-		
-		private ImageIcon rootIcon;
-		
-		public OpGraphTreeCellRenderer() {
-			try {
-				rootIcon = new ImageIcon(ImageIO.read(NodeStyle.class.getClassLoader().getResourceAsStream("data/icons/16x16/opgraph/graph.png")));
-			} catch (IOException e) {
-				Logger.getAnonymousLogger().log(Level.WARNING, e.getLocalizedMessage(), e);
-			}
-		}
-
-		@Override
-		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
-				boolean leaf, int row, boolean hasFocus) {
-			final JLabel retVal = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-			
-			final DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)value;
-			
-			if(treeNode.getUserObject() instanceof OpGraph) {
-				// root component
-				retVal.setText("root");
-				retVal.setIcon(rootIcon);
-			} else if(treeNode.getUserObject() instanceof OpNode) {
-				final OpNode node = (OpNode)treeNode.getUserObject();
-				final NodeStyle nodeStyle = NodeStyle.getStyleForNode(node);
-				retVal.setText(node.getName());
-				retVal.setIcon(nodeStyle.NodeIcon);
-				retVal.setBackground(nodeStyle.NodeBackgroundColor);
-				retVal.setForeground(nodeStyle.NodeNameTextColor);
-			}
-			return retVal;
-		}
-		
-	}
-	
 	private class GraphSelectionModel extends DefaultTreeSelectionModel {
 
 		/*

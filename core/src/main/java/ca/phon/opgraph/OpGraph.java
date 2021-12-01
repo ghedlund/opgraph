@@ -369,6 +369,22 @@ public final class OpGraph
 			fireNodeAdded(node);
 		}
 	}
+
+	/**
+	 * Add node along with given links
+	 *
+	 * @param node
+	 * @return
+	 */
+	public void add(OpNode node, Collection<OpLink> links)
+		throws VertexNotFoundException, CycleDetectedException, InvalidEdgeException {
+		if(_add(node)) {
+			for(OpLink link:links) _add(link);
+
+			fireNodeAdded(node);
+			links.forEach(this::fireLinkAdded);
+		}
+	}
 	
 	private boolean _remove(OpNode node) {
 		final boolean removed = super.remove(node);
@@ -396,6 +412,12 @@ public final class OpGraph
 
 	@Override
 	public void add(OpLink link) throws VertexNotFoundException, CycleDetectedException, InvalidEdgeException {
+		_add(link);
+		if(link != null)
+			fireLinkAdded(link);
+	}
+
+	private void _add(OpLink link) throws VertexNotFoundException, CycleDetectedException, InvalidEdgeException {
 		// check to ensure a link to specified input field does not already exist
 		final OpNode destNode = link.getDestination();
 		for(OpLink existingLink:getIncomingEdges(destNode)) {
@@ -405,8 +427,6 @@ public final class OpGraph
 		}
 		
 		super.add(link);
-		if(link != null)
-			fireLinkAdded(link);
 	}
 
 	@Override

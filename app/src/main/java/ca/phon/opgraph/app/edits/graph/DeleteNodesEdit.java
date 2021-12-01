@@ -16,7 +16,10 @@
  */
 package ca.phon.opgraph.app.edits.graph;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
+import java.util.function.LongUnaryOperator;
 import java.util.logging.*;
 
 import javax.swing.undo.*;
@@ -93,16 +96,12 @@ public class DeleteNodesEdit extends AbstractUndoableEdit {
 		super.undo();
 
 		// Add nodes
-		for(OpNode node : nodes)
-			graph.add(node);
-
-		// Add old links
-		for(OpLink link : links) {
+		for(OpNode node : nodes) {
 			try {
-				graph.add(link);
-			} catch(VertexNotFoundException | CycleDetectedException | InvalidEdgeException exc) {
-				LOGGER.severe(exc.getLocalizedMessage());
-				ErrorDialog.showError(exc);
+				graph.add(node, links);
+			} catch (VertexNotFoundException | CycleDetectedException | InvalidEdgeException e) {
+				Toolkit.getDefaultToolkit().beep();
+				LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		}
 	}

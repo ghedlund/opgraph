@@ -41,7 +41,6 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	/**
 	 * A mapping from vertex to its level.
 	 *
-	 * @see #getLevel(Object)
 	 */
 	private Map<V, Integer> vertexLevels;
 
@@ -92,7 +91,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		final ArrayList<E> edgesCopy = new ArrayList<E>(edges);
 		for(E edge : edgesCopy) {
 			if(edge.getSource() == vertex || edge.getDestination() == vertex)
-				remove(edge);
+				_remove(edge);
 		}
 		final boolean removed = vertices.remove(vertex);
 		if(removed) {
@@ -183,6 +182,13 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 		return canAdd;
 	}
 
+	private boolean _remove(E edge) {
+		final int initalSize = edges.size();
+		edges.remove(edge);
+		final boolean removed = initalSize != edges.size();
+		return removed;
+	}
+
 	/**
 	 * Removes an edge from this DAG.
 	 *
@@ -192,9 +198,7 @@ public class DirectedAcyclicGraph<V extends Vertex, E extends DirectedEdge<V>>
 	 *         <code>false</code> otherwise
 	 */
 	public boolean remove(E edge) {
-		final int initalSize = edges.size();
-		edges.remove(edge);
-		final boolean removed = initalSize != edges.size();
+		boolean removed = _remove(edge);
 		if(removed) {
 			shouldSort = true;
 		}

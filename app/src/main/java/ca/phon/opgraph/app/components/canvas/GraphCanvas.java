@@ -109,7 +109,7 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 	/**
 	 * Constructs a canvas that displays a given graph model.
 	 * 
-	 * @param model  the graph model
+	 * @param document
 	 */
 	public GraphCanvas(GraphDocument document) {
 		super();
@@ -580,6 +580,8 @@ public class GraphCanvas extends JLayeredPane implements ClipboardOwner, Scrolla
 
 				v.removeNodeListener(this);
 				v.putExtension(JComponent.class, null);
+
+				getUI().getLinksLayer().removeLinks(v);
 
 				revalidate();
 				repaint();

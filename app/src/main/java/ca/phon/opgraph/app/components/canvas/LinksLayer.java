@@ -119,9 +119,22 @@ public class LinksLayer extends JComponent {
 	}
 
 	/**
+	 * Remove all links for given vertex
+	 *
+	 * @param v
+	 */
+	public void removeLinks(OpNode v) {
+		Iterator<OpLink> linkItr = links.keySet().iterator();
+		while(linkItr.hasNext()) {
+			OpLink link = linkItr.next();
+			if(link.getSource() == v || link.getDestination() == v)
+				linkItr.remove();
+		}
+	}
+
+	/**
 	 * Removes path shapes for all links.
-	 * 
-	 * @param link  the link whose path should be removed
+	 *
 	 */
 	void removeAllLinks() {
 		links.clear();

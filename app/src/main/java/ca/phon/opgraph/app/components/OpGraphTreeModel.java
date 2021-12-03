@@ -46,7 +46,6 @@ public class OpGraphTreeModel extends DefaultTreeModel {
 			node.add(childNode);
 			if(childNode.getUserObject() instanceof CompositeNode) {
 				final OpGraph childGraph = ((CompositeNode)childNode.getUserObject()).getGraph();
-				childGraph.addGraphListener(graphListener);
 				setupTree(childNode, childGraph);
 			}
 			

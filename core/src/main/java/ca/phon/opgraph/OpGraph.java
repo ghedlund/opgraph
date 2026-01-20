@@ -45,9 +45,9 @@ public final class OpGraph
 
 		int retVal = 0;
 		if(meta1 != null && meta2 != null) {
-			retVal = (new Integer(meta1.getY())).compareTo(meta2.getY());
+			retVal = Integer.compare(meta1.getY(), meta2.getY());
 			if(retVal == 0) {
-				retVal = (new Integer(meta1.getX()).compareTo(meta2.getX()));
+				retVal = Integer.compare(meta1.getX(), meta2.getX());
 			}
 		}
 

@@ -36,7 +36,11 @@ import ca.phon.opgraph.exceptions.*;
 import ca.phon.opgraph.nodes.general.script.*;
 
 /**
- * A node that runs a script. 
+ * A node that runs a script.
+ *
+ * <p><strong>Security Warning:</strong> This node executes arbitrary code
+ * via JSR-223 scripting engines. Only load graph files from trusted sources.
+ * Scripts have full access to the JVM and can execute system commands.</p>
  */
 @OpNodeInfo(
 	name="Script",

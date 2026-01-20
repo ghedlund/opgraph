@@ -614,8 +614,10 @@ public class Processor {
 	}
 
 	public void fireProcessorEvent(ProcessorEvent pe) {
-		for(ProcessorListener listener:listeners) {
-			listener.processorEvent(pe);
+		synchronized(listeners) {
+			for(ProcessorListener listener : listeners) {
+				listener.processorEvent(pe);
+			}
 		}
 	}
 

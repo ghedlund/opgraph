@@ -107,10 +107,12 @@ public final class OpContext extends HashMap<String, Object> {
 
 	/**
 	 * Gets all the child contexts of this context.
-	 * 
+	 *
 	 * @return the mapping of node to context
 	 */
 	public Map<OpNode, OpContext> getChildContexts() {
+		if(childContexts == null)
+			return Collections.emptyMap();
 		return Collections.unmodifiableMap(childContexts);
 	}
 

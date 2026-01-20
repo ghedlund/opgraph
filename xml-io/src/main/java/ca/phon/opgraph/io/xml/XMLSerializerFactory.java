@@ -85,25 +85,32 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 		// Construct a validator
 		// XXX perhaps just do this once in a static block/function?
 		validator = null;
+		List<InputStream> schemaStreams = new ArrayList<>();
 		try {
 			// Find a list of all schemas
 			final List<URL> schemaLists = ServiceDiscovery.getInstance().findResources("META-INF/schemas/list");
 			final List<URL> schemas = new ArrayList<URL>();
 			for(URL schemaListURL : schemaLists) {
-				final BufferedReader br = new BufferedReader(new InputStreamReader(schemaListURL.openStream()));
-				String line = null;
-				while((line = br.readLine()) != null)
-					if(line.trim().length() > 0)
-						schemas.addAll( ServiceDiscovery.getInstance().findResources("META-INF/schemas/" + line) );
+				try (BufferedReader br = new BufferedReader(new InputStreamReader(schemaListURL.openStream()))) {
+					String line = null;
+					while((line = br.readLine()) != null)
+						if(line.trim().length() > 0)
+							schemas.addAll( ServiceDiscovery.getInstance().findResources("META-INF/schemas/" + line) );
+				}
 			}
 
 			// Load up extension schemas
 			final Source [] schemaSource = new Source[schemas.size() + 1];
-			for(int index = 0; index < schemas.size(); ++index)
-				schemaSource[index + 1] = new StreamSource(schemas.get(index).openStream());
+			for(int index = 0; index < schemas.size(); ++index) {
+				InputStream is = schemas.get(index).openStream();
+				schemaStreams.add(is);
+				schemaSource[index + 1] = new StreamSource(is);
+			}
 
 			// Ensure core OpGraph schema comes first
-			schemaSource[0] = new StreamSource(XMLSerializerFactory.class.getResource("/META-INF/schemas/opgraph.xsd").openStream());
+			InputStream coreIs = XMLSerializerFactory.class.getResource("/META-INF/schemas/opgraph.xsd").openStream();
+			schemaStreams.add(coreIs);
+			schemaSource[0] = new StreamSource(coreIs);
 
 			final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final Schema schema = sf.newSchema(schemaSource);
@@ -112,6 +119,10 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 			LOGGER.warning("SAXException while initializing validator: " + exc.getLocalizedMessage());
 		} catch(IOException exc) {
 			LOGGER.warning("IOException while initializing validator: " + exc.getLocalizedMessage());
+		} finally {
+			for(InputStream is : schemaStreams) {
+				try { is.close(); } catch(IOException e) { LOGGER.fine("Error closing schema stream: " + e.getMessage()); }
+			}
 		}
 	}
 
@@ -187,13 +198,32 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Creates a DocumentBuilderFactory with XXE protections enabled.
+	 *
+	 * @return a secure DocumentBuilderFactory
+	 * @throws ParserConfigurationException if the factory cannot be configured
+	 */
+	private DocumentBuilderFactory createSecureDocumentBuilderFactory()
+			throws ParserConfigurationException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(true);
+
+		// XXE protections
+		factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+		factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+		factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		factory.setXIncludeAware(false);
+		factory.setExpandEntityReferences(false);
+
+		return factory;
+	}
+
 	private Document documentFromFile(File file) throws IOException {
 		Document doc;
 		try {
-			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware(true);
-			
+			final DocumentBuilderFactory factory = createSecureDocumentBuilderFactory();
 			doc = factory.newDocumentBuilder().parse(file);
 			return doc;
 		} catch(SAXException exc) {
@@ -206,9 +236,7 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 	private Document documentFromStream(InputStream stream) throws IOException {
 		Document doc;
 		try {
-			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware(true);
-			
+			final DocumentBuilderFactory factory = createSecureDocumentBuilderFactory();
 			doc = factory.newDocumentBuilder().parse(stream);
 			return doc;
 		} catch(SAXException exc) {
@@ -221,8 +249,7 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 	private Document documentFromGraph(OpGraph graph) throws IOException {
 		Document doc;
 		try {
-			final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			factory.setNamespaceAware(true);
+			final DocumentBuilderFactory factory = createSecureDocumentBuilderFactory();
 
 			// Construct a DOM document
 			final DocumentBuilder docBuilder = factory.newDocumentBuilder();
@@ -345,7 +372,9 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 	public void write(OpGraph graph, File file) throws IOException {
 		Document doc = documentFromGraph(graph);
 		validate(doc);
-		write(doc, new FileOutputStream(file));
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			write(doc, fos);
+		}
 	}
 
 	/**

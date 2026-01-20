@@ -24,6 +24,14 @@ import ca.phon.opgraph.*;
 import ca.phon.opgraph.exceptions.*;
 import ca.phon.opgraph.util.*;
 
+/**
+ * A node that invokes a method via reflection.
+ *
+ * <p><strong>Security Warning:</strong> This node uses reflection to invoke
+ * arbitrary methods. Only load graph files from trusted sources. Malicious
+ * graphs could use this node to call sensitive methods or execute system
+ * commands.</p>
+ */
 public class MethodNode extends AbstractReflectNode {
 
 	private static final Logger LOGGER = Logger

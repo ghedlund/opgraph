@@ -16,9 +16,9 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.exceptions.*;

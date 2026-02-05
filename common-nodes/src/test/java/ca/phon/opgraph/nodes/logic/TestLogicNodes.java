@@ -16,9 +16,9 @@
  */
 package ca.phon.opgraph.nodes.logic;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.exceptions.*;
@@ -52,7 +52,7 @@ public class TestLogicNodes {
 			fail(exc.getMessage());
 		}
 
-		assertTrue("result exists", context.containsKey(result));
+		assertTrue(context.containsKey(result), "result exists");
 		assertEquals(context.get(result), expected);
 	}
 

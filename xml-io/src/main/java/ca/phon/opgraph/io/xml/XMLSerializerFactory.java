@@ -35,7 +35,6 @@ import org.xml.sax.*;
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.extensions.*;
 import ca.phon.opgraph.io.*;
-import ca.phon.opgraph.util.*;
 
 /**
  * A factory that maps qualified names to serializers that handle them.
@@ -69,48 +68,34 @@ public final class XMLSerializerFactory implements Extendable, OpGraphSerializer
 	}
 
 	public void initialize() {
-		// Load XML serialization providers
+		// Load XML serialization providers via ServiceLoader
 		serializers.clear();
-
-		for(Class<? extends XMLSerializer> provider : ServiceDiscovery.getInstance().findProviders(XMLSerializer.class)) {
-			try {
-				serializers.add( provider.newInstance() );
-			} catch(InstantiationException exc) {
-				LOGGER.warning("Could not instantiate XMLSerializer provider: " + provider.getName());
-			} catch(IllegalAccessException exc) {
-				LOGGER.warning("Could not instantiate XMLSerializer provider: " + provider.getName());
-			}
+		for(XMLSerializer serializer : ServiceLoader.load(XMLSerializer.class)) {
+			serializers.add(serializer);
 		}
 
-		// Construct a validator
-		// XXX perhaps just do this once in a static block/function?
+		// Construct a validator from schemas discovered via SchemaProvider service
 		validator = null;
 		List<InputStream> schemaStreams = new ArrayList<>();
 		try {
-			// Find a list of all schemas
-			final List<URL> schemaLists = ServiceDiscovery.getInstance().findResources("META-INF/schemas/list");
-			final List<URL> schemas = new ArrayList<URL>();
-			for(URL schemaListURL : schemaLists) {
-				try (BufferedReader br = new BufferedReader(new InputStreamReader(schemaListURL.openStream()))) {
-					String line = null;
-					while((line = br.readLine()) != null)
-						if(line.trim().length() > 0)
-							schemas.addAll( ServiceDiscovery.getInstance().findResources("META-INF/schemas/" + line) );
-				}
+			// Collect extension schemas from SchemaProvider implementations
+			final List<URL> extensionSchemas = new ArrayList<>();
+			for(SchemaProvider provider : ServiceLoader.load(SchemaProvider.class)) {
+				extensionSchemas.addAll(provider.getSchemaURLs());
 			}
 
-			// Load up extension schemas
-			final Source [] schemaSource = new Source[schemas.size() + 1];
-			for(int index = 0; index < schemas.size(); ++index) {
-				InputStream is = schemas.get(index).openStream();
-				schemaStreams.add(is);
-				schemaSource[index + 1] = new StreamSource(is);
-			}
+			// Build schema sources: core schema first, then extensions
+			final Source[] schemaSource = new Source[extensionSchemas.size() + 1];
 
-			// Ensure core OpGraph schema comes first
 			InputStream coreIs = XMLSerializerFactory.class.getResource("/META-INF/schemas/opgraph.xsd").openStream();
 			schemaStreams.add(coreIs);
 			schemaSource[0] = new StreamSource(coreIs);
+
+			for(int index = 0; index < extensionSchemas.size(); ++index) {
+				InputStream is = extensionSchemas.get(index).openStream();
+				schemaStreams.add(is);
+				schemaSource[index + 1] = new StreamSource(is);
+			}
 
 			final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			final Schema schema = sf.newSchema(schemaSource);

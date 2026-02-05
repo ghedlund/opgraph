@@ -26,14 +26,10 @@ import java.util.logging.*;
  * A default service discovery class which mimics the standard library's
  * {@link java.util.ServiceLoader} for service discovery.
  *
- * Static methods are provided ({@link #addClassLoader(ClassLoader)} and
- * {@link #removeClassLoader(ClassLoader)}) to provide additional, custom
- * class loaders to search through for service providers. Note that the
- * system class loader will always be used, along with the class loader used
- * to load the class given to {@link #findProviders(Class)}.
- *
- * TODO caching
+ * @deprecated Use {@link java.util.ServiceLoader} directly with JPMS
+ *             {@code uses}/{@code provides} declarations in module-info.java
  */
+@Deprecated
 public class DefaultServiceDiscovery extends ServiceDiscovery {
 	/** The resource prefix to search through */
 	private static final String SERVICE_PREFIX = "META-INF/services/";

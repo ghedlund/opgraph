@@ -39,7 +39,6 @@ import ca.phon.opgraph.app.edits.graph.*;
 import ca.phon.opgraph.app.util.*;
 import ca.phon.opgraph.library.*;
 import ca.phon.opgraph.library.handlers.*;
-import ca.phon.opgraph.util.*;
 
 /**
  * A panel to display the node types available in a {@link NodeLibrary}.
@@ -135,14 +134,15 @@ public class NodeLibraryViewer extends JPanel {
 		
 		this.document = document;
 		
-		final List<Class<? extends OpNode>> providers = ServiceDiscovery.getInstance().findProviders(OpNode.class);
-		for(Class<? extends OpNode> provider : providers) {
-			try {
-				library.register(provider);
-			} catch(Throwable exc) {
-				LOGGER.warning("Could not register OpNode provider: " + provider);
-			}
-		}
+		ServiceLoader.load(OpNode.class).stream()
+			.map(ServiceLoader.Provider::type)
+			.forEach(cls -> {
+				try {
+					library.register(cls);
+				} catch(Throwable exc) {
+					LOGGER.warning("Could not register OpNode provider: " + cls);
+				}
+			});
 
 		// Initialize component
 		initializeComponents(library);

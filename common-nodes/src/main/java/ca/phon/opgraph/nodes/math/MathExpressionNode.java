@@ -30,8 +30,8 @@ import javax.swing.*;
 import javax.swing.JFormattedTextField.*;
 import javax.swing.event.*;
 
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
@@ -61,11 +61,11 @@ public class MathExpressionNode
 	/** The math expression */
 	private String expression;
 
-	/** The expression parser that parsed the expression when it was set */
-	private MathExpressionParser expressionParser;
-
 	/** The parsed expression tree */
-	private Object expressionTree;
+	private MathExpressionParser.ProgContext parseTree;
+
+	/** Variables found in the expression */
+	private Set<String> variables = new TreeSet<>();
 
 	/** The number of decimal places that are significant in the expression result */
 	private int significantDigits;
@@ -110,29 +110,43 @@ public class MathExpressionNode
 	public void setExpression(String expression) {
 		this.expression = (expression == null ? "" : expression);
 
-		final ANTLRStringStream stream = new ANTLRStringStream(this.expression);
+		final CharStream stream = CharStreams.fromString(this.expression);
 		final MathExpressionLexer lexer = new MathExpressionLexer(stream);
 		final CommonTokenStream tokens = new CommonTokenStream(lexer);
+		final MathExpressionParser parser = new MathExpressionParser(tokens);
+		parser.removeErrorListeners();
 
-		expressionParser = new MathExpressionParser(tokens);
+		parseTree = parser.prog();
 
-		try {
-			expressionTree = expressionParser.prog().getTree();
-			
-			// Remove any input fields that correspond to non-existant variables
-			final ArrayList<InputField> inputFieldsCopy = new ArrayList<InputField>(getInputFields());
-			for(InputField field : inputFieldsCopy) {
-				if(!expressionParser.getVariables().contains(field.getKey()))
-					removeField(field);
-			}
+		if(parser.getNumberOfSyntaxErrors() > 0) {
+			parseTree = null;
+			return;
+		}
 
-			// Insert new input fields
-			for(String variable : expressionParser.getVariables()) {
-				if(getInputFieldWithKey(variable) == null)
-					putField(new InputField(variable, "expression variable", false, true, Number.class));
-			}
-		} catch(RecognitionException exc) {
-			expressionParser = null;
+		// Collect variables from parse tree
+		variables.clear();
+		collectVariables(parseTree, variables);
+
+		// Remove any input fields that correspond to non-existant variables
+		final ArrayList<InputField> inputFieldsCopy = new ArrayList<InputField>(getInputFields());
+		for(InputField field : inputFieldsCopy) {
+			if(!variables.contains(field.getKey()))
+				removeField(field);
+		}
+
+		// Insert new input fields
+		for(String variable : variables) {
+			if(getInputFieldWithKey(variable) == null)
+				putField(new InputField(variable, "expression variable", false, true, Number.class));
+		}
+	}
+
+	private static void collectVariables(ParseTree tree, Set<String> vars) {
+		if(tree instanceof MathExpressionParser.VariableContext) {
+			vars.add(((MathExpressionParser.VariableContext) tree).ID().getText());
+		}
+		for(int i = 0; i < tree.getChildCount(); i++) {
+			collectVariables(tree.getChild(i), vars);
 		}
 	}
 
@@ -203,26 +217,19 @@ public class MathExpressionNode
 
 	@Override
 	public void operate(OpContext context) throws ProcessingException {
-		if(expressionParser == null || expressionTree == null)
+		if(parseTree == null)
 			throw new NullPointerException("Math expression could not be parsed");
 
-		//
-		final CommonTreeNodeStream stream = new CommonTreeNodeStream(expressionTree);
-		final MathExpressionEval expressionEval = new MathExpressionEval(stream);
+		final MathExpressionEvalVisitor visitor = new MathExpressionEvalVisitor();
 
 		// Add variable bindings
-		for(String variable : expressionParser.getVariables())
-			expressionEval.putValue(variable, (Number)context.get(variable));
+		for(String variable : variables)
+			visitor.putValue(variable, (Number)context.get(variable));
 
 		// Evaluate, and round to the number of significant decimal places
-		try {
-			expressionEval.prog();
-
-			final Number result = roundToSignificantDigits(expressionEval.getResult(), significantDigits);
-			context.put(RESULT_OUTPUT_FIELD, result);
-		} catch(RecognitionException exc) {
-			throw new ProcessingException(null, "Could not evaluate math expression", exc);
-		}
+		final Double result = visitor.visit(parseTree);
+		final Number roundedResult = roundToSignificantDigits(result, significantDigits);
+		context.put(RESULT_OUTPUT_FIELD, roundedResult);
 	}
 
 	//
@@ -239,24 +246,19 @@ public class MathExpressionNode
 	public static class MathExpressionFormatter extends AbstractFormatter {
 		@Override
 		public Object stringToValue(String text) throws ParseException {
-			final ANTLRStringStream stream = new ANTLRStringStream(text);
+			final CharStream stream = CharStreams.fromString(text);
 			final MathExpressionLexer lexer = new MathExpressionLexer(stream);
 			final CommonTokenStream tokens = new CommonTokenStream(lexer);
-			final MathExpressionParser expressionParser = new MathExpressionParser(tokens);
+			final MathExpressionParser parser = new MathExpressionParser(tokens);
+			parser.removeErrorListeners();
 
-			try {
-				expressionParser.prog();
-			} catch(RecognitionException exc) {
-				setEditValid(false);
-				invalidEdit();
-				throw new ParseException(expressionParser.getErrorHeader(exc), 0);
-			}
+			parser.prog();
 
-			if(expressionParser.getNumberOfSyntaxErrors() == 0) {
+			if(parser.getNumberOfSyntaxErrors() == 0) {
 				setEditValid(true);
 			} else {
 				setEditValid(false);
-				throw new ParseException("Could not parser expression: " + text, 0);
+				throw new ParseException("Could not parse expression: " + text, 0);
 			}
 
 			return text;

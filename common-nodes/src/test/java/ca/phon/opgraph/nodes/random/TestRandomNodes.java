@@ -16,9 +16,9 @@
  */
 package ca.phon.opgraph.nodes.random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.exceptions.*;
@@ -33,22 +33,22 @@ public class TestRandomNodes {
 		final OpContext context = new OpContext();
 
 		node.operate(context);
-		assertTrue("Output exists", context.containsKey(node.VALUE_OUTPUT));
-		assertTrue("Output value is an integer", Integer.class.isInstance(context.get(node.VALUE_OUTPUT)));
+		assertTrue(context.containsKey(node.VALUE_OUTPUT), "Output exists");
+		assertTrue(Integer.class.isInstance(context.get(node.VALUE_OUTPUT)), "Output value is an integer");
 
 		context.put(node.MIN_INPUT, 50);
 		node.operate(context);
-		assertTrue("Output exists", context.containsKey(node.VALUE_OUTPUT));
-		assertTrue("Output value is an integer", Integer.class.isInstance(context.get(node.VALUE_OUTPUT)));
-		assertTrue("Output greater than min", ((Integer)context.get(node.VALUE_OUTPUT)) >= 50);
+		assertTrue(context.containsKey(node.VALUE_OUTPUT), "Output exists");
+		assertTrue(Integer.class.isInstance(context.get(node.VALUE_OUTPUT)), "Output value is an integer");
+		assertTrue(((Integer)context.get(node.VALUE_OUTPUT)) >= 50, "Output greater than min");
 
 		context.put(node.MAX_INPUT, 80);
 		node.operate(context);
-		assertTrue("Output exists", context.containsKey(node.VALUE_OUTPUT));
-		assertTrue("Output value is an integer", Integer.class.isInstance(context.get(node.VALUE_OUTPUT)));
+		assertTrue(context.containsKey(node.VALUE_OUTPUT), "Output exists");
+		assertTrue(Integer.class.isInstance(context.get(node.VALUE_OUTPUT)), "Output value is an integer");
 
 		final int value = (Integer)context.get(node.VALUE_OUTPUT);
-		assertTrue("Output in range", (value >= 50) && (value <= 80));
+		assertTrue((value >= 50) && (value <= 80), "Output in range");
 	}
 
 	@Test
@@ -57,22 +57,22 @@ public class TestRandomNodes {
 		final OpContext context = new OpContext();
 
 		node.operate(context);
-		assertTrue("Output exists", context.containsKey(node.VALUE_OUTPUT));
-		assertTrue("Output value is a double", Double.class.isInstance(context.get(node.VALUE_OUTPUT)));
+		assertTrue(context.containsKey(node.VALUE_OUTPUT), "Output exists");
+		assertTrue(Double.class.isInstance(context.get(node.VALUE_OUTPUT)), "Output value is a double");
 
 		context.put(node.MIN_INPUT, 50);
 		node.operate(context);
-		assertTrue("Output exists", context.containsKey(node.VALUE_OUTPUT));
-		assertTrue("Output value is a double", Double.class.isInstance(context.get(node.VALUE_OUTPUT)));
-		assertTrue("Output greater than min", ((Double)context.get(node.VALUE_OUTPUT)) >= 50);
+		assertTrue(context.containsKey(node.VALUE_OUTPUT), "Output exists");
+		assertTrue(Double.class.isInstance(context.get(node.VALUE_OUTPUT)), "Output value is a double");
+		assertTrue(((Double)context.get(node.VALUE_OUTPUT)) >= 50, "Output greater than min");
 
 		context.put(node.MAX_INPUT, 80);
 		node.operate(context);
-		assertTrue("Output exists", context.containsKey(node.VALUE_OUTPUT));
-		assertTrue("Output value is a double", Double.class.isInstance(context.get(node.VALUE_OUTPUT)));
+		assertTrue(context.containsKey(node.VALUE_OUTPUT), "Output exists");
+		assertTrue(Double.class.isInstance(context.get(node.VALUE_OUTPUT)), "Output value is a double");
 
 		final double value = (Double)context.get(node.VALUE_OUTPUT);
-		assertTrue("Output in range", (value + 1e-10 >= 50) && (value <= 80 + 1e-10));
+		assertTrue((value + 1e-10 >= 50) && (value <= 80 + 1e-10), "Output in range");
 	}
 
 	@Test
@@ -81,8 +81,8 @@ public class TestRandomNodes {
 		final OpContext context = new OpContext();
 
 		node.operate(context);
-		assertTrue("Output exists", context.containsKey(node.VALUE_OUTPUT));
-		assertTrue("Output value is a boolean", Boolean.class.isInstance(context.get(node.VALUE_OUTPUT)));
+		assertTrue(context.containsKey(node.VALUE_OUTPUT), "Output exists");
+		assertTrue(Boolean.class.isInstance(context.get(node.VALUE_OUTPUT)), "Output value is a boolean");
 	}
 
 	@Test
@@ -94,9 +94,9 @@ public class TestRandomNodes {
 			final int LENGTH = (int)(Math.random() * 500) + 10;
 			context.put(node.LENGTH_INPUT, LENGTH);
 			node.operate(context);
-			assertTrue("Output exists", context.containsKey(node.VALUE_OUTPUT));
-			assertTrue("Output value is a string", String.class.isInstance(context.get(node.VALUE_OUTPUT)));
-			assertEquals("Output value is correct length", LENGTH, context.get(node.VALUE_OUTPUT).toString().length());
+			assertTrue(context.containsKey(node.VALUE_OUTPUT), "Output exists");
+			assertTrue(String.class.isInstance(context.get(node.VALUE_OUTPUT)), "Output value is a string");
+			assertEquals(LENGTH, context.get(node.VALUE_OUTPUT).toString().length(), "Output value is correct length");
 		}
 	}
 }

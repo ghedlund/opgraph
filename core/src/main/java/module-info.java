@@ -1,7 +1,7 @@
-module ca.phon.opgraph.core {	
+module ca.phon.opgraph.core {
 	requires java.logging;
 	requires transitive java.desktop;
-	
+
 	exports ca.phon.opgraph;
 	exports ca.phon.opgraph.dag;
 	exports ca.phon.opgraph.exceptions;
@@ -9,4 +9,6 @@ module ca.phon.opgraph.core {
 	exports ca.phon.opgraph.io;
 	exports ca.phon.opgraph.util;
 	exports ca.phon.opgraph.validators;
+
+	uses ca.phon.opgraph.io.OpGraphSerializer;
 }

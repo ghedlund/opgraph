@@ -17,12 +17,11 @@
 package ca.phon.opgraph.dag;
 
 import static ca.phon.CollectionsAssert.*;
-import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 /**
  * Tests {@link DirectedAcyclicGraph}.
@@ -51,7 +50,7 @@ public class TestDirectedAcyclicGraph {
 	private HashMap<String, SimpleVertex> vertexMap = new HashMap<String, SimpleVertex>();
 	private HashMap<String, SimpleDirectedEdge<SimpleVertex>> edgeMap = new HashMap<String, SimpleDirectedEdge<SimpleVertex>>();
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		char start = 'A';
 		char end = 'Z';
@@ -99,25 +98,21 @@ public class TestDirectedAcyclicGraph {
 	/**
 	 * Tests cycle detection in a DAG
 	 */
-	@Test(expected=CycleDetectedException.class)
-	public void testCycleException() throws CycleDetectedException {
+	@Test
+	public void testCycleException() {
 		DirectedAcyclicGraph<SimpleVertex, SimpleDirectedEdge<SimpleVertex>> dag = new DirectedAcyclicGraph<SimpleVertex, SimpleDirectedEdge<SimpleVertex>>();
 		dag.add(vertexMap.get("A"));
 		dag.add(vertexMap.get("B"));
 		dag.add(vertexMap.get("C"));
 		dag.add(vertexMap.get("D"));
 
-		try {
+		assertThrows(CycleDetectedException.class, () -> {
 			dag.add(edgeMap.get("DC"));
 			dag.add(edgeMap.get("CA"));
 			dag.add(edgeMap.get("AB"));
 			dag.add(edgeMap.get("DA"));
 			dag.add(edgeMap.get("BD")); // creates a cycle
-		} catch(VertexNotFoundException exc) {
-			fail("Vertex not found, but should be: " + exc.getVertex());
-		} catch (InvalidEdgeException e) {
-			fail("Invalid link");
-		}
+		});
 	}
 
 	/**

@@ -6,28 +6,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Build all modules
-mvn clean package
+./gradlew clean build
 
 # Run all tests
-mvn clean test
+./gradlew test
 
 # Run tests for a specific module
-mvn test -pl core
-mvn test -pl common-nodes
+./gradlew :core:test
+./gradlew :common-nodes:test
 
 # Run a single test class
-mvn test -pl core -Dtest=TestOpGraph
+./gradlew :core:test --tests TestOpGraph
 
 # Run a single test method
-mvn test -pl core -Dtest=TestOpGraph#testCycleDetection
+./gradlew :core:test --tests TestOpGraph.testCycleDetection
 
 # Skip tests during build
-mvn package -DskipTests
+./gradlew build -x test
+
+# Publish to local Maven repository
+./gradlew publishToMavenLocal
 ```
 
 ## Project Structure
 
-Multi-module Maven project (Java 11):
+Multi-module Gradle project (Java 21, JPMS):
 
 ```
 opgraph/
@@ -37,6 +40,13 @@ opgraph/
 ├── app/            # GUI editor API and components (depends on: core, library, xml-io)
 └── common-nodes/   # Pre-built operation nodes (depends on: core, app, xml-io)
 ```
+
+**JPMS Modules:**
+- `ca.phon.opgraph.core` — core
+- `ca.phon.opgraph.library` — library
+- `ca.phon.opgraph.xml` — xml-io
+- `ca.phon.opgraph.app` — app
+- `ca.phon.opgraph.nodes` — common-nodes
 
 ## Architecture Overview
 
@@ -62,9 +72,16 @@ OpGraph is a framework for building complex operations from composable DAG-based
 - `CustomProcessing` extension for custom execution hooks
 - `NodeMetadata` stores UI positioning
 
+**Service Discovery (JPMS):**
+- Services are registered via `provides...with` in `module-info.java`
+- Consumers declare `uses` and call `java.util.ServiceLoader.load()` directly
+- `ServiceDiscovery`/`DefaultServiceDiscovery` are deprecated; use `ServiceLoader` instead
+- XML schemas are discovered via `SchemaProvider` service interface
+
 **Node Registration:**
 - Use `@OpNodeInfo` annotation for metadata (name, description, category)
 - `NodeLibrary` discovers and instantiates node types
+- Register OpNode implementations via `provides ca.phon.opgraph.OpNode with ...` in module-info
 
 ## Creating a Custom Node
 

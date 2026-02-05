@@ -21,8 +21,7 @@ package ca.phon.opgraph.io;
 
 import java.util.*;
 import java.util.logging.*;
-
-import ca.phon.opgraph.util.*;
+import java.util.stream.*;
 
 /**
  * A factory for discovering and constructing {@link OpGraphSerializer}s.
@@ -46,31 +45,22 @@ public abstract class OpGraphSerializerFactory {
 		// See if there's a default one defined via a system property first...
 		final String defaultClass = System.getProperty(DEFAULT_SERIALIZER_PROPERTY);
 		if(defaultClass != null) {
-			Class<? extends OpGraphSerializer> serializerCls = null;
-
 			try {
-				serializerCls = Class.forName(defaultClass).asSubclass(OpGraphSerializer.class); 
-				serializer = serializerCls.newInstance();
+				Class<? extends OpGraphSerializer> serializerCls =
+					Class.forName(defaultClass).asSubclass(OpGraphSerializer.class);
+				serializer = serializerCls.getDeclaredConstructor().newInstance();
 			} catch(ClassNotFoundException exc) {
 				LOGGER.severe("Service '" + defaultClass + "' does not provide an empty constructor!");
-			} catch(InstantiationException exc) {
-				LOGGER.severe("Service '" + defaultClass + "' does not provide an empty constructor!");
-			} catch(IllegalAccessException exc) {
+			} catch(ReflectiveOperationException exc) {
 				LOGGER.severe("Service '" + defaultClass + "' does not provide an accessible empty constructor!");
 			}
 		}
 
 		// ...No? Try to discover one, and take the first
 		if(serializer == null) {
-			for(Class<? extends OpGraphSerializer> serializerCls : getSerializers()) {
-				try {
-					serializer = serializerCls.newInstance();
-				} catch(InstantiationException exc) {
-					LOGGER.severe("Service '" + serializerCls.getName() + "' does not provide an empty constructor!");
-				} catch(IllegalAccessException exc) {
-					LOGGER.severe("Service '" + serializerCls.getName() + "' does not provide an accessible empty constructor!");
-				}
-			}
+			final Iterator<OpGraphSerializer> it = ServiceLoader.load(OpGraphSerializer.class).iterator();
+			if(it.hasNext())
+				serializer = it.next();
 		}
 
 		return serializer;
@@ -85,22 +75,12 @@ public abstract class OpGraphSerializerFactory {
 	 *         extension, or <code>null</code> if no such serializer exists
 	 */
 	public static OpGraphSerializer getSerializerByExtension(String extension) {
-		OpGraphSerializer serializer = null;
-		for(Class<? extends OpGraphSerializer> serializerCls : getSerializers()) {
-			final OpGraphSerializerInfo info = serializerCls.getAnnotation(OpGraphSerializerInfo.class);
-			if(info != null && info.extension().equalsIgnoreCase(extension)) {
-				try {
-					serializer = serializerCls.newInstance();
-				} catch(InstantiationException exc) {
-					LOGGER.severe("Service '" + serializerCls.getName() + "' does not provide an empty constructor!");
-				} catch(IllegalAccessException exc) {
-					LOGGER.severe("Service '" + serializerCls.getName() + "' does not provide an accessible empty constructor!");
-				}
-				break;
-			}
+		for(OpGraphSerializer serializer : ServiceLoader.load(OpGraphSerializer.class)) {
+			final OpGraphSerializerInfo info = serializer.getClass().getAnnotation(OpGraphSerializerInfo.class);
+			if(info != null && info.extension().equalsIgnoreCase(extension))
+				return serializer;
 		}
-
-		return serializer;
+		return null;
 	}
 
 	/**
@@ -109,6 +89,8 @@ public abstract class OpGraphSerializerFactory {
 	 * @return list of serializers
 	 */
 	public static List<Class<? extends OpGraphSerializer>> getSerializers() {
-		return ServiceDiscovery.getInstance().findProviders(OpGraphSerializer.class);
+		return ServiceLoader.load(OpGraphSerializer.class).stream()
+			.map(ServiceLoader.Provider::type)
+			.collect(Collectors.toList());
 	}
 }

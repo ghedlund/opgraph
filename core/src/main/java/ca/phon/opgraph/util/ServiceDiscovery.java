@@ -26,7 +26,11 @@ import java.util.logging.*;
  * facilities similar to that of {@link java.util.ServiceLoader}, but the
  * service discovery provider can be set by the system property
  * <code>ca.phon.opgraph.discoveryProvider</code>.
+ *
+ * @deprecated Use {@link java.util.ServiceLoader} directly with JPMS
+ *             {@code uses}/{@code provides} declarations in module-info.java
  */
+@Deprecated
 public abstract class ServiceDiscovery {
 	/** Logger */
 	private static final Logger LOGGER = Logger.getLogger(ServiceDiscovery.class.getName());
@@ -45,14 +49,12 @@ public abstract class ServiceDiscovery {
 			if(discoveryProviderName != null) {
 				try {
 					Class<?> cls = Class.forName(discoveryProviderName);
-					provider = cls.asSubclass(ServiceDiscovery.class).newInstance();
+					provider = cls.asSubclass(ServiceDiscovery.class).getDeclaredConstructor().newInstance();
 				} catch(ClassCastException exc) {
 					LOGGER.warning("Class '" + discoveryProviderName + "' is not a service discovery provider. Using default provider.");
 				} catch(ClassNotFoundException exc) {
 					LOGGER.warning("Could not find service discovery class '" + discoveryProviderName + "'. Using default provider.");
-				} catch(InstantiationException exc) {
-					LOGGER.warning("Could not instantiate service discovery class '" + discoveryProviderName + "'. Using default provider.");
-				} catch(IllegalAccessException exc) {
+				} catch(ReflectiveOperationException exc) {
 					LOGGER.warning("Could not instantiate service discovery class '" + discoveryProviderName + "'. Using default provider.");
 				}
 			}

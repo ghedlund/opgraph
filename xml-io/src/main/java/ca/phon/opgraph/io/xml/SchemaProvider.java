@@ -14,32 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ca.phon.opgraph.app;
+package ca.phon.opgraph.io.xml;
 
-import java.util.*;
-import java.util.logging.*;
+import java.net.URL;
+import java.util.List;
 
-public class MenuManager {
+/**
+ * Service interface for providing XML schema URLs for OpGraph validation.
+ * Modules that define extension schemas should implement this interface
+ * and declare it via {@code provides} in their module-info.
+ */
+public interface SchemaProvider {
 
-	private final static Logger LOGGER = Logger.getLogger(MenuManager.class.getName());
-
-	private List<MenuProvider> menuProviders;
-
-	public MenuManager() {
-		super();
-
-		findProviders();
-	}
-
-	private void findProviders() {
-		this.menuProviders = new ArrayList<>();
-		for(MenuProvider provider : ServiceLoader.load(MenuProvider.class)) {
-			menuProviders.add(provider);
-		}
-	}
-	
-	public List<MenuProvider> getMenuProviders() {
-		return Collections.unmodifiableList(this.menuProviders);
-	}
+	/**
+	 * Gets the URLs to XML schema files provided by this module.
+	 *
+	 * @return list of schema URLs
+	 */
+	List<URL> getSchemaURLs();
 
 }

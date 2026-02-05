@@ -16,9 +16,9 @@
  */
 package ca.phon.opgraph;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import ca.phon.opgraph.exceptions.*;
 
@@ -223,8 +223,8 @@ public class TestOpGraph {
 	/**
 	 * Tests optional and required inputs
 	 */
-	@Test(expected=RequiredInputException.class)
-	public void testOptionalInput() throws RequiredInputException {
+	@Test
+	public void testOptionalInput() throws ProcessingException {
 		final OpGraph dag = new OpGraph();
 		final ConstantNode cv1 = new ConstantNode(1.0);
 		final ConstantNode cv2 = new ConstantNode(2.0);
@@ -250,48 +250,21 @@ public class TestOpGraph {
 		assertNotNull(dag.connect(cv2, ConstantNode.VALUE_FIELD, av1, AddNode.Y_FIELD));
 
 		// Everything should be good here
-		try {
-			double result = getResult(Double.class, dag, null, mv1, MultiplyNode.RESULT_FIELD);
-			assertEquals(30.0, result, 1e-10);
-		} catch(ProcessingException exc) {
-			if(exc.getCause() != null)
-				exc.getCause().printStackTrace();
-			else
-				exc.printStackTrace();
-
-			fail("Should be no errors when processing");
-		}
+		double result = getResult(Double.class, dag, null, mv1, MultiplyNode.RESULT_FIELD);
+		assertEquals(30.0, result, 1e-10);
 
 		// Now remove an link on an optional input field
 		dag.remove(optionalLink);
-		try {
-			assertFalse(dag.contains(optionalLink));
-			double result = getResult(Double.class, dag, null, mv1, MultiplyNode.RESULT_FIELD);
-			assertEquals(3.0, result, 1e-10);
-		} catch(ProcessingException exc) {
-			if(exc.getCause() != null)
-				exc.getCause().printStackTrace();
-			else
-				exc.printStackTrace();
-
-			fail("Should be no errors when processing");
-		}
+		assertFalse(dag.contains(optionalLink));
+		result = getResult(Double.class, dag, null, mv1, MultiplyNode.RESULT_FIELD);
+		assertEquals(3.0, result, 1e-10);
 
 		// Now remove an link on a required input field
 		dag.remove(requiredLink);
-		try {
-			assertFalse(dag.contains(requiredLink));
+		assertFalse(dag.contains(requiredLink));
+		assertThrows(RequiredInputException.class, () -> {
 			getResult(Double.class, dag, null, mv1, MultiplyNode.RESULT_FIELD);
-		} catch(RequiredInputException exc) {
-			throw exc;
-		} catch(ProcessingException exc) {
-			if(exc.getCause() != null)
-				exc.getCause().printStackTrace();
-			else
-				exc.printStackTrace();
-
-			fail("Should be no errors when processing");
-		}
+		});
 	}
 
 	/**
@@ -355,8 +328,8 @@ public class TestOpGraph {
 				defaults.getChildContext(mv1).put(MultiplyNode.Y_FIELD, 10.0);
 
 				final OpContext context = process(dag, defaults);
-				assertTrue("Multiply result not available when it should be",
-				           context.getChildContext(mv1).containsKey(MultiplyNode.RESULT_FIELD));
+				assertTrue(context.getChildContext(mv1).containsKey(MultiplyNode.RESULT_FIELD),
+				           "Multiply result not available when it should be");
 			}
 
 			// Now disable multiply node
@@ -368,8 +341,8 @@ public class TestOpGraph {
 				defaults.getChildContext(mv1).put(OpNode.ENABLED_FIELD, false);
 
 				final OpContext context = process(dag, defaults);
-				assertFalse("Multiply result available when it should not be",
-				           context.getChildContext(mv1).containsKey(MultiplyNode.RESULT_FIELD));
+				assertFalse(context.getChildContext(mv1).containsKey(MultiplyNode.RESULT_FIELD),
+				           "Multiply result available when it should not be");
 			}
 		} catch(ProcessingException exc) {
 			if(exc.getCause() != null)

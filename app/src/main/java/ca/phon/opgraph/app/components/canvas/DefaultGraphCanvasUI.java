@@ -548,19 +548,9 @@ public class DefaultGraphCanvasUI extends GraphCanvasUI {
 						}
 						document.getUndoSupport().postEdit(new RemoveLinkEdit(graph, currentlyDraggedLink));
 					} else {
-						// call abandoned link handlers
-						final List<Class<? extends AbandonedLinkHandler>> handlers = ServiceDiscovery.getInstance().findProviders(AbandonedLinkHandler.class);
-						for(Class<? extends AbandonedLinkHandler> handler:handlers) {
-							try {
-								final AbandonedLinkHandler linkHandler = handler.newInstance();
-								linkHandler.dragLinkAbandoned(canvas, sourceNode, currentlyDraggedLinkInputField, p);
-							} catch (InstantiationException e) {
-								LOGGER.log(Level.SEVERE,
-										e.getLocalizedMessage(), e);
-							} catch (IllegalAccessException e) {
-								LOGGER.log(Level.SEVERE,
-										e.getLocalizedMessage(), e);
-							}
+						// call abandoned link handlers via ServiceLoader
+						for(AbandonedLinkHandler linkHandler : ServiceLoader.load(AbandonedLinkHandler.class)) {
+							linkHandler.dragLinkAbandoned(canvas, sourceNode, currentlyDraggedLinkInputField, p);
 						}
 					}
 				}

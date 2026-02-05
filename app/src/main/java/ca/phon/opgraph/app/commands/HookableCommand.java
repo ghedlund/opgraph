@@ -22,8 +22,6 @@ import java.util.logging.*;
 
 import javax.swing.*;
 
-import ca.phon.opgraph.util.*;
-
 /**
  * 
  */
@@ -49,21 +47,12 @@ public abstract class HookableCommand extends AbstractAction {
 
 	private List<CommandHook> findCommandHooks() {
 		final Class<? extends HookableCommand> myType = getClass();
-		
-		final List<Class<? extends CommandHook>> commandHookTypes = 
-				DefaultServiceDiscovery.getInstance().findProviders(CommandHook.class);
-		final List<CommandHook> commandHooks = new ArrayList<CommandHook>();
-		for(Class<? extends CommandHook> commandHookType:commandHookTypes) {
-			final Hook hook = commandHookType.getAnnotation(Hook.class);
-			if(hook != null && hook.command() == myType) {
-				try {
-					final CommandHook commandHook = commandHookType.newInstance();
-					commandHooks.add(commandHook);
-				} catch (InstantiationException e) {
-					LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				} catch (IllegalAccessException e) {
-					LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-				}
+
+		final List<CommandHook> commandHooks = new ArrayList<>();
+		for(CommandHook hook : ServiceLoader.load(CommandHook.class)) {
+			final Hook hookAnnotation = hook.getClass().getAnnotation(Hook.class);
+			if(hookAnnotation != null && hookAnnotation.command() == myType) {
+				commandHooks.add(hook);
 			}
 		}
 		return Collections.unmodifiableList(commandHooks);

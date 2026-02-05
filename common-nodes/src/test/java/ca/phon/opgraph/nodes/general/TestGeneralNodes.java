@@ -16,11 +16,11 @@
  */
 package ca.phon.opgraph.nodes.general;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import ca.phon.opgraph.*;
 
@@ -45,7 +45,7 @@ public class TestGeneralNodes {
 			context.put(node.END_INPUT_FIELD, end);
 			node.operate(context);
 
-			assertTrue("Result exists", context.containsKey(node.RANGE_OUTPUT_FIELD));
+			assertTrue(context.containsKey(node.RANGE_OUTPUT_FIELD), "Result exists");
 			assertEquals(expected, new TreeSet<Object>((Collection<?>)context.get(node.RANGE_OUTPUT_FIELD)));
 		}
 	}

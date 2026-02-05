@@ -27,7 +27,6 @@ import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.app.components.canvas.*;
 import ca.phon.opgraph.app.components.library.*;
-import ca.phon.opgraph.util.*;
 import ca.phon.ui.jbreadcrumb.*;
 
 /**
@@ -137,17 +136,10 @@ public class GraphEditorModel {
 			}
 		});
 
-		// Discover menu extensions
-		this.menuProviders = new ArrayList<MenuProvider>();
-		final ServiceDiscovery discovery = ServiceDiscovery.getInstance();
-		for(Class<? extends MenuProvider> menu : discovery.findProviders(MenuProvider.class)) {
-			try {
-				menuProviders.add(menu.newInstance());
-			} catch(InstantiationException exc) {
-				LOGGER.warning("Could not instantiate menu provider: " + menu.getName());
-			} catch(IllegalAccessException exc) {
-				LOGGER.warning("Could not instantiate menu provider: " + menu.getName());
-			}
+		// Discover menu extensions via ServiceLoader
+		this.menuProviders = new ArrayList<>();
+		for(MenuProvider provider : ServiceLoader.load(MenuProvider.class)) {
+			menuProviders.add(provider);
 		}
 	}
 

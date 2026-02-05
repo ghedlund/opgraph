@@ -16,12 +16,12 @@
  */
 package ca.phon.opgraph.nodes.math;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 import java.util.logging.*;
 
-import org.junit.*;
+import org.junit.jupiter.api.*;
 
 import ca.phon.opgraph.*;
 import ca.phon.opgraph.exceptions.*;
@@ -73,10 +73,10 @@ public class TestMathNodes {
 			node.setExpression(expression.getFirst());
 			node.operate(context);
 
-			assertTrue("Output exists", context.containsKey(node.RESULT_OUTPUT_FIELD));
+			assertTrue(context.containsKey(node.RESULT_OUTPUT_FIELD), "Output exists");
 
 			final double result = ((Number)context.get(node.RESULT_OUTPUT_FIELD)).doubleValue();
-			assertEquals(expression.getFirst(), expression.getSecond(), result, 1e-10);
+			assertEquals(expression.getSecond(), result, 1e-10, expression.getFirst());
 		}
 
 		// Significant decimal places
@@ -87,7 +87,7 @@ public class TestMathNodes {
 
 			final double value = ((Number)context.get(node.RESULT_OUTPUT_FIELD)).doubleValue();
 			final double expected = x + y;
-			assertTrue("ensure within range of significance", Math.abs(value - expected) < 1e-5);
+			assertTrue(Math.abs(value - expected) < 1e-5, "ensure within range of significance");
 		}
 		{
 			node.setSignificantDigits(0);
@@ -95,7 +95,7 @@ public class TestMathNodes {
 
 			final double value = ((Number)context.get(node.RESULT_OUTPUT_FIELD)).doubleValue();
 			final double expected = x + y;
-			assertTrue("loss of data expected", Math.abs(value - expected) < 1);
+			assertTrue(Math.abs(value - expected) < 1, "loss of data expected");
 		}
 	}
 }

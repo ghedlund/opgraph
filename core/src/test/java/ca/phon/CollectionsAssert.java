@@ -18,13 +18,13 @@ package ca.phon;
 
 import java.util.*;
 
-import junit.framework.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * A set of assertions that make comparing equality of collections and
  * arrays of objects simpler.
  */
-public class CollectionsAssert extends Assert {
+public class CollectionsAssert {
 	protected CollectionsAssert() {}
 
 	/**

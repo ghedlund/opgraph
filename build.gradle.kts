@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "ca.phon.opgraph"
-version = "3.0.0"
+version = "3.0.1"
 
 subprojects {
     apply(plugin = "java-library")

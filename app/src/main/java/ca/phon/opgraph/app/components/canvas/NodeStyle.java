@@ -49,7 +49,7 @@ public class NodeStyle {
 		} catch (IOException e) {
 			Logger.getAnonymousLogger().log(Level.WARNING, e.getLocalizedMessage(), e);
 		}
-		
+
 		DEFAULT.NodeBorderColor = Color.GRAY;
 		DEFAULT.NodeBackgroundColor = new Color(255, 255, 255, 200);
 		DEFAULT.NodeFocusColor = new Color(255, 200, 0, 255);
@@ -61,6 +61,7 @@ public class NodeStyle {
 		DEFAULT.AnchorLinkFillColor = Color.ORANGE;
 		DEFAULT.AnchorDefaultFillColor = new Color(100, 150, 255, 100);
 		DEFAULT.AnchorPublishedFillColor = new Color(50, 255, 50, 150);
+		DEFAULT.themeKeyPrefix = "OpGraph.Node";
 
 		COMPOSITE = new NodeStyle(DEFAULT);
 		try {
@@ -72,9 +73,11 @@ public class NodeStyle {
 		COMPOSITE.NodeBackgroundColor = new Color(200, 255, 200, 200);
 		COMPOSITE.NodeNameTopColor = new Color(150, 200, 100, 255);
 		COMPOSITE.NodeNameBottomColor = new Color(100, 150, 50, 255);
-		
+		COMPOSITE.themeKeyPrefix = "OpGraph.Node.Composite";
+
 		OBJECT = new NodeStyle(DEFAULT);
-		
+		OBJECT.themeKeyPrefix = "OpGraph.Node";
+
 		ITERATION = new NodeStyle(DEFAULT);
 		ITERATION.NodeBorderColor = Color.yellow;
 		ITERATION.NodeBackgroundColor = new Color(100, 255, 200, 200);
@@ -85,6 +88,7 @@ public class NodeStyle {
 		} catch (IOException e) {
 			Logger.getAnonymousLogger().log(Level.WARNING, e.getLocalizedMessage(), e);
 		}
+		ITERATION.themeKeyPrefix = "OpGraph.Node.Iteration";
 
 		installedStyles = new HashMap<Class<? extends OpNode>, NodeStyle>();
 	}
@@ -166,7 +170,28 @@ public class NodeStyle {
 
 	/** Whether or not to show the enabled field of a node. */
 	public boolean ShowEnabledField = true;
-	
+
+	/**
+	 * Optional UIManager key prefix for theme-aware colour resolution.
+	 *
+	 * <p>When non-null, each colour accessor resolves through {@link UIColors#colour(String, Color)}
+	 * using {@code themeKeyPrefix + "." + suffix} (e.g. {@code OpGraph.Node.background}). When null,
+	 * accessors return the public field value verbatim — this is the right behaviour for callers
+	 * that customise a copy of {@link #DEFAULT} and expect their literal colours to render.</p>
+	 *
+	 * <p>The copy constructor does not inherit this prefix, so consumers opt in explicitly by
+	 * calling {@link #setThemeKeyPrefix(String)} after customising a style.</p>
+	 */
+	private String themeKeyPrefix;
+
+	public String getThemeKeyPrefix() {
+		return themeKeyPrefix;
+	}
+
+	public void setThemeKeyPrefix(String themeKeyPrefix) {
+		this.themeKeyPrefix = themeKeyPrefix;
+	}
+
 	public NodeStyle() {
 		super();
 	}
@@ -194,57 +219,60 @@ public class NodeStyle {
 		this.ShowEnabledField = style.ShowEnabledField;
 	}
 
-	// Theme-aware accessors. Only the DEFAULT preset resolves through UIManager,
-	// because callers customise other instances by assigning fields directly and
-	// expect those literal values to render unchanged. Painters should call
-	// these getters; external code may still read or assign the public fields.
+	// Theme-aware accessors. Painters should call these getters; external code
+	// may still read or assign the public fields. When themeKeyPrefix is null
+	// the field value is returned verbatim, which keeps hand-tuned colour
+	// palettes intact for callers that customise their own copy of DEFAULT.
 
-	private Color resolve(String key, Color fieldValue) {
-		return (this == DEFAULT) ? UIColors.colour(key, fieldValue) : fieldValue;
+	private Color resolve(String suffix, Color fieldValue) {
+		if (themeKeyPrefix == null) {
+			return fieldValue;
+		}
+		return UIColors.colour(themeKeyPrefix + "." + suffix, fieldValue);
 	}
 
 	public Color getNodeNameTopColor() {
-		return resolve(UIColors.NODE_TITLE_TOP, this.NodeNameTopColor);
+		return resolve("titleTop", this.NodeNameTopColor);
 	}
 
 	public Color getNodeNameBottomColor() {
-		return resolve(UIColors.NODE_TITLE_BOTTOM, this.NodeNameBottomColor);
+		return resolve("titleBottom", this.NodeNameBottomColor);
 	}
 
 	public Color getNodeNameTextColor() {
-		return resolve(UIColors.NODE_TITLE_TEXT, this.NodeNameTextColor);
+		return resolve("titleText", this.NodeNameTextColor);
 	}
 
 	public Color getNodeNameTextShadowColor() {
-		return resolve(UIColors.NODE_TITLE_TEXT_SHADOW, this.NodeNameTextShadowColor);
+		return resolve("titleTextShadow", this.NodeNameTextShadowColor);
 	}
 
 	public Color getNodeBackgroundColor() {
-		return resolve(UIColors.NODE_BACKGROUND, this.NodeBackgroundColor);
+		return resolve("background", this.NodeBackgroundColor);
 	}
 
 	public Color getNodeBorderColor() {
-		return resolve(UIColors.NODE_BORDER, this.NodeBorderColor);
+		return resolve("border", this.NodeBorderColor);
 	}
 
 	public Color getNodeFocusColor() {
-		return resolve(UIColors.NODE_FOCUS_RING, this.NodeFocusColor);
+		return resolve("focusRing", this.NodeFocusColor);
 	}
 
 	public Color getFieldsTextColor() {
-		return resolve(UIColors.NODE_FIELD_TEXT, this.FieldsTextColor);
+		return resolve("fieldText", this.FieldsTextColor);
 	}
 
 	public Color getAnchorLinkFillColor() {
-		return resolve(UIColors.ANCHOR_LINK, this.AnchorLinkFillColor);
+		return resolve("anchorLink", this.AnchorLinkFillColor);
 	}
 
 	public Color getAnchorDefaultFillColor() {
-		return resolve(UIColors.ANCHOR_DEFAULT, this.AnchorDefaultFillColor);
+		return resolve("anchorDefault", this.AnchorDefaultFillColor);
 	}
 
 	public Color getAnchorPublishedFillColor() {
-		return resolve(UIColors.ANCHOR_PUBLISHED, this.AnchorPublishedFillColor);
+		return resolve("anchorPublished", this.AnchorPublishedFillColor);
 	}
 
 }

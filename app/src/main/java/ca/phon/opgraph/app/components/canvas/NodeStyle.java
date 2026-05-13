@@ -194,52 +194,57 @@ public class NodeStyle {
 		this.ShowEnabledField = style.ShowEnabledField;
 	}
 
-	// Theme-aware accessors: prefer the value registered in UIManager under
-	// the OpGraph.* key, falling back to the public field. Painters should
-	// call these getters; external code may still assign the public fields.
+	// Theme-aware accessors. Only the DEFAULT preset resolves through UIManager,
+	// because callers customise other instances by assigning fields directly and
+	// expect those literal values to render unchanged. Painters should call
+	// these getters; external code may still read or assign the public fields.
+
+	private Color resolve(String key, Color fieldValue) {
+		return (this == DEFAULT) ? UIColors.colour(key, fieldValue) : fieldValue;
+	}
 
 	public Color getNodeNameTopColor() {
-		return UIColors.colour(UIColors.NODE_TITLE_TOP, this.NodeNameTopColor);
+		return resolve(UIColors.NODE_TITLE_TOP, this.NodeNameTopColor);
 	}
 
 	public Color getNodeNameBottomColor() {
-		return UIColors.colour(UIColors.NODE_TITLE_BOTTOM, this.NodeNameBottomColor);
+		return resolve(UIColors.NODE_TITLE_BOTTOM, this.NodeNameBottomColor);
 	}
 
 	public Color getNodeNameTextColor() {
-		return UIColors.colour(UIColors.NODE_TITLE_TEXT, this.NodeNameTextColor);
+		return resolve(UIColors.NODE_TITLE_TEXT, this.NodeNameTextColor);
 	}
 
 	public Color getNodeNameTextShadowColor() {
-		return UIColors.colour(UIColors.NODE_TITLE_TEXT_SHADOW, this.NodeNameTextShadowColor);
+		return resolve(UIColors.NODE_TITLE_TEXT_SHADOW, this.NodeNameTextShadowColor);
 	}
 
 	public Color getNodeBackgroundColor() {
-		return UIColors.colour(UIColors.NODE_BACKGROUND, this.NodeBackgroundColor);
+		return resolve(UIColors.NODE_BACKGROUND, this.NodeBackgroundColor);
 	}
 
 	public Color getNodeBorderColor() {
-		return UIColors.colour(UIColors.NODE_BORDER, this.NodeBorderColor);
+		return resolve(UIColors.NODE_BORDER, this.NodeBorderColor);
 	}
 
 	public Color getNodeFocusColor() {
-		return UIColors.colour(UIColors.NODE_FOCUS_RING, this.NodeFocusColor);
+		return resolve(UIColors.NODE_FOCUS_RING, this.NodeFocusColor);
 	}
 
 	public Color getFieldsTextColor() {
-		return UIColors.colour(UIColors.NODE_FIELD_TEXT, this.FieldsTextColor);
+		return resolve(UIColors.NODE_FIELD_TEXT, this.FieldsTextColor);
 	}
 
 	public Color getAnchorLinkFillColor() {
-		return UIColors.colour(UIColors.ANCHOR_LINK, this.AnchorLinkFillColor);
+		return resolve(UIColors.ANCHOR_LINK, this.AnchorLinkFillColor);
 	}
 
 	public Color getAnchorDefaultFillColor() {
-		return UIColors.colour(UIColors.ANCHOR_DEFAULT, this.AnchorDefaultFillColor);
+		return resolve(UIColors.ANCHOR_DEFAULT, this.AnchorDefaultFillColor);
 	}
 
 	public Color getAnchorPublishedFillColor() {
-		return UIColors.colour(UIColors.ANCHOR_PUBLISHED, this.AnchorPublishedFillColor);
+		return resolve(UIColors.ANCHOR_PUBLISHED, this.AnchorPublishedFillColor);
 	}
 
 }

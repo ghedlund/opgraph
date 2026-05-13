@@ -36,6 +36,7 @@ import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
 import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.app.edits.graph.*;
+import ca.phon.opgraph.app.theme.UIColors;
 import ca.phon.opgraph.app.util.*;
 import ca.phon.opgraph.library.*;
 import ca.phon.opgraph.library.handlers.*;
@@ -173,7 +174,8 @@ public class NodeLibraryViewer extends JPanel {
 
 		libraryTree.setRootVisible(false);
 		libraryTree.setEditable(false);
-		libraryTree.setBackground(Color.WHITE);
+		libraryTree.setBackground(UIColors.colour(UIColors.LIBRARY_BACKGROUND,
+				UIManager.getColor("Tree.background") != null ? UIManager.getColor("Tree.background") : Color.WHITE));
 		libraryTree.setShowsRootHandles(true);
 		libraryTree.setRowHeight(-1);
 		libraryTree.setCellRenderer(renderer);
@@ -317,7 +319,8 @@ public class NodeLibraryViewer extends JPanel {
 		libraryScrollPane.setBorder(null);
 
 		final JPanel libraryPanel = new JPanel(new BorderLayout());
-		libraryPanel.setBackground(Color.WHITE);
+		libraryPanel.setBackground(UIColors.colour(UIColors.LIBRARY_BACKGROUND,
+				UIManager.getColor("Panel.background") != null ? UIManager.getColor("Panel.background") : Color.WHITE));
 		libraryPanel.add(searchFieldPanel, BorderLayout.NORTH);
 		libraryPanel.add(libraryScrollPane, BorderLayout.CENTER);
 
@@ -405,17 +408,18 @@ public class NodeLibraryViewer extends JPanel {
 					final Graphics2D g = DRAG_IMG.createGraphics();
 					{
 						// Draw background
-						g.setColor(new Color(255, 255, 150, 200));
+						g.setColor(UIColors.colour(UIColors.LIBRARY_DRAG_HIGHLIGHT, new Color(255, 255, 150, 200)));
 						g.fillRect(0, 0, txtw - 1, txth - 1);
 
 						// Draw border
-						g.setColor(Color.BLACK);
+						final Color dragText = UIColors.colour(UIColors.LIBRARY_DRAG_TEXT, Color.BLACK);
+						g.setColor(dragText);
 						g.drawRect(0, 0, txtw - 1, txth - 1);
 
 						// Draw text
 						g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 						g.setFont(font);
-						g.setColor(Color.BLACK);
+						g.setColor(dragText);
 						final LineMetrics lm = font.getLineMetrics(txt, frc);
 						final float txtx = (txtw - (float)bounds.getWidth()) * 0.5f;
 						final float txty = (txth - (float)bounds.getHeight()) * 0.5f + lm.getAscent();

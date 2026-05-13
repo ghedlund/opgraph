@@ -28,6 +28,7 @@ import ca.phon.opgraph.*;
 import ca.phon.opgraph.app.*;
 import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.app.extensions.*;
+import ca.phon.opgraph.app.theme.UIColors;
 
 /**
  * Menu provider for core functions.
@@ -55,13 +56,13 @@ public class NotesMenuProvider implements MenuProvider {
 			final Note note = (Note)context;
 
 			final Object [] colors = new Object[] {
-				new Color(255, 150, 150), "Red",
-				new Color(150, 255, 150), "Green",
-				new Color(150, 150, 255), "Blue",
-				new Color(255, 255, 150), "Yellow",
-				new Color(255, 150, 255), "Magenta",
-				new Color(255, 200, 100), "Orange",
-				new Color(200, 200, 200), "Gray"
+				UIColors.colour(UIColors.NOTE_SWATCH_RED,     new Color(255, 150, 150)), "Red",
+				UIColors.colour(UIColors.NOTE_SWATCH_GREEN,   new Color(150, 255, 150)), "Green",
+				UIColors.colour(UIColors.NOTE_SWATCH_BLUE,    new Color(150, 150, 255)), "Blue",
+				UIColors.colour(UIColors.NOTE_SWATCH_YELLOW,  new Color(255, 255, 150)), "Yellow",
+				UIColors.colour(UIColors.NOTE_SWATCH_MAGENTA, new Color(255, 150, 255)), "Magenta",
+				UIColors.colour(UIColors.NOTE_SWATCH_ORANGE,  new Color(255, 200, 100)), "Orange",
+				UIColors.colour(UIColors.NOTE_SWATCH_GRAY,    new Color(200, 200, 200)), "Gray"
 			};
 
 			menu.addMenuItem("remove_note", new RemoveNoteCommand(doc, note));

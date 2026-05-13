@@ -88,8 +88,9 @@ public class CanvasNodeName extends JPanel {
 					final Point p = GUIHelper.placeTextInRectangle(g, nameField.getText(), rect, halign, valign);
 
 					// Draw shadow under text, if necessary
-					if(style.NodeNameTextShadowColor != null) {
-						g.setColor(style.NodeNameTextShadowColor);
+					final Color shadow = style.getNodeNameTextShadowColor();
+					if(shadow != null) {
+						g.setColor(shadow);
 						g.drawString(nameField.getText(), p.x + 1, p.y + 1);
 					}
 
@@ -168,9 +169,9 @@ public class CanvasNodeName extends JPanel {
 		this.style = (style == null ? new NodeStyle() : style);
 
 		iconDecoration.setIcon(style.NodeIcon);
-		
-//		nameField.setBackground(this.style.NodeNameTopColor);
-		nameField.setForeground(this.style.NodeNameTextColor);
+
+//		nameField.setBackground(this.style.getNodeNameTopColor());
+		nameField.setForeground(this.style.getNodeNameTextColor());
 
 		revalidate();
 		repaint();

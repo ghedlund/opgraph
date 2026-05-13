@@ -43,24 +43,24 @@ public class DefaultNodeBorder implements Border {
 		if(c instanceof CanvasNode) {
 			final CanvasNode canvasNode = (CanvasNode)c;
 			if(canvasNode.isSelected()) {
-				g.setColor(canvasNode.getStyle().NodeFocusColor);
+				g.setColor(canvasNode.getStyle().getNodeFocusColor());
 				g.fillRect(x, y, w, MAX_SIZE);
 				g.fillRect(x, y + MAX_SIZE, MAX_SIZE, h - MAX_SIZE);
 				g.fillRect(w - MAX_SIZE, y + MAX_SIZE, MAX_SIZE, h - MAX_SIZE);
 				g.fillRect(x + MAX_SIZE, h - MAX_SIZE, w - 2*MAX_SIZE, MAX_SIZE);
 			}
-			
+
 			if(canvasNode.getNode().isBreakpoint()) {
 				g.setColor(Color.red);
 				g.fillOval(x, y, MAX_SIZE, MAX_SIZE);
 			}
-			
+
 			x += MAX_SIZE - 1;
 			y += MAX_SIZE - 1;
 			w -= 2*MAX_SIZE - 1;
 			h -= 2*MAX_SIZE - 1;
 
-			g.setColor(canvasNode.getStyle().NodeBorderColor);
+			g.setColor(canvasNode.getStyle().getNodeBorderColor());
 			g.drawRect(x, y, w, h);
 		}
 	}

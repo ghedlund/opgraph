@@ -24,6 +24,8 @@ import java.awt.geom.*;
 
 import javax.swing.*;
 
+import ca.phon.opgraph.app.theme.UIColors;
+
 /**
  * A full-canvas component to draw things on top of everything else. This
  * currently includes:
@@ -70,11 +72,13 @@ public class CanvasOverlay extends JComponent {
 				final Stroke oldStroke = g.getStroke();
 	
 				if(link != null) {
-					g.setColor(canvas.getUI().isDragLinkValid() ? Color.WHITE : Color.RED);
+					g.setColor(canvas.getUI().isDragLinkValid()
+							? UIColors.colour(UIColors.OVERLAY_DRAG_VALID, Color.WHITE)
+							: UIColors.colour(UIColors.OVERLAY_DRAG_INVALID, Color.RED));
 					g.setStroke(LinksLayer.THIN);
 					g.draw(link);
-	
-					g.setColor(Color.BLACK);
+
+					g.setColor(UIColors.colour(UIColors.LINK_STROKE, Color.BLACK));
 					g.setStroke(oldStroke);
 					g.draw(LinksLayer.THICK.createStrokedShape(link));
 				}
@@ -99,9 +103,9 @@ public class CanvasOverlay extends JComponent {
 				h = -h;
 			}
 
-			g.setColor(new Color(255, 255, 255, 50));
+			g.setColor(UIColors.colour(UIColors.OVERLAY_SELECTION_FILL, new Color(255, 255, 255, 50)));
 			g.fillRect(x, y, w, h);
-			g.setColor(Color.WHITE);
+			g.setColor(UIColors.colour(UIColors.OVERLAY_SELECTION_STROKE, Color.WHITE));
 			g.drawRect(x, y, w, h);
 		}
 	}

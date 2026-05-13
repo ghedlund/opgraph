@@ -40,8 +40,8 @@ public class OpGraphTreeCellRenderer extends DefaultTreeCellRenderer {
 			final NodeStyle nodeStyle = NodeStyle.getStyleForNode(node);
 			retVal.setText(node.getName());
 			retVal.setIcon(nodeStyle.NodeIcon);
-			retVal.setBackground(nodeStyle.NodeBackgroundColor);
-			retVal.setForeground(nodeStyle.NodeNameTextColor);
+			retVal.setBackground(nodeStyle.getNodeBackgroundColor());
+			retVal.setForeground(nodeStyle.getNodeNameTextColor());
 		}
 		return retVal;
 	}

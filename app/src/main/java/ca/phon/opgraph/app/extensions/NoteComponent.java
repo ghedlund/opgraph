@@ -28,13 +28,19 @@ import javax.swing.border.*;
 
 import ca.phon.opgraph.app.components.*;
 import ca.phon.opgraph.app.edits.notes.*;
+import ca.phon.opgraph.app.theme.UIColors;
 
 /**
  * A component for displaying a {@link Note}.
  */
 public class NoteComponent extends JPanel {
-	/** The default note color */
-	private static final Color DEFAULT_COLOR = new Color(255, 255, 150);
+	/** Legacy default note colour used as the fallback when no theme key is registered. */
+	private static final Color DEFAULT_COLOR_FALLBACK = new Color(255, 255, 150);
+
+	/** Resolves the default note background from the active theme, falling back to legacy yellow. */
+	public static Color defaultNoteColor() {
+		return UIColors.colour(UIColors.NOTE_BACKGROUND, DEFAULT_COLOR_FALLBACK);
+	}
 
 	/** The note this component displaying */
 	private WeakReference<Note> noteRef;
@@ -81,7 +87,7 @@ public class NoteComponent extends JPanel {
 		this.bodyDoubleClickSupport.addPropertyChangeListener(DoubleClickableTextField.TEXT_PROPERTY, textListener);
 
 		this.resizeGrip = new ResizeGrip(this);
-		this.resizeGrip.setBackground(new Color(0, 0, 0, 100));
+		this.resizeGrip.setBackground(UIColors.colour(UIColors.NOTE_RESIZE_GRIP, new Color(0, 0, 0, 100)));
 
 		add(this.resizeGrip);
 		add(this.titleField);
@@ -116,7 +122,7 @@ public class NoteComponent extends JPanel {
 		setMinimumSize(new Dimension(prefw, prefh));
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-		setBackground(DEFAULT_COLOR);
+		setBackground(defaultNoteColor());
 		setOpaque(false);
 	}
 

@@ -21,6 +21,7 @@ module ca.phon.opgraph.app {
 	exports ca.phon.opgraph.app.edits.node;
 	exports ca.phon.opgraph.app.edits.notes;
 	exports ca.phon.opgraph.app.extensions;
+	exports ca.phon.opgraph.app.theme;
 	exports ca.phon.opgraph.app.util;
 	exports ca.phon.opgraph.app.xml;
 

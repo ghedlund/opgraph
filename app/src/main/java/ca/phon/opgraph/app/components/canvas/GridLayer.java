@@ -21,6 +21,7 @@ import java.awt.geom.*;
 
 import javax.swing.*;
 
+import ca.phon.opgraph.app.theme.UIColors;
 import ca.phon.opgraph.app.util.*;
 
 /**
@@ -41,8 +42,8 @@ public class GridLayer extends JComponent {
 	 */
 	public GridLayer(GraphCanvas canvas) {
 		setOpaque(true);
-		setBackground(Color.DARK_GRAY);
-		
+		setBackground(UIColors.colour(UIColors.CANVAS_BACKGROUND, Color.DARK_GRAY));
+
 		this.canvas = canvas;
 	}
 
@@ -113,7 +114,7 @@ public class GridLayer extends JComponent {
 			g.setColor(getBackground());
 			g.fillRect(0, 0, canvas.getSize().width, canvas.getSize().height);
 			
-			g.setColor(GUIHelper.highlightColor(getBackground()));
+			g.setColor(UIColors.colour(UIColors.CANVAS_GRID_LINE, GUIHelper.highlightColor(getBackground())));
 			for(int y = starty; y < endy; y += DEFAULT_GRID_SPACING)
 				g.drawLine(startx, y, endx, y);
 			

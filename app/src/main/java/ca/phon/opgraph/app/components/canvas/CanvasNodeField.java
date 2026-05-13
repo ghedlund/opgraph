@@ -275,22 +275,22 @@ public class CanvasNodeField extends JComponent {
 
 		switch(anchorFillState) {
 		case LINK:
-			g.setColor(style.AnchorLinkFillColor);
+			g.setColor(style.getAnchorLinkFillColor());
 			g.fill(anchor);
 			break;
 		case DEFAULT:
-			g.setColor(style.AnchorDefaultFillColor);
+			g.setColor(style.getAnchorDefaultFillColor());
 			g.fill(anchor);
 			break;
 		case PUBLISHED:
-			g.setColor(style.AnchorPublishedFillColor);
+			g.setColor(style.getAnchorPublishedFillColor());
 			g.fill(anchor);
 			break;
 		case NONE:
 			break;
 		}
 
-		g.setColor(style.FieldsTextColor);
+		g.setColor(style.getFieldsTextColor());
 		if((field instanceof InputField) && ((InputField)field).isOptional()) {
 			final Stroke oldStroke = g.getStroke();
 			g.setStroke(optionalFieldStroke);

@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.*;
 
 import ca.phon.opgraph.*;
+import ca.phon.opgraph.app.theme.UIColors;
 
 /**
  * A full-canvas component to draw links between node fields
@@ -156,8 +157,9 @@ public class LinksLayer extends JComponent {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
-		final Color SELECTED_FILL = Color.ORANGE;
-		final Color REGULAR_FILL = Color.ORANGE.darker().darker();
+		final Color SELECTED_FILL = UIColors.colour(UIColors.LINK_SELECTED, Color.ORANGE);
+		final Color REGULAR_FILL = UIColors.colour(UIColors.LINK_REGULAR, Color.ORANGE.darker().darker());
+		final Color STROKE_COLOR = UIColors.colour(UIColors.LINK_STROKE, Color.BLACK);
 
 		final IdentityHashMap<OpLink, Boolean> connectedLinks = new IdentityHashMap<OpLink, Boolean>();
 		final List<OpNode> selectedNodes = new ArrayList<>();
@@ -179,7 +181,6 @@ public class LinksLayer extends JComponent {
 
 		// Draw links
 		for(OpLink link:links.keySet()) {
-			Color strokeColor = Color.BLACK;
 			Color fillColor = REGULAR_FILL;
 			if(connectedLinks.containsKey(link))
 				fillColor = SELECTED_FILL;
@@ -190,7 +191,7 @@ public class LinksLayer extends JComponent {
 			g.draw(links.get(link));
 
 			// Link outline
-			g.setColor(strokeColor);
+			g.setColor(STROKE_COLOR);
 			g.setStroke(oldStroke);
 			g.draw(THICK.createStrokedShape(links.get(link)));
 		}

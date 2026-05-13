@@ -192,8 +192,10 @@ public class CanvasNode extends JComponent {
 		this.style = (style == null ? new NodeStyle() : style);
 		
 		setBorder(style.NodeBorder);
-		setBackground(this.style.NodeBackgroundColor);
-		setForeground(this.style.NodeBorderColor);
+		setBackground(this.style.getNodeBackgroundColor());
+		// Child JTextFields paint with the node's foreground; use the field-text
+		// colour so input/output labels stay readable across themes.
+		setForeground(this.style.getFieldsTextColor());
 
 		// Update children
 		name.setStyle(this.style);
@@ -312,15 +314,15 @@ public class CanvasNode extends JComponent {
 
 		// Name area background
 		final int separatorY = getSeparatorY();
-		Paint namePaint = new GradientPaint(0, 0, style.NodeNameTopColor, 0, separatorY, style.NodeNameBottomColor);
+		Paint namePaint = new GradientPaint(0, 0, style.getNodeNameTopColor(), 0, separatorY, style.getNodeNameBottomColor());
 		g.setPaint(namePaint);
 		g.fillRect(0, 0, w, separatorY);
 
-		g.setColor(style.NodeBackgroundColor);
+		g.setColor(style.getNodeBackgroundColor());
 		g.fillRect(0, separatorY, w, h - separatorY);
 
 		// Node name separator
-		g.setColor(style.NodeBorderColor);
+		g.setColor(style.getNodeBorderColor());
 		g.drawLine(0, separatorY, w - 1, separatorY);
 
 		// Translate back
